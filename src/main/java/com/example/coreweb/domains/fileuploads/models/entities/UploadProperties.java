@@ -71,14 +71,14 @@ public class UploadProperties extends BaseEntity {
         if (fileName == null || fileName.isEmpty())
             throw new IllegalArgumentException("Filename can not be null or empty!");
         return File.separator + namespace
-                + File.separator + uniqueProperty + File.separator + fileName;
+                + File.separator + uniqueProperty + File.separator + this.fileType + File.separator + fileName;
     }
 
     public String getThumbPath() {
         if (fileName == null || fileName.isEmpty())
             throw new IllegalArgumentException("Filename can not be null or empty!");
         return File.separator + namespace
-                + File.separator + uniqueProperty + File.separator + fileName;
+                + File.separator + uniqueProperty + File.separator + this.fileType + File.separator + fileName;
     }
 
 

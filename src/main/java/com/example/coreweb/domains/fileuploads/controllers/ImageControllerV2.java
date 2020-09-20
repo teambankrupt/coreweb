@@ -38,7 +38,7 @@ public class ImageControllerV2 {
     @PostMapping("")
     public ResponseEntity uploadImage(@RequestParam("file") MultipartFile file,
                                       @RequestParam(value = "namespace") String namespace) throws ImageInvalidException, IOException {
-        ImageUploadResponse response = upload(file, namespace, "images", SecurityContext.getLoggedInUsername());
+        ImageUploadResponse response = upload(file, namespace, SecurityContext.getLoggedInUsername());
         return ResponseEntity.ok(response);
     }
 
@@ -49,19 +49,19 @@ public class ImageControllerV2 {
         if (files.length == 0) return ResponseEntity.badRequest().body("At least one image is expected!");
         List<ImageUploadResponse> responses = new ArrayList<>();
         for (MultipartFile file : files)
-            responses.add(upload(file, namespace, "images", SecurityContext.getLoggedInUsername()));
+            responses.add(upload(file, namespace, SecurityContext.getLoggedInUsername()));
 
         return ResponseEntity.ok(responses);
     }
 
 
-    private ImageUploadResponse upload(MultipartFile file, String namespace, String fileType, String username) throws IOException, ImageInvalidException {
+    private ImageUploadResponse upload(MultipartFile file, String namespace, String username) throws IOException, ImageInvalidException {
         if (!ImageValidator.isImageValid(file))
             throw new ImageInvalidException("Invalid Image");
         ImageUploadResponse response = new ImageUploadResponse();
-        UploadProperties uploadProperties = this.uploadService.uploadFile(file, namespace, username + File.separator + fileType, 1200);
+        UploadProperties uploadProperties = this.uploadService.uploadFile(file, namespace, username, 1200);
         response.setImageUrl(this.baseUrlImages + uploadProperties.getImagePath());
-        uploadProperties = this.uploadService.uploadFile(file, namespace, username + File.separator + fileType + File.separator + "thumbs", 600);
+        uploadProperties = this.uploadService.uploadFile(file, namespace, username + File.separator + "thumbs", 600);
         response.setThumbUrl(this.baseUrlImages + uploadProperties.getThumbPath());
         return response;
     }
