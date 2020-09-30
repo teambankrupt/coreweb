@@ -1,7 +1,7 @@
 package com.example.coreweb.domains.address.controllers
 
-import com.example.coreweb.commons.Constants
 import com.example.common.utils.ExceptionUtil
+import com.example.coreweb.commons.Constants
 import com.example.coreweb.domains.address.models.dto.UnionDto
 import com.example.coreweb.domains.address.models.entities.Union
 import com.example.coreweb.domains.address.models.mappers.UnionMapper
@@ -24,10 +24,11 @@ class UnionController @Autowired constructor(
 
     @GetMapping(Route.V1.SEARCH_UNION)
     @ApiOperation(value = Constants.Swagger.SEARCH_ALL_MSG + Constants.Swagger.UNION)
-    override fun search(@RequestParam("q", defaultValue = "") query: String,
-                        @RequestParam("page", defaultValue = "0") page: Int,
-                        @RequestParam("size", defaultValue = "10") size: Int): ResponseEntity<Page<UnionDto>> {
-        val unions: Page<Union> = unionService.search(query, page, size)
+    fun search(@RequestParam("upazila_id", required = false) upazilaId: Long?,
+               @RequestParam("q", defaultValue = "") query: String,
+               @RequestParam("page", defaultValue = "0") page: Int,
+               @RequestParam("size", defaultValue = "10") size: Int): ResponseEntity<Page<UnionDto>> {
+        val unions: Page<Union> = unionService.search(upazilaId, query, page, size)
         return ResponseEntity.ok(unions.map { union -> unionMapper.map(union) })
     }
 
@@ -49,7 +50,7 @@ class UnionController @Autowired constructor(
     @PatchMapping(Route.V1.UPDATE_UNION)
     @ApiOperation(value = Constants.Swagger.PATCH_MSG + Constants.Swagger.UNION)
     override fun update(@PathVariable id: Long, @Valid @RequestBody dto: UnionDto): ResponseEntity<UnionDto> {
-        var union: Union = unionService.find(id).orElseThrow { ExceptionUtil.notFound("Could not find union with id: $id")  }
+        var union: Union = unionService.find(id).orElseThrow { ExceptionUtil.notFound("Could not find union with id: $id") }
         union = unionService.save(unionMapper.map(dto, union))
         return ResponseEntity.ok(unionMapper.map(union))
     }
@@ -59,5 +60,9 @@ class UnionController @Autowired constructor(
     override fun delete(@PathVariable id: Long): ResponseEntity<Any> {
         this.unionService.delete(id, true)
         return ResponseEntity.ok().build()
+    }
+
+    override fun search(query: String, page: Int, size: Int): ResponseEntity<Page<UnionDto>> {
+        TODO("Not yet implemented")
     }
 }

@@ -1,7 +1,7 @@
 package com.example.coreweb.domains.address.controllers
 
-import com.example.coreweb.commons.Constants
 import com.example.common.utils.ExceptionUtil
+import com.example.coreweb.commons.Constants
 import com.example.coreweb.domains.address.models.dto.UpazilaDto
 import com.example.coreweb.domains.address.models.entities.Upazila
 import com.example.coreweb.domains.address.models.mappers.UpazilaMapper
@@ -25,10 +25,11 @@ class UpazilaController @Autowired constructor(
 
     @GetMapping(Route.V1.SEARCH_UPAZILA)
     @ApiOperation(value = Constants.Swagger.SEARCH_ALL_MSG + Constants.Swagger.UPAZILA)
-    override fun search(@RequestParam("q", defaultValue = "") query: String,
-                        @RequestParam("page", defaultValue = "0") page: Int,
-                        @RequestParam("size", defaultValue = "10") size: Int): ResponseEntity<Page<UpazilaDto>> {
-        val upazilas: Page<Upazila> = upazilaService.search(query, page, size)
+    fun search(@RequestParam("district_id", required = false) divisionId: Long?,
+               @RequestParam("q", defaultValue = "") query: String,
+               @RequestParam("page", defaultValue = "0") page: Int,
+               @RequestParam("size", defaultValue = "10") size: Int): ResponseEntity<Page<UpazilaDto>> {
+        val upazilas: Page<Upazila> = upazilaService.search(divisionId, query, page, size)
         return ResponseEntity.ok(upazilas.map { upazila -> upazilaMapper.map(upazila) })
     }
 
@@ -60,5 +61,9 @@ class UpazilaController @Autowired constructor(
     override fun delete(@PathVariable id: Long): ResponseEntity<Any> {
         this.upazilaService.delete(id, true)
         return ResponseEntity.ok().build()
+    }
+
+    override fun search(query: String, page: Int, size: Int): ResponseEntity<Page<UpazilaDto>> {
+        TODO("Not yet implemented")
     }
 }

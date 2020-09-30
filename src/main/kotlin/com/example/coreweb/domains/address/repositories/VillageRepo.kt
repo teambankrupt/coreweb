@@ -12,10 +12,13 @@ import java.util.*
 @Repository
 interface VillageRepo : JpaRepository<Village, Long> {
 
+    @Query("SELECT v FROM Village v WHERE (:unionId IS NULL OR v.union.id=:unionId) AND (:q IS NULL OR v.nameEn LIKE %:q%) AND v.deleted = false")
+    fun search(@Param("unionId") unionId: Long?, @Param("q") query: String, pageable: Pageable): Page<Village>
+
     @Query("SELECT v FROM Village v WHERE (:q IS NULL OR v.nameEn LIKE %:q%) AND v.deleted = false")
     fun search(@Param("q") query: String, pageable: Pageable): Page<Village>
 
     @Query("SELECT v FROM Village v WHERE v.id = :id AND v.deleted = false")
-    fun find(@Param("id") id: Long) : Optional<Village>
+    fun find(@Param("id") id: Long): Optional<Village>
 
 }

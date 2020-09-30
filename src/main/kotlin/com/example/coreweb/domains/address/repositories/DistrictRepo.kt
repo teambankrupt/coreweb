@@ -14,6 +14,9 @@ interface DistrictRepo : JpaRepository<District, Long> {
     @Query("SELECT d FROM District d WHERE (:q IS NULL OR d.nameEn LIKE %:q%) AND d.deleted = false")
     fun search(@Param("q") query: String, pagable: Pageable): Page<District>
 
+    @Query("SELECT d FROM District d WHERE (:divisionId IS NULL OR d.division.id=:divisionId) AND (:q IS NULL OR d.nameEn LIKE %:q%) AND d.deleted = false")
+    fun search(@Param("divisionId") divisionId: Long?, @Param("q") query: String, pagable: Pageable): Page<District>
+
     @Query("SELECT d FROM District d WHERE d.id = :id AND d.deleted = false")
-    fun find(@Param("id") id: Long) : Optional<District>
+    fun find(@Param("id") id: Long): Optional<District>
 }

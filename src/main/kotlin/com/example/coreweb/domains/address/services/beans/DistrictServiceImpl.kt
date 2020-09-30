@@ -20,6 +20,10 @@ class DistrictServiceImpl @Autowired constructor(
         return this.districtRepo.save(entity)
     }
 
+    override fun search(divisionId: Long?, query: String, page: Int, size: Int): Page<District> {
+        return this.districtRepo.search(divisionId,query, PageAttr.getPageRequest(page,size))
+    }
+
     override fun search(query: String, page: Int, size: Int): Page<District> {
         return this.districtRepo.search(query, PageAttr.getPageRequest(page,size))
     }

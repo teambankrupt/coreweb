@@ -10,11 +10,14 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface UnionRepo:JpaRepository<Union,Long> {
+interface UnionRepo : JpaRepository<Union, Long> {
+
+    @Query("SELECT u FROM Union u WHERE (:upazilaId IS NULL OR u.upazila.id=:upazilaId) AND (:q IS NULL OR u.nameEn LIKE %:q%) AND u.deleted = false")
+    fun search(@Param("upazilaId") upazilaId: Long?, @Param("q") query: String, pagable: Pageable): Page<Union>
 
     @Query("SELECT u FROM Union u WHERE (:q IS NULL OR u.nameEn LIKE %:q%) AND u.deleted = false")
     fun search(@Param("q") query: String, pagable: Pageable): Page<Union>
 
     @Query("SELECT u FROM Union u WHERE u.id = :id AND u.deleted = false")
-    fun find(@Param("id") id: Long) : Optional<Union>
+    fun find(@Param("id") id: Long): Optional<Union>
 }

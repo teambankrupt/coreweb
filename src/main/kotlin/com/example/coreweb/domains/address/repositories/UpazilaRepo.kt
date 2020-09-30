@@ -10,10 +10,13 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface UpazilaRepo:JpaRepository<Upazila,Long> {
+interface UpazilaRepo : JpaRepository<Upazila, Long> {
+    @Query("SELECT u FROM Upazila u WHERE (:districtId IS NULL OR u.district.id=:districtId) AND (:q IS NULL OR u.nameEn LIKE %:q%) AND u.deleted = FALSE")
+    fun search(@Param("districtId") districtId: Long?, @Param("q") query: String, pagable: Pageable): Page<Upazila>
+
     @Query("SELECT u FROM Upazila u WHERE (:q IS NULL OR u.nameEn LIKE %:q%) AND u.deleted = FALSE")
     fun search(@Param("q") query: String, pagable: Pageable): Page<Upazila>
 
     @Query("SELECT u FROM Upazila u WHERE u.id = :id AND u.deleted = false")
-    fun find(@Param("id") id: Long) : Optional<Upazila>
+    fun find(@Param("id") id: Long): Optional<Upazila>
 }

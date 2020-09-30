@@ -1,7 +1,7 @@
 package com.example.coreweb.domains.address.controllers
 
-import com.example.coreweb.commons.Constants
 import com.example.common.utils.ExceptionUtil
+import com.example.coreweb.commons.Constants
 import com.example.coreweb.domains.address.models.dto.DistrictDto
 import com.example.coreweb.domains.address.models.entities.District
 import com.example.coreweb.domains.address.models.mappers.DistrictMapper
@@ -25,10 +25,11 @@ class DistrictController(
 
     @GetMapping(Route.V1.SEARCH_DISTRICT)
     @ApiOperation(value = Constants.Swagger.SEARCH_ALL_MSG + Constants.Swagger.DISTRICT)
-    override fun search(@RequestParam("q", defaultValue = "") query: String,
-                        @RequestParam("page", defaultValue = "0") page: Int,
-                        @RequestParam("size", defaultValue = "10") size: Int): ResponseEntity<Page<DistrictDto>> {
-        val districts: Page<District> = this.districtService.search(query, page, size)
+    fun search(@RequestParam("division_id", required = false) divisionId: Long?,
+               @RequestParam("q", defaultValue = "") query: String,
+               @RequestParam("page", defaultValue = "0") page: Int,
+               @RequestParam("size", defaultValue = "10") size: Int): ResponseEntity<Page<DistrictDto>> {
+        val districts: Page<District> = this.districtService.search(divisionId, query, page, size)
         return ResponseEntity.ok(districts.map { district -> this.districtMapper.map(district) })
     }
 
@@ -59,6 +60,10 @@ class DistrictController(
     override fun delete(@PathVariable id: Long): ResponseEntity<Any> {
         this.districtService.delete(id, true)
         return ResponseEntity.ok().build()
+    }
+
+    override fun search(query: String, page: Int, size: Int): ResponseEntity<Page<DistrictDto>> {
+        TODO("Not yet implemented")
     }
 
 }
