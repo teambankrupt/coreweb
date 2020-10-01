@@ -39,7 +39,7 @@ class AddressServiceImpl @Autowired constructor(
     }
 
     override fun validate(entity: Address) {
-        TODO("Not yet implemented")
+        
     }
 
 }
