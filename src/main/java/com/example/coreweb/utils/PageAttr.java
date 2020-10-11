@@ -19,4 +19,9 @@ public final class PageAttr {
         if (size <= 0) size = 10;
         return PageRequest.of(page, size, Sort.Direction.DESC, PageAttr.SORT_BY_FIELD_ID);
     }
+
+    public static PageRequest getPageRequest(int page, int size, String sortBy, Sort.Direction direction) {
+        if (size <= 0) size = 10;
+        return PageRequest.of(page, size, direction, sortBy);
+    }
 }
