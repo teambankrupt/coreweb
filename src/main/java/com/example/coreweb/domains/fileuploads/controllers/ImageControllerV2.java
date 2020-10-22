@@ -26,7 +26,7 @@ public class ImageControllerV2 {
 
     private final FileUploadService uploadService;
 
-    @Value("${baseUrlImages}")
+    @Value("${app.base-url-image}")
     private String baseUrlImages;
 
     @Autowired

@@ -39,7 +39,7 @@ public class SwaggerConfig {
     @Value("${applicationName}")
     private String applicationName;
 
-    @Value("${baseUrl}")
+    @Value("${app.base-url}")
     private String appUrl;
 
     @Value("${contactEmail}")
