@@ -6,6 +6,7 @@ import com.example.coreweb.domains.fileuploads.models.entities.UploadProperties;
 import com.example.coreweb.domains.fileuploads.models.responses.ImageUploadResponse;
 import com.example.coreweb.domains.fileuploads.services.FileUploadService;
 import com.example.coreweb.utils.ImageValidator;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Api(tags = "Uploads", description = "Handle File Uploads including images")
 @RestController
 @RequestMapping("/api/v2/images")
 public class ImageControllerV2 {

@@ -21,9 +21,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 @RestController
 @RequestMapping("/api/v1/images")
-@Api(tags = "Uploads", description = "Handle File Uploads including images")
 public class ImageController {
 
     private final FileUploadService uploadService;
