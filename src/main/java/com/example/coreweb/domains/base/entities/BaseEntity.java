@@ -50,6 +50,10 @@ public abstract class BaseEntity implements Serializable {
         this.updatedBy = this.getLoggedInUsername();
     }
 
+    public boolean isNew() {
+        return this.id == null;
+    }
+
     @JsonIgnore
     public String getLoggedInUsername() {
         return SecurityContext.getLoggedInUsername();
