@@ -1,12 +1,12 @@
-package com.example.app.domains.contact.controllers.web
+package com.example.coreweb.domains.contacts.controllers.web
 
-import com.example.app.domains.contact.models.dtos.ContactDto
+import com.example.coreweb.domains.contacts.models.dtos.ContactDto
 import com.example.app.domains.contact.models.mappers.ContactMapper
-import com.example.app.domains.contact.services.ContactService
-import com.example.app.routing.Route
+import com.example.coreweb.domains.contacts.services.ContactService
 import com.example.common.utils.ExceptionUtil
 import com.example.coreweb.domains.base.controllers.CrudWebControllerV2
 import com.example.coreweb.domains.base.models.enums.SortByFields
+import com.example.coreweb.routing.Route
 import org.springframework.data.domain.Sort
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
@@ -20,20 +20,6 @@ class ContactWebController @Autowired constructor(
         private val contactService: ContactService,
         private val contactMapper: ContactMapper
 ) : CrudWebControllerV2<ContactDto> {
-
-    /*
-        COPY THESE URLS TO ROUTE FILE AND ADJUST
-        ------------------------------------------------------
-        // Contacts (Admin)
-        const val ADMIN_SEARCH_CONTACTS = "$ADMIN/contacts"
-        const val ADMIN_CREATE_CONTACT_PAGE = "$ADMIN/contacts/create"
-        const val ADMIN_CREATE_CONTACT = "$ADMIN/contacts"
-        const val ADMIN_FIND_CONTACT = "$ADMIN/contacts/{id}"
-        const val ADMIN_UPDATE_CONTACT_PAGE = "$ADMIN/contacts/{id}/update"
-        const val ADMIN_UPDATE_CONTACT = "$ADMIN/contacts/{id}"
-        const val ADMIN_DELETE_CONTACT = "$ADMIN/contacts/{id}/delete"
-        ------------------------------------------------------
-    */
 
     @GetMapping(Route.V1.ADMIN_SEARCH_CONTACTS)
     override fun search(@RequestParam("q", defaultValue = "") query: String,

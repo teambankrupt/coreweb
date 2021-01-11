@@ -1,4 +1,4 @@
-package com.example.app.domains.contact.repositories
+package com.example.coreweb.domains.contacts.repositories
 
 import com.example.coreweb.domains.contacts.models.entities.Contact
 import org.springframework.data.domain.Page
@@ -12,10 +12,9 @@ import java.util.*
 @Repository
 interface ContactRepository : JpaRepository<Contact, Long> {
 
-    @Query("SELECT e FROM Contact e WHERE (:q IS NULL OR e.createdBy LIKE %:q%) AND e.deleted=FALSE")
+    @Query("SELECT c FROM Contact c WHERE (:q IS NULL OR c.name LIKE %:q% OR c.phone LIKE %:q% OR c.email LIKE %:q% OR c.address LIKE %:q% OR c.createdBy LIKE %:q%) AND c.deleted=FALSE")
     fun search(@Param("q") query: String, pageable: Pageable): Page<Contact>
 
-    @Query("SELECT e FROM Contact e WHERE e.id=:id AND e.deleted=FALSE")
+    @Query("SELECT c FROM Contact c WHERE c.id=:id AND c.deleted=FALSE")
     fun find(@Param("id") id: Long): Optional<Contact>
-
 }

@@ -1,9 +1,11 @@
-package com.example.app.domains.contact.services.beans
+package com.example.coreweb.domains.contacts.services.beans
 
 import com.example.coreweb.domains.contacts.models.entities.Contact
-import com.example.app.domains.contact.repositories.ContactRepository
-import com.example.app.domains.contact.services.ContactService
+import com.example.coreweb.domains.contacts.repositories.ContactRepository
+import com.example.coreweb.domains.contacts.services.ContactService
 import com.example.common.utils.ExceptionUtil
+import com.example.coreweb.commons.Constants
+import com.example.coreweb.commons.ResourceUtil
 import com.example.coreweb.utils.PageAttr
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -32,7 +34,7 @@ class ContactServiceBean @Autowired constructor(
 
     override fun delete(id: Long, softDelete: Boolean) {
         if (softDelete) {
-            val entity = this.find(id).orElseThrow { ExceptionUtil.notFound("Contact", id) }
+            val entity = this.find(id).orElseThrow { ExceptionUtil.notFound(Constants.Swagger.CONTACT, id) }
             entity.isDeleted = true
             this.contactRepository.save(entity)
         }
@@ -40,6 +42,6 @@ class ContactServiceBean @Autowired constructor(
     }
 
     override fun validate(entity: Contact) {
-        TODO("Not yet implemented")
+        entity.email?.let { ResourceUtil.isEmailValid(it) }
     }
 }
