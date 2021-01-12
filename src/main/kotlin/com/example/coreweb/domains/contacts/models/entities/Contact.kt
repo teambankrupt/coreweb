@@ -6,7 +6,7 @@ import javax.persistence.Entity
 import javax.persistence.Table
 
 @Entity
-@Table(name = "contacts")
+@Table(name = "contacts", schema = "core_web")
 class Contact : BaseEntity() {
 
     @Column(nullable = false)
