@@ -1,0 +1,56 @@
+package com.example.coreweb.domains.locationtypes.services.beans
+
+import com.example.coreweb.domains.locationtypes.models.entities.LocationType
+import com.example.coreweb.domains.locationtypes.repositories.LocationTypeRepository
+import com.example.coreweb.domains.locationtypes.services.LocationTypeService
+import com.example.common.utils.ExceptionUtil
+import com.example.coreweb.utils.PageAttr
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.stereotype.Service
+import java.util.*
+import com.example.coreweb.domains.base.models.enums.SortByFields
+import org.springframework.data.domain.Sort
+
+@Service
+class LocationTypeServiceBean @Autowired constructor(
+        private val locationTypeRepository: LocationTypeRepository
+) : LocationTypeService {
+
+    override fun search(query: String, page: Int, size: Int, sortBy: SortByFields, direction: Sort.Direction): Page<LocationType> {
+        return this.locationTypeRepository.search(query, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
+    }
+
+    override fun save(entity: LocationType): LocationType {
+        this.validate(entity)
+        return this.locationTypeRepository.save(entity)
+    }
+
+    override fun find(id: Long): Optional<LocationType> {
+        return this.locationTypeRepository.find(id)
+    }
+
+    override fun delete(id: Long, softDelete: Boolean) {
+        if (softDelete) {
+            val entity = this.find(id).orElseThrow { ExceptionUtil.notFound("LocationType", id) }
+            entity.isDeleted = true
+            this.locationTypeRepository.save(entity)
+        }
+        this.locationTypeRepository.deleteById(id)
+    }
+
+    override fun validate(entity: LocationType) {
+        val locationType = this.locationTypeRepository.findByCodeIncludingDeleted(entity.code)
+        if (locationType.isPresent) {
+            if (entity.isNew)
+                throw ExceptionUtil.exists("Location Type already exists with code: ${entity.code}")
+            else {
+                /*
+             check if updating entity is different from existing entity, if it's different, that means
+             this entity code is changed, but the changed code belongs another existing entity, which is not allowed
+             */
+                if (entity.id != locationType.get().id) throw ExceptionUtil.exists("Another location has same code that you've entered.")
+            }
+        }
+    }
+}
