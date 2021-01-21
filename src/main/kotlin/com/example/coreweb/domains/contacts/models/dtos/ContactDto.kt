@@ -21,7 +21,4 @@ class ContactDto : BaseDto() {
     @Email
     @ApiModelProperty(example = "alom@gmal.com")
     var email: String? = null
-
-    @ApiModelProperty(example = "Middle Badda")
-    var address: String? = null
 }

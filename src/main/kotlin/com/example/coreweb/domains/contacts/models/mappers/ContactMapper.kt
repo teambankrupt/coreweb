@@ -1,4 +1,4 @@
-package com.example.app.domains.contact.models.mappers
+package com.example.coreweb.domains.contacts.models.mappers
 
 import com.example.coreweb.domains.contacts.models.dtos.ContactDto
 import com.example.coreweb.domains.contacts.models.entities.Contact
@@ -18,7 +18,6 @@ class ContactMapper : BaseMapper<Contact, ContactDto> {
             name = entity.name
             phone = entity.phone
             email = entity.email
-            address = entity.address
         }
         return dto
     }
@@ -29,7 +28,6 @@ class ContactMapper : BaseMapper<Contact, ContactDto> {
             name = dto.name
             phone = dto.phone
             email = dto.email
-            address = dto.address
         }
         return entity
     }
