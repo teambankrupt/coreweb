@@ -4,6 +4,7 @@ import com.example.coreweb.domains.contacts.models.entities.Contact
 import com.example.coreweb.domains.contacts.repositories.ContactRepository
 import com.example.coreweb.domains.contacts.services.ContactService
 import com.example.common.utils.ExceptionUtil
+import com.example.common.utils.Validator
 import com.example.coreweb.commons.Constants
 import com.example.coreweb.commons.ResourceUtil
 import com.example.coreweb.utils.PageAttr
@@ -42,6 +43,6 @@ class ContactServiceBean @Autowired constructor(
     }
 
     override fun validate(entity: Contact) {
-        entity.email?.let { ResourceUtil.isEmailValid(it) }
+        entity.email?.let { Validator.isValidEmail(it) }
     }
 }
