@@ -12,7 +12,7 @@ import java.util.*
 @Repository
 interface LocationTypeRepository : JpaRepository<LocationType, Long> {
 
-    @Query("SELECT e FROM LocationType e WHERE (:q IS NULL OR e.createdBy LIKE %:q%) AND e.deleted=FALSE")
+    @Query("SELECT e FROM LocationType e WHERE (:q IS NULL OR LOWER(e.label) LIKE %:q%) AND e.deleted=FALSE")
     fun search(@Param("q") query: String, pageable: Pageable): Page<LocationType>
 
     @Query("SELECT e FROM LocationType e WHERE e.id=:id AND e.deleted=FALSE")

@@ -1,0 +1,23 @@
+<html layout:decorate="dashboard" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<div layout:fragment="main_content">
+
+    <div class="card">
+        <div class="header">
+            <h2>
+                Location Details <small>Description text here...</small>
+            </h2>
+            <div class="pull-right">
+                <a th:href="@{/admin/locations/create}" class="btn btn-primary">Create New</a>
+                <a th:href="@{/admin/locations/}+${location?.id}+@{/update}" class="btn btn-primary">Edit</a>
+                <a th:href="@{/admin/locations}" class="btn btn-primary">All Locations</a>
+            </div>
+        </div>
+
+        <div class="body">
+            Locations(<span th:text="${location?.id}"></span>) details goes here
+        </div>
+
+    </div>
+
+</div>
+</html>

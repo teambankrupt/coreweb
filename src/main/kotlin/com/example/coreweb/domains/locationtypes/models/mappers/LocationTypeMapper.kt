@@ -33,7 +33,7 @@ class LocationTypeMapper @Autowired constructor(
         entity.label = dto.label
         entity.code = dto.code
         entity.description = dto.description
-        entity.parent = dto.parentId?.let { this.locationTypeRepository.find(it).orElseThrow { ExceptionUtil.notFound("Parent", dto.parentId!!) } }
+        entity.parent = dto.parentId?.let { this.locationTypeRepository.find(it).orElseThrow { ExceptionUtil.notFound("Parent",it) } }
 
         return entity
     }

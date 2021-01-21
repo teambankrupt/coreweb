@@ -68,6 +68,22 @@ class Route {
             const val FIND_LOCATIONTYPE = "$API$VERSION/location-types/{id}"
             const val UPDATE_LOCATIONTYPE = "$API$VERSION/location-types/{id}"
             const val DELETE_LOCATIONTYPE = "$API$VERSION/location-types/{id}"
+
+            // Locations (Admin)
+            const val ADMIN_SEARCH_LOCATIONS = "$ADMIN/locations"
+            const val ADMIN_CREATE_LOCATION_PAGE = "$ADMIN/locations/create"
+            const val ADMIN_CREATE_LOCATION = "$ADMIN/locations"
+            const val ADMIN_FIND_LOCATION = "$ADMIN/locations/{id}"
+            const val ADMIN_UPDATE_LOCATION_PAGE = "$ADMIN/locations/{id}/update"
+            const val ADMIN_UPDATE_LOCATION = "$ADMIN/locations/{id}"
+            const val ADMIN_DELETE_LOCATION = "$ADMIN/locations/{id}/delete"
+
+            // Locations
+            const val SEARCH_LOCATIONS = "$API$VERSION/location-types/{type_id}/locations"
+            const val CREATE_LOCATION = "$API$VERSION/locations"
+            const val FIND_LOCATION = "$API$VERSION/locations/{id}"
+            const val UPDATE_LOCATION = "$API$VERSION/locations/{id}"
+            const val DELETE_LOCATION = "$API$VERSION/locations/{id}"
         }
     }
 }

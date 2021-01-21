@@ -18,7 +18,7 @@ class LocationTypeServiceBean @Autowired constructor(
 ) : LocationTypeService {
 
     override fun search(query: String, page: Int, size: Int, sortBy: SortByFields, direction: Sort.Direction): Page<LocationType> {
-        return this.locationTypeRepository.search(query, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
+        return this.locationTypeRepository.search(query.toLowerCase(), PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
     }
 
     override fun save(entity: LocationType): LocationType {
