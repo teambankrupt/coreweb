@@ -1,7 +1,7 @@
 package com.example.coreweb.domains.contacts.controllers.web
 
 import com.example.coreweb.domains.contacts.models.dtos.ContactDto
-import com.example.app.domains.contact.models.mappers.ContactMapper
+import com.example.coreweb.domains.contacts.models.mappers.ContactMapper
 import com.example.coreweb.domains.contacts.services.ContactService
 import com.example.common.utils.ExceptionUtil
 import com.example.coreweb.domains.base.controllers.CrudWebControllerV2

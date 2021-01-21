@@ -16,6 +16,4 @@ class Contact : BaseEntity() {
     lateinit var phone: String
 
     var email: String? = null
-
-    var address: String? = null
 }
