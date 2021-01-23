@@ -11,10 +11,10 @@ open class BaseDto : Serializable {
     var id: Long? = null
 
     @JsonProperty(value = "created_at")
-    @ApiModelProperty(readOnly = true, example = "1533115869000", notes = "Date when this entity was first created.")
+    @ApiModelProperty(readOnly = true, example = "2020-09-13T03:48:36Z", notes = "Date when this entity was first created. ( Format: yyyy-MM-dd'T'HH:mm:ss.SSS'Z' )")
     lateinit var createdAt: Instant
 
     @JsonProperty("updated_at")
-    @ApiModelProperty(readOnly = true, example = "1596274269000", notes = "Date when this entity was last updated")
+    @ApiModelProperty(readOnly = true,example = "2020-09-13T03:48:36Z", notes = "Date when this entity was last updated. ( Format: yyyy-MM-dd'T'HH:mm:ss.SSS'Z' )")
     lateinit var updatedAt: Instant
 }
