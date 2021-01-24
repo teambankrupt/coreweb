@@ -13,15 +13,15 @@ import java.util.*
 @Repository
 interface LocationRepository : JpaRepository<Location, Long> {
 
-    @Query("SELECT e FROM Location e WHERE (:q IS NULL OR LOWER(e.label) LIKE %:q%) AND (:typeId IS NULL OR e.type.id=:typeId) AND e.deleted=FALSE")
+    @Query("SELECT e FROM Location e WHERE (:q IS NULL OR LOWER(e.label) LIKE %:q%) AND (:typeId IS NULL OR e.type.id=:typeId) AND e.deleted=FALSE AND e.type.deleted=FALSE")
     fun search(@Param("q") query: String, @Param("typeId") typeId: Long?, pageable: Pageable): Page<Location>
 
-    @Query("SELECT e FROM Location e WHERE e.id=:id AND e.deleted=FALSE")
+    @Query("SELECT e FROM Location e WHERE e.id=:id AND e.deleted=FALSE AND e.type.deleted=FALSE")
     fun find(@Param("id") id: Long): Optional<Location>
 
-    @Query("SELECT e FROM Location e WHERE e.code=:code AND e.deleted=FALSE")
+    @Query("SELECT e FROM Location e WHERE e.code=:code AND e.deleted=FALSE AND e.type.deleted=FALSE")
     fun findByCode(@Param("code") code: String): Optional<Location>
 
-    @Query("SELECT e FROM Location e WHERE LOWER(e.code) =LOWER(:code) ")
+    @Query("SELECT e FROM Location e WHERE LOWER(e.code) =LOWER(:code)")
     fun findByCodeIncludingDeleted(@Param("code") code: String): Optional<Location>
 }
