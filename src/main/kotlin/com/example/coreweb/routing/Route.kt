@@ -80,6 +80,7 @@ class Route {
 
             // Locations
             const val SEARCH_LOCATIONS = "$API$VERSION/location-types/{type_id}/locations"
+            const val SEARCH_CHILD_LOCATIONS = "$API$VERSION/locations/child-locations"
             const val CREATE_LOCATION = "$API$VERSION/locations"
             const val FIND_LOCATION = "$API$VERSION/locations/{id}"
             const val UPDATE_LOCATION = "$API$VERSION/locations/{id}"

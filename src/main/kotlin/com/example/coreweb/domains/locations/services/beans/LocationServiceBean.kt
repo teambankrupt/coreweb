@@ -21,6 +21,12 @@ class LocationServiceBean @Autowired constructor(
         return this.locationRepository.search(query.toLowerCase(), typeId, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
     }
 
+    override fun searchByParent(parentId: Long?, query: String, page: Int, size: Int, sortBy: SortByFields, direction: Sort.Direction): Page<Location> {
+        return if (parentId != null)
+            this.locationRepository.searchByParent(parentId, query, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
+        else this.locationRepository.searchRootLocations(query, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
+    }
+
     override fun search(query: String, page: Int, size: Int, sortBy: SortByFields, direction: Sort.Direction): Page<Location> {
         return this.locationRepository.search(query, null, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
     }
