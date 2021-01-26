@@ -17,14 +17,8 @@ class Location : BaseEntity() {
     @Column(name = "description")
     var description: String? = null
 
-    @Column(name = "latitude", nullable = false)
-    var latitude: Double = 0.0
-
-    @Column(name = "longitude", nullable = false)
-    var longitude: Double = 0.0
-
-    @Column(name = "altitude", nullable = false)
-    var altitude: Double = 0.0
+    @Embedded
+    lateinit var coorodinate: Coordinate
 
     @ManyToOne
     @JoinColumn(name = "type_id", nullable = false)

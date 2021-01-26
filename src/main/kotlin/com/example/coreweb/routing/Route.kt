@@ -84,6 +84,22 @@ class Route {
             const val FIND_LOCATION = "$API$VERSION/locations/{id}"
             const val UPDATE_LOCATION = "$API$VERSION/locations/{id}"
             const val DELETE_LOCATION = "$API$VERSION/locations/{id}"
+
+            // GlobalAddresss (Admin)
+            const val ADMIN_SEARCH_GLOBALADDRESSS = "$ADMIN/global-addresss"
+            const val ADMIN_CREATE_GLOBALADDRESS_PAGE = "$ADMIN/global-addresss/create"
+            const val ADMIN_CREATE_GLOBALADDRESS = "$ADMIN/global-addresss"
+            const val ADMIN_FIND_GLOBALADDRESS = "$ADMIN/global-addresss/{id}"
+            const val ADMIN_UPDATE_GLOBALADDRESS_PAGE = "$ADMIN/global-addresss/{id}/update"
+            const val ADMIN_UPDATE_GLOBALADDRESS = "$ADMIN/global-addresss/{id}"
+            const val ADMIN_DELETE_GLOBALADDRESS = "$ADMIN/global-addresss/{id}/delete"
+
+            // GlobalAddresss
+            const val SEARCH_GLOBALADDRESSS = "$API$VERSION/global-addresss"
+            const val CREATE_GLOBALADDRESS = "$API$VERSION/global-addresss"
+            const val FIND_GLOBALADDRESS = "$API$VERSION/global-addresss/{id}"
+            const val UPDATE_GLOBALADDRESS = "$API$VERSION/global-addresss/{id}"
+            const val DELETE_GLOBALADDRESS = "$API$VERSION/global-addresss/{id}"
         }
     }
 }

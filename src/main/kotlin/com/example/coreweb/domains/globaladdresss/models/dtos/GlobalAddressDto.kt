@@ -1,28 +1,25 @@
-package com.example.coreweb.domains.locations.models.dtos
+package com.example.coreweb.domains.globaladdresss.models.dtos
 
 import com.example.coreweb.domains.base.models.dtos.BaseDto
-import com.example.coreweb.domains.locationtypes.models.dtos.LocationTypeDto
+import com.example.coreweb.domains.locations.models.dtos.LocationDto
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.annotations.ApiModelProperty
+import java.util.*
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
-class LocationDto : BaseDto() {
+class GlobalAddressDto : BaseDto() {
 
     @NotBlank
-    @ApiModelProperty(required = true)
-    @JsonProperty("label")
-    lateinit var label: String
+    @JsonProperty("address_line_one")
+    lateinit var addressLineOne: String
 
-    @NotBlank
-    @ApiModelProperty(required = true)
-    @JsonProperty("code")
-    lateinit var code: String
+    @JsonProperty("address_line_two")
+    var addressLineTwo: String? = null
 
-    @ApiModelProperty(required = false)
-    @JsonProperty("description")
-    var description: String? = null
+    @JsonProperty("zip_code")
+    var zipCode: String? = null
 
     @NotNull
     @ApiModelProperty(required = true)
@@ -41,14 +38,14 @@ class LocationDto : BaseDto() {
 
     @NotNull
     @Min(1)
-    @JsonProperty("type_id")
-    var typeId: Long = 0
+    @JsonProperty("location_id")
+    var locationId: Long = 0
 
-    @JsonProperty("parent_id")
-    var parentId: Long? = null
 
-    // READ-ONLY
+    // READONLY ITEMS
+
+    @JsonProperty("locations")
     @ApiModelProperty(readOnly = true)
-    @JsonProperty("location_type")
-    var typeDto: LocationTypeDto? = null
+    var locations: SortedMap<Int, LocationDto>? = null
+
 }

@@ -14,6 +14,8 @@ class LocationType : BaseEntity() {
     @Column(name = "code", nullable = false, unique = true)
     lateinit var code: String
 
+    @Column(name = "level", nullable = false)
+    var level: Int = 0
 
     @Column(name = "description", nullable = false)
     lateinit var description: String
