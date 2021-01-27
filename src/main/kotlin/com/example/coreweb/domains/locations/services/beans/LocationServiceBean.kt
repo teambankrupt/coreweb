@@ -85,7 +85,7 @@ class LocationServiceBean @Autowired constructor(
         }
 
         // check if entity is a parent of it's own
-        if (entity.isNew) {
+        if (!entity.isNew) {
             if (entity.parent?.id == entity.id)
                 throw ExceptionUtil.forbidden("${entity.label} can not be it's own parent.")
         }
