@@ -47,8 +47,23 @@ class LocationDto : BaseDto() {
     @JsonProperty("parent_id")
     var parentId: Long? = null
 
-    // READ-ONLY
+    /*
+    READONLY PROPERTIES
+     */
+
     @ApiModelProperty(readOnly = true)
     @JsonProperty("location_type")
     var typeDto: LocationTypeDto? = null
+
+    @ApiModelProperty(readOnly = true)
+    @JsonProperty("path")
+    var path: String? = null
+
+    @ApiModelProperty(readOnly = true)
+    @JsonProperty("absolute_path")
+    var absolutePath: String? = null
+
+    @ApiModelProperty(readOnly = true)
+    @JsonProperty("root_id")
+    var rootId: Long? = null
 }

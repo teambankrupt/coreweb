@@ -33,9 +33,12 @@ class LocationMapper @Autowired constructor(
         dto.altitude = entity.coorodinate.altitude
 
         dto.typeId = entity.type.id
-        dto.typeDto = this.locationTypeMapper.map(entity.type)
-
         dto.parentId = entity.parent?.id
+
+        dto.typeDto = this.locationTypeMapper.map(entity.type)
+        dto.path = entity.path
+        dto.absolutePath = entity.getAbsolutePath()
+        dto.rootId = entity.getRootId()
 
         return dto
     }

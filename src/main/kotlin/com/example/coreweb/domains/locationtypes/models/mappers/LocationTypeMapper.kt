@@ -26,6 +26,10 @@ class LocationTypeMapper @Autowired constructor(
             this.level = entity.level
             this.description = entity.description
             this.parentId = entity.parent?.id
+
+            this.path = entity.path
+            this.absolutePath = entity.getAbsolutePath()
+            this.rootId =entity.getRootId()
         }
 
         return dto

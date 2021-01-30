@@ -32,7 +32,7 @@ class LocationTypeServiceBean @Autowired constructor(
 
     override fun delete(id: Long, softDelete: Boolean) {
         if (this.locationTypeRepository.childCount(id) > 0)
-            throw ExceptionUtil.forbidden("Location has children, so can't be deleted.")
+            throw ExceptionUtil.forbidden("LocationType with children can't be deleted!")
 
         if (softDelete) {
             val entity = this.find(id).orElseThrow { ExceptionUtil.notFound("LocationType", id) }
