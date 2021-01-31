@@ -24,4 +24,6 @@ interface LocationTypeRepository : JpaRepository<LocationType, Long> {
     @Query("SELECT e FROM LocationType e WHERE LOWER(e.code) =LOWER(:code) ")
     fun findByCodeIncludingDeleted(@Param("code") code: String): Optional<LocationType>
 
+    @Query("SELECT COUNT(l) FROM LocationType l WHERE l.parent.id=:locationTypeId")
+    fun childCount(@Param("locationTypeId") locationTypeId: Long): Long
 }

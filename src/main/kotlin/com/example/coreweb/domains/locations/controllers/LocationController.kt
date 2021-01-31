@@ -43,6 +43,17 @@ class LocationController @Autowired constructor(
         return ResponseEntity.ok(entities.map { this.locationMapper.map(it) })
     }
 
+    @GetMapping(Route.V1.SEARCH_CHILD_LOCATIONS)
+    fun searchChildLocations(@RequestParam("parent_id", required = false) parentId: Long?,
+                             @RequestParam("q", defaultValue = "") query: String,
+                             @RequestParam("page", defaultValue = "0") page: Int,
+                             @RequestParam("size", defaultValue = "10") size: Int,
+                             @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
+                             @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction): ResponseEntity<Page<LocationDto>> {
+        val entities = this.locationService.searchByParent(parentId, query, page, size, sortBy, direction)
+        return ResponseEntity.ok(entities.map { this.locationMapper.map(it) })
+    }
+
     @GetMapping(Route.V1.FIND_LOCATION)
     override fun find(@PathVariable("id") id: Long): ResponseEntity<LocationDto> {
         val entity = this.locationService.find(id).orElseThrow { ExceptionUtil.notFound("Location", id) }

@@ -4,7 +4,9 @@ import com.example.common.utils.ExceptionUtil
 import com.example.coreweb.domains.locations.models.dtos.LocationDto
 import com.example.coreweb.domains.locations.models.entities.Location
 import com.example.coreweb.domains.base.models.mappers.BaseMapper
+import com.example.coreweb.domains.locations.models.entities.Coordinate
 import com.example.coreweb.domains.locations.repositories.LocationRepository
+import com.example.coreweb.domains.locationtypes.models.mappers.LocationTypeMapper
 import com.example.coreweb.domains.locationtypes.repositories.LocationTypeRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -12,7 +14,8 @@ import org.springframework.stereotype.Component
 @Component
 class LocationMapper @Autowired constructor(
         private val locationTypeRepository: LocationTypeRepository,
-        private val locationRepository: LocationRepository
+        private val locationRepository: LocationRepository,
+        private val locationTypeMapper: LocationTypeMapper
 ) : BaseMapper<Location, LocationDto> {
 
     override fun map(entity: Location): LocationDto {
@@ -24,12 +27,18 @@ class LocationMapper @Autowired constructor(
         dto.label = entity.label
         dto.code = entity.code
         dto.description = entity.description
-        dto.latitude = entity.latitude
-        dto.longitude = entity.longitude
-        dto.altitude = entity.altitude
+
+        dto.latitude = entity.coorodinate.latitude
+        dto.longitude = entity.coorodinate.longitude
+        dto.altitude = entity.coorodinate.altitude
 
         dto.typeId = entity.type.id
         dto.parentId = entity.parent?.id
+
+        dto.typeDto = this.locationTypeMapper.map(entity.type)
+        dto.path = entity.path
+        dto.absolutePath = entity.getAbsolutePath()
+        dto.rootId = entity.getRootId()
 
         return dto
     }
@@ -40,9 +49,8 @@ class LocationMapper @Autowired constructor(
         entity.label = dto.label
         entity.code = dto.code
         entity.description = dto.description
-        entity.latitude = dto.latitude
-        entity.longitude = dto.longitude
-        entity.altitude = dto.altitude
+
+        entity.coorodinate = Coordinate(dto.latitude, dto.longitude, dto.altitude)
 
         entity.type = this.locationTypeRepository.find(dto.typeId).orElseThrow { ExceptionUtil.notFound("LocationType", dto.typeId) }
         entity.parent = dto.parentId?.let { this.locationRepository.find(it).orElseThrow { ExceptionUtil.notFound("Parent", it) } }

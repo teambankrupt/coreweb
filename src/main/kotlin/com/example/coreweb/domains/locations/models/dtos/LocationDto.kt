@@ -1,6 +1,7 @@
 package com.example.coreweb.domains.locations.models.dtos
 
 import com.example.coreweb.domains.base.models.dtos.BaseDto
+import com.example.coreweb.domains.locationtypes.models.dtos.LocationTypeDto
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.annotations.ApiModelProperty
 import javax.validation.constraints.Min
@@ -46,4 +47,23 @@ class LocationDto : BaseDto() {
     @JsonProperty("parent_id")
     var parentId: Long? = null
 
+    /*
+    READONLY PROPERTIES
+     */
+
+    @ApiModelProperty(readOnly = true)
+    @JsonProperty("location_type")
+    var typeDto: LocationTypeDto? = null
+
+    @ApiModelProperty(readOnly = true)
+    @JsonProperty("path")
+    var path: String? = null
+
+    @ApiModelProperty(readOnly = true)
+    @JsonProperty("absolute_path")
+    var absolutePath: String? = null
+
+    @ApiModelProperty(readOnly = true)
+    @JsonProperty("root_id")
+    var rootId: Long? = null
 }

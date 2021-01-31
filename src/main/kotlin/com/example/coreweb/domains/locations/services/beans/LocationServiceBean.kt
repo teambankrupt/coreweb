@@ -21,6 +21,12 @@ class LocationServiceBean @Autowired constructor(
         return this.locationRepository.search(query.toLowerCase(), typeId, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
     }
 
+    override fun searchByParent(parentId: Long?, query: String, page: Int, size: Int, sortBy: SortByFields, direction: Sort.Direction): Page<Location> {
+        return if (parentId != null)
+            this.locationRepository.searchByParent(parentId, query, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
+        else this.locationRepository.searchRootLocations(query, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
+    }
+
     override fun search(query: String, page: Int, size: Int, sortBy: SortByFields, direction: Sort.Direction): Page<Location> {
         return this.locationRepository.search(query, null, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
     }
@@ -35,6 +41,9 @@ class LocationServiceBean @Autowired constructor(
     }
 
     override fun delete(id: Long, softDelete: Boolean) {
+        if (this.locationRepository.childCount(id) > 0)
+            throw ExceptionUtil.forbidden("Location with children can't be deleted!")
+
         if (softDelete) {
             val entity = this.find(id).orElseThrow { ExceptionUtil.notFound("Location", id) }
             entity.isDeleted = true
@@ -78,5 +87,10 @@ class LocationServiceBean @Autowired constructor(
                 throw ExceptionUtil.invalid("If Location has a parent, then parent LocationType must match child entity LocationType parent")
         }
 
+        // check if entity is a parent of it's own
+        if (!entity.isNew) {
+            if (entity.parent?.id == entity.id)
+                throw ExceptionUtil.forbidden("${entity.label} can not be it's own parent.")
+        }
     }
 }
