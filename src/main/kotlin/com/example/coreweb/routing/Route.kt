@@ -101,26 +101,6 @@ class Route {
             const val UPDATE_LOCATION = "$API$VERSION/locations/{id}"
             const val DELETE_LOCATION = "$API$VERSION/locations/{id}"
 
-            /*
-            Contact API's
-             */
-
-            // Contacts
-            const val SEARCH_CONTACTS = "$API$VERSION/contacts"
-            const val CREATE_CONTACT = "$API$VERSION/contacts"
-            const val FIND_CONTACT = "$API$VERSION/contacts/{id}"
-            const val UPDATE_CONTACT = "$API$VERSION/contacts/{id}"
-            const val DELETE_CONTACT = "$API$VERSION/contacts/{id}"
-
-            // Contacts (Admin)
-            const val ADMIN_SEARCH_CONTACTS = "$ADMIN/contacts"
-            const val ADMIN_CREATE_CONTACT_PAGE = "$ADMIN/contacts/create"
-            const val ADMIN_CREATE_CONTACT = "$ADMIN/contacts"
-            const val ADMIN_FIND_CONTACT = "$ADMIN/contacts/{id}"
-            const val ADMIN_UPDATE_CONTACT_PAGE = "$ADMIN/contacts/{id}/update"
-            const val ADMIN_UPDATE_CONTACT = "$ADMIN/contacts/{id}"
-            const val ADMIN_DELETE_CONTACT = "$ADMIN/contacts/{id}/delete"
-
         }
     }
 }
