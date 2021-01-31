@@ -1,0 +1,33 @@
+<table class="table table-hover table-condensed table-striped">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Created At</th>
+        <th>Updated At</th>
+        <th>Details</th>
+        <th>Update</th>
+        <th>Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="location: ${locations}">
+        <td><a th:href="@{/admin/locations/}+${location?.id}" th:text="${location?.id}"></a></td>
+        <td th:text="${location?.createdAt}"></td>
+        <td th:text="${location?.updatedAt}"></td>
+        <td>
+            <a class="btn btn-primary"
+               th:href="@{/admin/locations/}+${location?.id}">Details</a>
+        </td>
+        <td>
+            <a class="btn btn-warning"
+               th:href="@{/admin/locations/}+${location?.id}+@{/update}">Update</a>
+        </td>
+        <td>
+            <form method="post" th:action="@{/admin/locations/}+${location?.id}+@{/delete}"
+                  onclick="return confirm('Are you sure?')">
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
