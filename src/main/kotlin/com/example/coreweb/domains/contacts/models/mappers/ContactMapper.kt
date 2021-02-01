@@ -23,7 +23,7 @@ class ContactMapper @Autowired constructor(
             name = entity.name
             phone = entity.phone
             email = entity.email
-            address = entity.address?.mapValues { it.value.id }?.toMutableMap()
+            address = entity.address?.map { it.id }?.toMutableList()
         }
         return dto
     }
@@ -34,9 +34,9 @@ class ContactMapper @Autowired constructor(
             name = dto.name
             phone = dto.phone
             email = dto.email
-            address = dto.address?.mapValues {
-                globalAddressService.find(it.value).orElseThrow { ExceptionUtil.notFound("Global Address", it.value) }
-            }?.toMutableMap()
+            address = dto.address?.map {
+                globalAddressService.find(it).orElseThrow { ExceptionUtil.notFound("Global Address", it) }
+            }?.toMutableList()
         }
         return entity
     }

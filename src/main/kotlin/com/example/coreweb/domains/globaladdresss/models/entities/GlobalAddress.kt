@@ -18,6 +18,8 @@ class GlobalAddress : BaseEntity() {
     @Column(name = "zip_code")
     var zipCode: String? = null
 
+    lateinit var title: String
+
     @Embedded
     lateinit var coordinate: Coordinate
 

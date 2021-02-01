@@ -26,5 +26,5 @@ class ContactDto : BaseDto() {
     @ApiModelProperty(example = "alom@gmal.com")
     var email: String? = null
 
-    var address: MutableMap<String, Long>? = null
+    var address: MutableList<Long>? = null
 }
