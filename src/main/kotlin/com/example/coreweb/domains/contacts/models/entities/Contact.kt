@@ -2,6 +2,8 @@ package com.example.coreweb.domains.contacts.models.entities
 
 import com.example.coreweb.domains.base.entities.BaseEntity
 import com.example.coreweb.domains.globaladdresss.models.entities.GlobalAddress
+import org.hibernate.annotations.LazyCollection
+import org.hibernate.annotations.LazyCollectionOption
 import javax.persistence.*
 
 
@@ -19,10 +21,11 @@ class Contact : BaseEntity() {
 
     @OneToMany(cascade = [CascadeType.ALL])
     @JoinTable(
-        name = "contact_addresses",
+        name = "contact_addresses", schema = "core_web",
         joinColumns = [JoinColumn(name = "contact_address_id", referencedColumnName = "id")],
         inverseJoinColumns = [JoinColumn(name = "global_address_id", referencedColumnName = "id")]
     )
-    @MapKey(name = "address_title")
+    //@ElementCollection
+    @LazyCollection(LazyCollectionOption.FALSE)
     var address: MutableMap<String, GlobalAddress>? = null
 }

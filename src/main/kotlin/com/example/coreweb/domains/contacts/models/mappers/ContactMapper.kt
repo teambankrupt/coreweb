@@ -1,12 +1,17 @@
 package com.example.coreweb.domains.contacts.models.mappers
 
+import com.example.common.utils.ExceptionUtil
 import com.example.coreweb.domains.contacts.models.dtos.ContactDto
 import com.example.coreweb.domains.contacts.models.entities.Contact
 import com.example.coreweb.domains.base.models.mappers.BaseMapper
+import com.example.coreweb.domains.globaladdresss.services.GlobalAddressService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class ContactMapper : BaseMapper<Contact, ContactDto> {
+class ContactMapper @Autowired constructor(
+    private val globalAddressService: GlobalAddressService
+) : BaseMapper<Contact, ContactDto> {
 
     override fun map(entity: Contact): ContactDto {
         val dto = ContactDto()
@@ -18,7 +23,7 @@ class ContactMapper : BaseMapper<Contact, ContactDto> {
             name = entity.name
             phone = entity.phone
             email = entity.email
-            address = entity.address
+            address = entity.address?.mapValues { it.value.id }?.toMutableMap()
         }
         return dto
     }
@@ -29,7 +34,9 @@ class ContactMapper : BaseMapper<Contact, ContactDto> {
             name = dto.name
             phone = dto.phone
             email = dto.email
-            address = dto.address
+            address = dto.address?.mapValues {
+                globalAddressService.find(it.value).orElseThrow { ExceptionUtil.notFound("Global Address", it.value) }
+            }?.toMutableMap()
         }
         return entity
     }
