@@ -45,6 +45,8 @@ class Constants {
             const val PRIVILEGES_ADMIN_API_DETAILS = "Admin can manipulate privileges for roles with these api's"
             const val RELOAD_CONTEXT = "Reload Application Context/Restart App"
             const val CHAT_ROOMS_DETAILS = "Sample Chat Rooms for messaging feature"
+
+            const val CONTACT = "Contacts"
         }
     }
 

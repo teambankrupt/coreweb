@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class GlobalAddressMapper @Autowired constructor(
-        private val locationRepository: LocationRepository,
-        private val locationMapper: LocationMapper
+    private val locationRepository: LocationRepository,
+    private val locationMapper: LocationMapper
 ) : BaseMapper<GlobalAddress, GlobalAddressDto> {
 
     override fun map(entity: GlobalAddress): GlobalAddressDto {
@@ -29,6 +29,7 @@ class GlobalAddressMapper @Autowired constructor(
             this.addressLineOne = entity.addressLineOne
             this.addressLineTwo = entity.addressLineTwo
             this.zipCode = entity.zipCode
+            this.title = entity.title
             this.latitude = entity.coordinate.latitude
             this.longitude = entity.coordinate.longitude
             this.altitude = entity.coordinate.altitude
@@ -61,8 +62,10 @@ class GlobalAddressMapper @Autowired constructor(
             this.addressLineOne = dto.addressLineOne
             this.addressLineTwo = dto.addressLineTwo
             this.zipCode = dto.zipCode
+            this.title = dto.zipCode ?: "Home"
             this.coordinate = Coordinate(dto.latitude, dto.longitude, dto.altitude)
-            this.location = locationRepository.find(dto.locationId).orElseThrow { ExceptionUtil.notFound("Location", dto.locationId) }
+            this.location = locationRepository.find(dto.locationId)
+                .orElseThrow { ExceptionUtil.notFound("Location", dto.locationId) }
         }
 
         return entity

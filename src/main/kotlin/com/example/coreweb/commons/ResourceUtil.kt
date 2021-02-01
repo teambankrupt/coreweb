@@ -8,6 +8,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import java.io.File
 import java.io.FileInputStream
+import java.util.regex.Pattern
 
 class ResourceUtil private constructor() {
 
@@ -28,7 +29,5 @@ class ResourceUtil private constructor() {
                     .contentType(MediaType.parseMediaType("application/octet-stream"))
                     .body(resource)
         }
-
     }
-
 }

@@ -21,6 +21,8 @@ class GlobalAddressDto : BaseDto() {
     @JsonProperty("zip_code")
     var zipCode: String? = null
 
+    var title: String? = null
+
     @NotNull
     @ApiModelProperty(required = true)
     @JsonProperty("latitude")
