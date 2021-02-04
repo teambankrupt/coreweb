@@ -22,38 +22,33 @@ open class BaseExHandler @Autowired constructor(
 
     @ExceptionHandler(NotFoundException::class)
     fun handleNotFoundException(ex: NotFoundException): ResponseEntity<ErrorResponse> {
-        val response = if (debug()) ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                HttpStatus.NOT_FOUND.name,
-                ex.message ?: "",
-                ex
-        ) else ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                HttpStatus.NOT_FOUND.name,
-                ex.message ?: "")
-        return ResponseEntity.badRequest().body(response)
+        return buildResponse(HttpStatus.NOT_FOUND, ex)
     }
 
     @ExceptionHandler(ForbiddenException::class)
     fun handleForbiddenException(ex: ForbiddenException): ResponseEntity<ErrorResponse> {
-        val response = ErrorResponse(
-                HttpStatus.FORBIDDEN.value(),
-                HttpStatus.FORBIDDEN.name,
-                ex.message ?: "",
-                ex
-        )
-        return ResponseEntity.badRequest().body(response)
+        return buildResponse(HttpStatus.FORBIDDEN, ex)
     }
 
     @ExceptionHandler(InvalidException::class)
     fun handleInvalidException(ex: InvalidException): ResponseEntity<ErrorResponse> {
-        val response = ErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.name,
+        return buildResponse(HttpStatus.BAD_REQUEST, ex)
+    }
+
+    fun buildResponse(status: HttpStatus, ex: Throwable): ResponseEntity<ErrorResponse> {
+        val response = if (debug()) ErrorResponse(
+                status.value(),
+                status.name,
                 ex.message ?: "",
                 ex
-        )
-        return ResponseEntity.badRequest().body(response)
+        ) else ErrorResponse(
+                status.value(),
+                status.name,
+                ex.message ?: "")
+
+        return ResponseEntity
+                .status(status)
+                .body(response)
     }
 
 }
