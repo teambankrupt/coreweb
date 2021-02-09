@@ -31,12 +31,13 @@ public class MailController {
             @RequestParam(value = "cc", required = false) String[] cc,
             @RequestParam(value = "bcc", required = false) String[] bcc,
             @RequestParam(value = "subject", defaultValue = "Test Email") String subject,
-            @RequestParam(value = "message", defaultValue = "Hi,\n\nEmail is working!!") String message,
-            @RequestParam(value = "files",required = false) MultipartFile[] attachments
+            @RequestParam(value = "msg_body", required = false) String msgBody,
+            @RequestParam(value = "html") boolean html,
+            @RequestParam(value = "files", required = false) MultipartFile[] attachments
     ) {
         this.mailService.send(
                 from, to, cc, bcc,
-                subject, message,
+                subject, msgBody, html,
                 attachments == null ? null : Arrays.stream(attachments).map(multipartFile -> FileIO.convertToFile(multipartFile)).collect(Collectors.toList())
         );
         return ResponseEntity.ok("Email Sent!!");

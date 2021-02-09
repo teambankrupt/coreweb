@@ -32,22 +32,23 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public boolean send(String to, String subject, String message) {
-        return this.send(null, to, null, null, subject, message, null);
+    public boolean send(String to, String subject, String msgBody, boolean html) {
+        return this.send(null, to, null, null, subject, msgBody, html, null);
     }
 
     @Override
-    public boolean send(String to, String subject, String message, List<File> attachments) {
-        return this.send(null, to, null, null, subject, message, attachments);
+    public boolean send(String to, String subject, String msgBody, boolean html, List<File> attachments) {
+        return this.send(null, to, null, null, subject, msgBody, html, attachments);
     }
 
     @Override
-    public boolean send(String from, String to, String[] cc, String[] bcc, String sub, String msgBody, List<File> attachments) {
+    public boolean send(String from, String to, String[] cc, String[] bcc, String subject, String msgBody, boolean html, List<File> attachments) {
         cc = cc == null ? ArrayUtils.toArray() : cc;
         bcc = bcc == null ? ArrayUtils.toArray() : bcc;
 
         this.validateEmails(from, to, cc, bcc);
-        if (sub == null || msgBody == null) throw new RuntimeException("Subject or Email body can not be null!");
+        if (subject == null || msgBody == null)
+            throw new RuntimeException("Subject or Email body must not be null!");
 
         MimeMessage message = javaMailSender.createMimeMessage();
         try {
@@ -57,8 +58,9 @@ public class MailServiceImpl implements MailService {
             helper.setTo(to);
             helper.setCc(cc);
             helper.setBcc(bcc);
-            helper.setSubject(sub);
-            helper.setText(msgBody);
+            helper.setSubject(subject);
+            helper.setText(msgBody, html);
+
             if (attachments != null)
                 for (File a : attachments)
                     helper.addAttachment(a.getName(), new FileSystemResource(a));
@@ -68,7 +70,7 @@ public class MailServiceImpl implements MailService {
             System.out.println(e.toString());
             return false;
         }
-        this.saveLog(to, String.join(",", cc), String.join(",", cc), from, sub, msgBody, attachments == null ? 0 : attachments.size());
+        this.saveLog(to, String.join(",", cc), String.join(",", cc), from, subject, msgBody, attachments == null ? 0 : attachments.size());
         return true;
     }
 
