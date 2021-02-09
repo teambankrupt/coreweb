@@ -2,15 +2,20 @@ package com.example.coreweb.domains.mail.controllers;
 
 
 import com.example.coreweb.domains.mail.services.MailService;
+import com.example.coreweb.utils.FileIO;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @RestController
-@Api(tags = "Email Configs/Services", description = "Email services like testing if email works etc.")
+@Api(tags = "Email Configs/Services")
 public class MailController {
     private final MailService mailService;
 
@@ -20,10 +25,20 @@ public class MailController {
     }
 
     @PostMapping("/api/v1/test-email")
-    private ResponseEntity<String> testEmail(@RequestParam("email") String email,
-                                             @RequestParam(value = "subject", defaultValue = "Test Email") String subject,
-                                             @RequestParam(value = "message", defaultValue = "Hi,\n\nEmail is working!!") String message) {
-        this.mailService.sendEmail(email, subject, message);
+    private ResponseEntity<String> testEmail(
+            @RequestParam(value = "from", required = false) String from,
+            @RequestParam(value = "to") String to,
+            @RequestParam(value = "cc", required = false) String[] cc,
+            @RequestParam(value = "bcc", required = false) String[] bcc,
+            @RequestParam(value = "subject", defaultValue = "Test Email") String subject,
+            @RequestParam(value = "message", defaultValue = "Hi,\n\nEmail is working!!") String message,
+            @RequestParam(value = "files",required = false) MultipartFile[] attachments
+    ) {
+        this.mailService.send(
+                from, to, cc, bcc,
+                subject, message,
+                attachments == null ? null : Arrays.stream(attachments).map(multipartFile -> FileIO.convertToFile(multipartFile)).collect(Collectors.toList())
+        );
         return ResponseEntity.ok("Email Sent!!");
     }
 }

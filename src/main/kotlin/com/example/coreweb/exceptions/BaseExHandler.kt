@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import java.lang.RuntimeException
 
 @ControllerAdvice
 open class BaseExHandler @Autowired constructor(
@@ -33,6 +34,11 @@ open class BaseExHandler @Autowired constructor(
     @ExceptionHandler(InvalidException::class)
     fun handleInvalidException(ex: InvalidException): ResponseEntity<ErrorResponse> {
         return buildResponse(HttpStatus.BAD_REQUEST, ex)
+    }
+
+    @ExceptionHandler(RuntimeException::class)
+    fun handleRuntimeException(ex: RuntimeException): ResponseEntity<ErrorResponse> {
+        return buildResponse(HttpStatus.EXPECTATION_FAILED, ex)
     }
 
     fun buildResponse(status: HttpStatus, ex: Throwable): ResponseEntity<ErrorResponse> {

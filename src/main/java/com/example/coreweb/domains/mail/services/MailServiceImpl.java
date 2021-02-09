@@ -1,7 +1,9 @@
 package com.example.coreweb.domains.mail.services;
 
+import com.example.common.utils.Validator;
 import com.example.coreweb.domains.mail.models.entities.EmailLog;
 import com.example.coreweb.domains.mail.repositories.EmailLogRepository;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -29,29 +32,31 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public boolean sendEmail(String email, String subject, String message) {
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(email);
-        mailMessage.setSubject(subject);
-        mailMessage.setText(message);
-        try {
-            new Thread(() -> javaMailSender.send(mailMessage)).start();
-        } catch (Exception e) {
-            System.out.println(e.toString());
-            return false;
-        }
-        this.saveLog(email, null, null, null, subject, message, 0);
-        return true;
+    public boolean send(String to, String subject, String message) {
+        return this.send(null, to, null, null, subject, message, null);
     }
 
     @Override
-    public boolean sendEmail(String to, String from, String sub, String msgBody, List<File> attachments) {
+    public boolean send(String to, String subject, String message, List<File> attachments) {
+        return this.send(null, to, null, null, subject, message, attachments);
+    }
+
+    @Override
+    public boolean send(String from, String to, String[] cc, String[] bcc, String sub, String msgBody, List<File> attachments) {
+        cc = cc == null ? ArrayUtils.toArray() : cc;
+        bcc = bcc == null ? ArrayUtils.toArray() : bcc;
+
+        this.validateEmails(from, to, cc, bcc);
+        if (sub == null || msgBody == null) throw new RuntimeException("Subject or Email body can not be null!");
+
         MimeMessage message = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             if (from != null)
                 helper.setFrom(from);
             helper.setTo(to);
+            helper.setCc(cc);
+            helper.setBcc(bcc);
             helper.setSubject(sub);
             helper.setText(msgBody);
             if (attachments != null)
@@ -63,32 +68,28 @@ public class MailServiceImpl implements MailService {
             System.out.println(e.toString());
             return false;
         }
-        this.saveLog(to, null, null, from, sub, msgBody, attachments == null ? 0 : attachments.size());
+        this.saveLog(to, String.join(",", cc), String.join(",", cc), from, sub, msgBody, attachments == null ? 0 : attachments.size());
         return true;
     }
 
-    public boolean sendEmail(String email, String[] cc, String[] bcc, String subject, String message) {
-        SimpleMailMessage mailMessage = buildMessage(email, cc, bcc, subject, message);
-        try {
-            new Thread(() -> javaMailSender.send(mailMessage)).start();
-        } catch (Exception e) {
-            System.out.println(e.toString());
-            return false;
+    private void validateEmails(String from, String to, String[] cc, String[] bcc) {
+
+        boolean valid = Validator.isValidEmail(from);
+        if (!valid) throw new RuntimeException("Invalid `from` email: " + from);
+
+        valid = Validator.isValidEmail(to);
+        if (!valid) throw new RuntimeException("Invalid `to` email: " + to);
+
+        for (String email : cc) {
+            valid = Validator.isValidEmail(email);
+            if (!valid) throw new RuntimeException("Invalid `cc` email: " + email);
         }
-        this.saveLog(email, StringUtils.join(cc, ","), StringUtils.join(bcc, ","), null, subject, message, 0);
-        return true;
-    }
 
-    private SimpleMailMessage buildMessage(String email, String[] cc, String[] bcc, String subject, String message) {
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(email);
-        if (cc != null && cc.length > 0)
-            mailMessage.setCc(cc);
-        if (bcc != null && bcc.length > 0)
-            mailMessage.setBcc(bcc);
-        mailMessage.setSubject(subject);
-        mailMessage.setText(message);
-        return mailMessage;
+        for (String email : bcc) {
+            valid = Validator.isValidEmail(email);
+            if (!valid) throw new RuntimeException("Invalid `bcc` email: " + email);
+        }
+
     }
 
     private void saveLog(String to, String cc, String bcc, String from, String subject, String msg, int noOfAttachments) {
