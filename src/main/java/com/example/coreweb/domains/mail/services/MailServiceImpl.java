@@ -43,34 +43,35 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public boolean send(String from, String to, String[] cc, String[] bcc, String subject, String msgBody, boolean html, List<File> attachments) {
-        cc = cc == null ? ArrayUtils.toArray() : cc;
-        bcc = bcc == null ? ArrayUtils.toArray() : bcc;
+        String[] ccArr = cc == null ? ArrayUtils.toArray() : cc;
+        String[] bccArr = bcc == null ? ArrayUtils.toArray() : bcc;
 
         this.validateEmails(from, to, cc, bcc);
         if (subject == null || msgBody == null)
             throw new RuntimeException("Subject or Email body must not be null!");
+        new Thread(() -> {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            try {
+                MimeMessageHelper helper = new MimeMessageHelper(message, true);
+                if (from != null)
+                    helper.setFrom(from);
+                helper.setTo(to);
+                helper.setCc(ccArr);
+                helper.setBcc(bccArr);
+                helper.setSubject(subject);
+                helper.setText(msgBody, html);
 
-        MimeMessage message = javaMailSender.createMimeMessage();
-        try {
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            if (from != null)
-                helper.setFrom(from);
-            helper.setTo(to);
-            helper.setCc(cc);
-            helper.setBcc(bcc);
-            helper.setSubject(subject);
-            helper.setText(msgBody, html);
+                if (attachments != null)
+                    for (File a : attachments)
+                        helper.addAttachment(a.getName(), new FileSystemResource(a));
 
-            if (attachments != null)
-                for (File a : attachments)
-                    helper.addAttachment(a.getName(), new FileSystemResource(a));
+                javaMailSender.send(message);
+            } catch (MessagingException e) {
+                System.out.println(e.toString());
+            }
+            this.saveLog(to, String.join(",", cc), String.join(",", cc), from, subject, msgBody, attachments == null ? 0 : attachments.size());
+        }).start();
 
-            new Thread(() -> javaMailSender.send(message)).start();
-        } catch (MessagingException e) {
-            System.out.println(e.toString());
-            return false;
-        }
-        this.saveLog(to, String.join(",", cc), String.join(",", cc), from, subject, msgBody, attachments == null ? 0 : attachments.size());
         return true;
     }
 
