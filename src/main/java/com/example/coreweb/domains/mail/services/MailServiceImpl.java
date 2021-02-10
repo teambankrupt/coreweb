@@ -77,21 +77,23 @@ public class MailServiceImpl implements MailService {
 
     private void validateEmails(String from, String to, String[] cc, String[] bcc) {
 
-        boolean valid = Validator.isValidEmail(from);
-        if (!valid) throw new RuntimeException("Invalid `from` email: " + from);
+        if (from != null && !from.isEmpty()) {
+            boolean valid = Validator.isValidEmail(from);
+            if (!valid) throw new RuntimeException("Invalid `from` email: " + from);
+        }
 
-        valid = Validator.isValidEmail(to);
+        boolean valid = Validator.isValidEmail(to);
         if (!valid) throw new RuntimeException("Invalid `to` email: " + to);
 
-        for (String email : cc) {
-            valid = Validator.isValidEmail(email);
-            if (!valid) throw new RuntimeException("Invalid `cc` email: " + email);
-        }
+        if (cc != null)
+            Arrays.stream(cc).forEach(m -> {
+                if (!Validator.isValidEmail(m)) throw new RuntimeException("Invalid `cc` email: " + m);
+            });
 
-        for (String email : bcc) {
-            valid = Validator.isValidEmail(email);
-            if (!valid) throw new RuntimeException("Invalid `bcc` email: " + email);
-        }
+        if (bcc != null)
+            Arrays.stream(bcc).forEach(m -> {
+                if (!Validator.isValidEmail(m)) throw new RuntimeException("Invalid `bcc` email: " + m);
+            });
 
     }
 
