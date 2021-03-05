@@ -23,7 +23,7 @@ public abstract class BaseTreeEntity<T extends BaseTreeEntity<T>> extends BaseEn
                 ? parent.getId().toString() : parent.getPath() + ":" + parent.getId();
     }
 
-    protected Long getRootId() {
+    public Long getRootId() {
         return (path == null || path.isEmpty()) ?
                 getId() : Long.parseLong(getPath().split(":")[0]);
     }
@@ -33,7 +33,7 @@ public abstract class BaseTreeEntity<T extends BaseTreeEntity<T>> extends BaseEn
         return parent.getId().equals(this.parent.getId());
     }
 
-    protected String getAbsolutePath() {
+    public String getAbsolutePath() {
         if (this.isNew()) throw new RuntimeException("Entity that isn't persisted yet can't have absolute path.");
         if (path == null) return String.valueOf(getId());
         return path + ":" + getId();
