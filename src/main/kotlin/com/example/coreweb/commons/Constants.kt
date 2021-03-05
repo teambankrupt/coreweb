@@ -23,6 +23,7 @@ class Constants {
             const val ROLES_ADMIN = "Roles (Super Admin)"
             const val PRIVILEGES_ADMIN = "Privileges (Super Admin)"
             const val CHAT_ROOMS = "Chat Rooms"
+            const val PROFILE = "Profile"
 
             // API operation messages
             const val POST_MSG = "Create a new "
