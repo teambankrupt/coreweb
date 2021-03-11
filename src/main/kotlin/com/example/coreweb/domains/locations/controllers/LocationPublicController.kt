@@ -4,6 +4,7 @@ import com.example.coreweb.domains.locations.models.dtos.LocationDto
 import com.example.coreweb.domains.locations.models.mappers.LocationMapper
 import com.example.coreweb.domains.locations.services.LocationService
 import com.example.common.utils.ExceptionUtil
+import com.example.coreweb.commons.Constants
 import com.example.coreweb.domains.base.controllers.CrudControllerV2
 import com.example.coreweb.domains.base.models.enums.SortByFields
 import com.example.coreweb.routing.Route
@@ -16,23 +17,30 @@ import javax.validation.Valid
 import org.springframework.data.domain.Sort
 
 @RestController
-@Api(tags = ["Locations"], description = "Description about Locations")
+@Api(tags = [Constants.Swagger.LOCATION], description = Constants.Swagger.REST_API)
 class LocationPublicController @Autowired constructor(
-        private val locationService: LocationService,
-        private val locationMapper: LocationMapper
+    private val locationService: LocationService,
+    private val locationMapper: LocationMapper
 ) {
 
-
     @GetMapping(Route.V1.SEARCH_CHILD_LOCATIONS_PUBLIC)
-    fun searchChildLocations(@RequestParam("parent_id", required = false) parentId: Long?,
-                             @RequestParam("q", defaultValue = "") query: String,
-                             @RequestParam("page", defaultValue = "0") page: Int,
-                             @RequestParam("size", defaultValue = "10") size: Int,
-                             @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
-                             @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction): ResponseEntity<Page<LocationDto>> {
+    fun searchChildLocations(
+        @RequestParam("parent_id", required = false) parentId: Long?,
+        @RequestParam("q", defaultValue = "") query: String,
+        @RequestParam("page", defaultValue = "0") page: Int,
+        @RequestParam("size", defaultValue = "10") size: Int,
+        @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
+        @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction
+    ): ResponseEntity<Page<LocationDto>> {
         val entities = this.locationService.searchByParent(parentId, query, page, size, sortBy, direction)
         return ResponseEntity.ok(entities.map { this.locationMapper.map(it) })
     }
 
 
+    @GetMapping(Route.V1.PUBLIC_FIND_LOCATION)
+    fun find(@PathVariable("id") id: Long): ResponseEntity<LocationDto> {
+        val entity =
+            this.locationService.find(id).orElseThrow { ExceptionUtil.notFound(Constants.Swagger.LOCATION, id) }
+        return ResponseEntity.ok(this.locationMapper.map(entity))
+    }
 }

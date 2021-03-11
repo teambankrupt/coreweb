@@ -6,6 +6,7 @@ class Route {
             private const val API = "/api"
             private const val VERSION = "/v1"
             private const val ADMIN = "/admin"
+            private const val PUBLIC = "/public"
 
             // Address API's
             const val SEARCH_ADDRESSES = "$API$VERSION/addresses"
@@ -97,11 +98,12 @@ class Route {
             // Locations
             const val SEARCH_LOCATIONS = "$API$VERSION/location-types/{type_id}/locations"
             const val SEARCH_CHILD_LOCATIONS = "$API$VERSION/locations/child-locations"
-            const val SEARCH_CHILD_LOCATIONS_PUBLIC = "$API$VERSION/public/locations/child-locations"
             const val CREATE_LOCATION = "$API$VERSION/locations"
             const val FIND_LOCATION = "$API$VERSION/locations/{id}"
             const val UPDATE_LOCATION = "$API$VERSION/locations/{id}"
             const val DELETE_LOCATION = "$API$VERSION/locations/{id}"
+            const val PUBLIC_FIND_LOCATION = "$API$VERSION$PUBLIC/locations/{id}"
+            const val SEARCH_CHILD_LOCATIONS_PUBLIC = "$API$VERSION$PUBLIC/locations/child-locations"
 
             // GlobalAddresss (Admin)
             const val ADMIN_SEARCH_GLOBALADDRESSS = "$ADMIN/global-addresss"

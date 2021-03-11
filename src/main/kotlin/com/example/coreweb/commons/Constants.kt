@@ -47,6 +47,7 @@ class Constants {
             const val CHAT_ROOMS_DETAILS = "Sample Chat Rooms for messaging feature"
 
             const val CONTACT = "Contacts"
+            const val LOCATION = "Locations"
         }
     }
 
