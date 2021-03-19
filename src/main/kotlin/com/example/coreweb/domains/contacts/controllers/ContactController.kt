@@ -1,5 +1,6 @@
 package com.example.coreweb.domains.contacts.controllers
 
+import com.example.auth.config.security.SecurityContext
 import com.example.coreweb.domains.contacts.models.dtos.ContactDto
 import com.example.coreweb.domains.contacts.models.mappers.ContactMapper
 import com.example.coreweb.domains.contacts.services.ContactService
@@ -73,16 +74,15 @@ class ContactController @Autowired constructor(
     User contact apis
      */
 
-    @GetMapping(Route.V1.SEARCH_USER_CONTACTS)
+    @GetMapping(Route.V1.SEARCH_MY_CONTACTS)
     fun searchUserContacts(
-        @PathVariable("userId") userId: Long,
         @RequestParam("q", defaultValue = "") query: String,
         @RequestParam("page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "10") size: Int,
         @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
         @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction
     ): ResponseEntity<Page<ContactDto>> {
-        val entities = this.contactService.search(userId, query, page, size, sortBy, direction)
+        val entities = this.contactService.search(SecurityContext.getCurrentUser().id, query, page, size, sortBy, direction)
         return ResponseEntity.ok(entities.map { this.contactMapper.map(it) })
     }
 }

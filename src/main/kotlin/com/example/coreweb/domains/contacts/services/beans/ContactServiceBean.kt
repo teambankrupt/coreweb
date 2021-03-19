@@ -1,5 +1,7 @@
 package com.example.coreweb.domains.contacts.services.beans
 
+import com.example.auth.entities.User
+import com.example.auth.repositories.UserRepo
 import com.example.coreweb.domains.contacts.models.entities.Contact
 import com.example.coreweb.domains.contacts.repositories.ContactRepository
 import com.example.coreweb.domains.contacts.services.ContactService
@@ -17,7 +19,8 @@ import org.springframework.data.domain.Sort
 
 @Service
 class ContactServiceBean @Autowired constructor(
-    private val contactRepository: ContactRepository
+    private val contactRepository: ContactRepository,
+    private val userRepository: UserRepo
 ) : ContactService {
     override fun search(
         userId: Long,
@@ -27,11 +30,26 @@ class ContactServiceBean @Autowired constructor(
         sortBy: SortByFields,
         direction: Sort.Direction
     ): Page<Contact> {
-        return this.contactRepository.search(
+        val contacts = this.contactRepository.search(
             userId,
             query,
             PageAttr.getPageRequest(page, size, sortBy.fieldName, direction)
         )
+        if (contacts.isEmpty) {
+            this.createDefaultContact(userId)
+            return this.search(userId, query, page, size, sortBy, direction)
+        }
+        return contacts
+    }
+
+    private fun createDefaultContact(userId: Long): Contact {
+        val user = userRepository.findById(userId).orElseThrow { ExceptionUtil.notFound(User::class.java, userId) }
+        val contact = Contact()
+        contact.name = user.name
+        contact.phone = user.phone
+        contact.email = user.email
+        contact.user = user
+        return this.save(contact)
     }
 
     override fun search(
