@@ -1,5 +1,6 @@
 package com.example.coreweb.domains.contacts.models.entities
 
+import com.example.auth.entities.User
 import com.example.coreweb.domains.base.entities.BaseEntity
 import com.example.coreweb.domains.globaladdresss.models.entities.GlobalAddress
 import org.hibernate.annotations.LazyCollection
@@ -23,4 +24,8 @@ class Contact : BaseEntity() {
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "contact_addresses", schema = "core_web")
     var address: MutableList<GlobalAddress>? = null
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    lateinit var user: User
 }

@@ -1,5 +1,7 @@
 package com.example.coreweb.domains.contacts.models.mappers
 
+import com.example.auth.entities.User
+import com.example.auth.repositories.UserRepo
 import com.example.common.utils.ExceptionUtil
 import com.example.coreweb.domains.contacts.models.dtos.ContactDto
 import com.example.coreweb.domains.contacts.models.entities.Contact
@@ -10,7 +12,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class ContactMapper @Autowired constructor(
-    private val globalAddressService: GlobalAddressService
+    private val globalAddressService: GlobalAddressService,
+    private val userRepo: UserRepo
 ) : BaseMapper<Contact, ContactDto> {
 
     override fun map(entity: Contact): ContactDto {
@@ -24,6 +27,7 @@ class ContactMapper @Autowired constructor(
             phone = entity.phone
             email = entity.email
             address = entity.address?.map { it.id }?.toMutableList()
+            userId = entity.user.id
         }
         return dto
     }
@@ -37,6 +41,7 @@ class ContactMapper @Autowired constructor(
             address = dto.address?.map {
                 globalAddressService.find(it).orElseThrow { ExceptionUtil.notFound("Global Address", it) }
             }?.toMutableList()
+            this.user = userRepo.findById(dto.userId).orElseThrow { ExceptionUtil.notFound(User::class.java,dto.userId) }
         }
         return entity
     }

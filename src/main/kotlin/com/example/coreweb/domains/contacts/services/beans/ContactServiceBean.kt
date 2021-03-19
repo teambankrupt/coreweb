@@ -17,10 +17,30 @@ import org.springframework.data.domain.Sort
 
 @Service
 class ContactServiceBean @Autowired constructor(
-        private val contactRepository: ContactRepository
+    private val contactRepository: ContactRepository
 ) : ContactService {
+    override fun search(
+        userId: Long,
+        query: String,
+        page: Int,
+        size: Int,
+        sortBy: SortByFields,
+        direction: Sort.Direction
+    ): Page<Contact> {
+        return this.contactRepository.search(
+            userId,
+            query,
+            PageAttr.getPageRequest(page, size, sortBy.fieldName, direction)
+        )
+    }
 
-    override fun search(query: String, page: Int, size: Int, sortBy: SortByFields, direction: Sort.Direction): Page<Contact> {
+    override fun search(
+        query: String,
+        page: Int,
+        size: Int,
+        sortBy: SortByFields,
+        direction: Sort.Direction
+    ): Page<Contact> {
         return this.contactRepository.search(query, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
     }
 

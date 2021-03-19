@@ -20,17 +20,19 @@ import org.springframework.data.domain.Sort
 @RestController
 @Api(tags = [Constants.Swagger.CONTACT], description = Constants.Swagger.REST_API)
 class ContactController @Autowired constructor(
-        private val contactService: ContactService,
-        private val contactMapper: ContactMapper
+    private val contactService: ContactService,
+    private val contactMapper: ContactMapper
 ) : CrudControllerV2<ContactDto> {
 
     @GetMapping(Route.V1.SEARCH_CONTACTS)
     @ApiOperation(value = Constants.Swagger.SEARCH_ALL_MSG + Constants.Swagger.CONTACT)
-    override fun search(@RequestParam("q", defaultValue = "") query: String,
-                        @RequestParam("page", defaultValue = "0") page: Int,
-                        @RequestParam("size", defaultValue = "10") size: Int,
-                        @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
-                        @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction): ResponseEntity<Page<ContactDto>> {
+    override fun search(
+        @RequestParam("q", defaultValue = "") query: String,
+        @RequestParam("page", defaultValue = "0") page: Int,
+        @RequestParam("size", defaultValue = "10") size: Int,
+        @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
+        @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction
+    ): ResponseEntity<Page<ContactDto>> {
         val entities = this.contactService.search(query, page, size, sortBy, direction)
         return ResponseEntity.ok(entities.map { this.contactMapper.map(it) })
     }
@@ -51,8 +53,10 @@ class ContactController @Autowired constructor(
 
     @PatchMapping(Route.V1.UPDATE_CONTACT)
     @ApiOperation(value = Constants.Swagger.PATCH_MSG + Constants.Swagger.CONTACT)
-    override fun update(@PathVariable("id") id: Long,
-                        @Valid @RequestBody dto: ContactDto): ResponseEntity<ContactDto> {
+    override fun update(
+        @PathVariable("id") id: Long,
+        @Valid @RequestBody dto: ContactDto
+    ): ResponseEntity<ContactDto> {
         var entity = this.contactService.find(id).orElseThrow { ExceptionUtil.notFound(Constants.Swagger.CONTACT, id) }
         entity = this.contactService.save(this.contactMapper.map(dto, entity))
         return ResponseEntity.ok(this.contactMapper.map(entity))
@@ -65,4 +69,20 @@ class ContactController @Autowired constructor(
         return ResponseEntity.ok().build()
     }
 
+    /*
+    User contact apis
+     */
+
+    @GetMapping(Route.V1.SEARCH_USER_CONTACTS)
+    fun searchUserContacts(
+        @PathVariable("userId") userId: Long,
+        @RequestParam("q", defaultValue = "") query: String,
+        @RequestParam("page", defaultValue = "0") page: Int,
+        @RequestParam("size", defaultValue = "10") size: Int,
+        @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
+        @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction
+    ): ResponseEntity<Page<ContactDto>> {
+        val entities = this.contactService.search(userId, query, page, size, sortBy, direction)
+        return ResponseEntity.ok(entities.map { this.contactMapper.map(it) })
+    }
 }

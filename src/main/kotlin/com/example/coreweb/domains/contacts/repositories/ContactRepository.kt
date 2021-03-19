@@ -12,7 +12,10 @@ import java.util.*
 @Repository
 interface ContactRepository : JpaRepository<Contact, Long> {
 
-    @Query("SELECT c FROM Contact c WHERE (:q IS NULL OR c.name LIKE %:q% OR c.phone LIKE %:q% OR c.email LIKE %:q% OR c.createdBy LIKE %:q%) AND c.deleted=FALSE")
+    @Query("SELECT c FROM Contact c WHERE (:q IS NULL OR (c.name LIKE %:q%) OR (c.phone LIKE %:q%) OR (c.email LIKE %:q%)) AND (c.user.id=:userId) AND c.deleted=FALSE")
+    fun search(@Param("userId") userId: Long, @Param("q") query: String, pageable: Pageable): Page<Contact>
+
+    @Query("SELECT c FROM Contact c WHERE (:q IS NULL OR (c.name LIKE %:q%) OR (c.phone LIKE %:q%) OR (c.email LIKE %:q%)) AND c.deleted=FALSE")
     fun search(@Param("q") query: String, pageable: Pageable): Page<Contact>
 
     @Query("SELECT c FROM Contact c WHERE c.id=:id AND c.deleted=FALSE")
