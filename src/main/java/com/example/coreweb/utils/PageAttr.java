@@ -24,4 +24,14 @@ public final class PageAttr {
         if (size <= 0) size = 10;
         return PageRequest.of(page, size, direction, sortBy);
     }
+
+    public static PageRequest getPageRequest(PageableParams pageableParams) {
+        if (pageableParams.getSize() <= 0) pageableParams.setSize(10);
+        return PageRequest.of(
+                pageableParams.getPage(),
+                pageableParams.getSize(),
+                pageableParams.getDirection(),
+                pageableParams.getSortBy().getFieldName()
+        );
+    }
 }
