@@ -34,19 +34,18 @@ class GlobalAddress : BaseEntity() {
         builder.append(this.addressLineOne)
             .append(", ")
             .append(this.addressLineTwo)
-        val locStack = this.formatAddressFromLocation(location, Stack())
+        val locStack = this.flattenLocation(location, Stack())
         locStack.reverse()
         while (!locStack.empty())
-            builder.append(locStack.pop())
+            builder.append(", ").append(locStack.pop().label)
         return builder.toString()
     }
 
-    private fun formatAddressFromLocation(location: Location, stack: Stack<String>): Stack<String> {
-        if (location.parent == null) {
-            stack.push(", " + location.label)
-            return stack
-        }
-        return formatAddressFromLocation(location.parent!!, stack)
+    fun flattenLocation(location: Location, stack: Stack<Location>): Stack<Location> {
+        stack.push(location)
+        if (location.parent != null)
+            flattenLocation(location.parent!!, stack)
+        return stack
     }
 
 }
