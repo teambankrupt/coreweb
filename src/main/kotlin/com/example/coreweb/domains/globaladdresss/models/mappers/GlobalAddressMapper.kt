@@ -11,6 +11,8 @@ import com.example.coreweb.domains.locations.models.mappers.LocationMapper
 import com.example.coreweb.domains.locations.repositories.LocationRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import java.util.*
+import kotlin.collections.HashMap
 
 @Component
 class GlobalAddressMapper @Autowired constructor(
@@ -36,8 +38,16 @@ class GlobalAddressMapper @Autowired constructor(
 
             this.locationId = entity.location.id
 
-            val map = HashMap<Int, LocationDto>()
-            this.locations = addLocation(map, entity.location).toSortedMap(Comparator { o1, o2 -> o2 - o1 })
+//            this.locations = addLocation(map, entity.location).toSortedMap(Comparator { o1, o2 -> o2 - o1 })
+            val locStack = entity.flattenLocation(entity.location, Stack())
+            val locStackForAddress = Stack<Location>()
+            locStackForAddress.addAll(locStack)
+
+            while (!locStack.isEmpty()){
+                val location = locStack.pop()
+                this.locationsTree[location.type.code] = location.id
+            }
+            this.fullAddress = entity.buildAddress(locStackForAddress)
         }
 
         return dto

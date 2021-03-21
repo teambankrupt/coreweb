@@ -8,6 +8,7 @@ import java.util.*
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
+import kotlin.collections.HashMap
 
 class GlobalAddressDto : BaseDto() {
 
@@ -46,8 +47,12 @@ class GlobalAddressDto : BaseDto() {
 
     // READONLY ITEMS
 
-    @JsonProperty("locations")
+    @JsonProperty("locations_tree")
     @ApiModelProperty(readOnly = true)
-    var locations: SortedMap<Int, LocationDto>? = null
+    val locationsTree: HashMap<String, Long> = HashMap()
+
+    @JsonProperty("full_address")
+    @ApiModelProperty(readOnly = true)
+    var fullAddress: String? = null
 
 }

@@ -30,11 +30,18 @@ class GlobalAddress : BaseEntity() {
     lateinit var location: Location
 
     fun buildAddress(): String {
+        val locStack = this.flattenLocation(location, Stack())
+        return buildAddress(locStack)
+    }
+
+    fun buildAddress(locStack: Stack<Location>): String {
         val builder = StringBuilder()
         builder.append(this.addressLineOne)
-            .append(", ")
-            .append(this.addressLineTwo)
-        val locStack = this.flattenLocation(location, Stack())
+        if (this.addressLineTwo != null) {
+            builder
+                .append(", ")
+                .append(this.addressLineTwo)
+        }
         locStack.reverse()
         while (!locStack.empty())
             builder.append(", ").append(locStack.pop().label)
