@@ -44,7 +44,7 @@ class Location : BaseEntity() {
         else this.path!!.split(":")[0].toLong()
     }
 
-    fun hasParent(parent: LocationType): Boolean {
+    fun hasParent(parent: Location): Boolean {
         if (parent.isNew) throw ExceptionUtil.invalid("Entity that isn't persisted yet can't be a parent.")
         return parent.id == this.parent?.id
     }
