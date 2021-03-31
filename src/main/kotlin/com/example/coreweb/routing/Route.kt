@@ -56,6 +56,8 @@ class Route {
             const val UPDATE_CONTACT = "$API$VERSION/contacts/{id}"
             const val DELETE_CONTACT = "$API$VERSION/contacts/{id}"
             const val SEARCH_MY_CONTACTS = "$API$VERSION/my-contacts"
+            const val FIND_SELF_CONTACTS = "$API$VERSION/my-contacts/me"
+            const val CREATE_UPDATE_SELF_CONTACTS = "$API$VERSION/my-contacts/me"
 
             // Contacts (Admin)
             const val ADMIN_SEARCH_CONTACTS = "$ADMIN/contacts"

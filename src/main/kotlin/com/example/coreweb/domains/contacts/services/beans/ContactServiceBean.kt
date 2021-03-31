@@ -1,5 +1,6 @@
 package com.example.coreweb.domains.contacts.services.beans
 
+import com.example.auth.config.security.SecurityContext
 import com.example.auth.entities.User
 import com.example.auth.repositories.UserRepo
 import com.example.coreweb.domains.contacts.models.entities.Contact
@@ -62,6 +63,10 @@ class ContactServiceBean @Autowired constructor(
         return this.contactRepository.search(query, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
     }
 
+    override fun findSelfContact(): Optional<Contact> {
+        return this.contactRepository.findSelfContact(SecurityContext.getCurrentUser().id)
+    }
+
     override fun save(entity: Contact): Contact {
         this.validate(entity)
         return this.contactRepository.save(entity)
@@ -82,5 +87,10 @@ class ContactServiceBean @Autowired constructor(
 
     override fun validate(entity: Contact) {
         entity.email?.let { Validator.isValidEmail(it) }
+
+        // check if user is trying to change contact for another user
+        val auth = SecurityContext.getCurrentUser()
+        if (!auth.isAdmin && entity.user.id != auth.id)
+            throw ExceptionUtil.forbidden("Can't change contact for another user!!")
     }
 }

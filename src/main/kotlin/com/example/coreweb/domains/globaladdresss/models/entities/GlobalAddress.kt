@@ -11,6 +11,8 @@ import javax.persistence.*
 @Table(name = "global_addresss", schema = "core_web")
 class GlobalAddress : BaseEntity() {
 
+    lateinit var title: String
+
     @Column(name = "address_line_one", nullable = false)
     lateinit var addressLineOne: String
 
@@ -19,8 +21,6 @@ class GlobalAddress : BaseEntity() {
 
     @Column(name = "zip_code")
     var zipCode: String? = null
-
-    lateinit var title: String
 
     @Embedded
     lateinit var coordinate: Coordinate

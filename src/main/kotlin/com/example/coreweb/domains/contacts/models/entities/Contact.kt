@@ -20,7 +20,10 @@ class Contact : BaseEntity() {
 
     var email: String? = null
 
-    @OneToMany
+    @Column(name = "is_self", nullable = false)
+    var self: Boolean = false
+
+    @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "contact_addresses", schema = "core_web")
     var address: MutableList<GlobalAddress>? = null

@@ -5,6 +5,7 @@ import com.example.coreweb.domains.contacts.models.entities.Contact
 import com.example.coreweb.domains.base.services.CrudServiceV2
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Sort
+import java.util.*
 
 interface ContactService : CrudServiceV2<Contact> {
     fun search(
@@ -15,4 +16,6 @@ interface ContactService : CrudServiceV2<Contact> {
         sortBy: SortByFields,
         direction: Sort.Direction
     ): Page<Contact>
+
+    fun findSelfContact(): Optional<Contact>
 }

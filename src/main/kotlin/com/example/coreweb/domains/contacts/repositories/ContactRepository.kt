@@ -20,4 +20,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
 
     @Query("SELECT c FROM Contact c WHERE c.id=:id AND c.deleted=FALSE")
     fun find(@Param("id") id: Long): Optional<Contact>
+
+    @Query("SELECT c FROM Contact c WHERE c.user.id=:userId AND c.self=TRUE AND c.deleted=FALSE")
+    fun findSelfContact(@Param("userId") userId: Long): Optional<Contact>
 }

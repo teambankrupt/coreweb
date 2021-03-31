@@ -82,7 +82,24 @@ class ContactController @Autowired constructor(
         @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
         @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction
     ): ResponseEntity<Page<ContactDto>> {
-        val entities = this.contactService.search(SecurityContext.getCurrentUser().id, query, page, size, sortBy, direction)
+        val entities =
+            this.contactService.search(SecurityContext.getCurrentUser().id, query, page, size, sortBy, direction)
         return ResponseEntity.ok(entities.map { this.contactMapper.map(it) })
+    }
+
+    @GetMapping(Route.V1.FIND_SELF_CONTACTS)
+    fun findSelfContact(): ResponseEntity<ContactDto> {
+        val entity = this.contactService.findSelfContact()
+        if (!entity.isPresent) return ResponseEntity.noContent().build()
+        return ResponseEntity.ok(this.contactMapper.map(entity.get()))
+    }
+
+    @PostMapping(Route.V1.CREATE_UPDATE_SELF_CONTACTS)
+    fun createUpdateSeltContact(@Valid @RequestBody dto: ContactDto): ResponseEntity<ContactDto> {
+        var entity = this.contactService.findSelfContact().orElse(null)
+        entity = this.contactMapper.map(dto, entity)
+        entity.self = true
+        entity = this.contactService.save(entity)
+        return ResponseEntity.ok(this.contactMapper.map(entity))
     }
 }
