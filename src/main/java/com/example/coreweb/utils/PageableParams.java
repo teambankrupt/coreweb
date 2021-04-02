@@ -13,6 +13,7 @@ public class PageableParams {
     private PageableParams(String query, int page, int size, SortByFields sortBy, Sort.Direction direction) {
         this.query = query;
         this.page = page;
+        this.size = size;
         this.sortBy = sortBy;
         this.direction = direction;
     }
