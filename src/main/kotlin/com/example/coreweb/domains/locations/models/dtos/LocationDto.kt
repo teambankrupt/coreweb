@@ -4,6 +4,7 @@ import com.example.coreweb.domains.base.models.dtos.BaseDto
 import com.example.coreweb.domains.locationtypes.models.dtos.LocationTypeDto
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.annotations.ApiModelProperty
+import javax.persistence.Column
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
@@ -23,6 +24,9 @@ class LocationDto : BaseDto() {
     @ApiModelProperty(required = false)
     @JsonProperty("description")
     var description: String? = null
+
+    @JsonProperty("image")
+    var image: String? = null
 
     @NotNull
     @ApiModelProperty(required = true)

@@ -18,6 +18,9 @@ class Location : BaseEntity() {
     @Column(name = "description")
     var description: String? = null
 
+    @Column(name = "image")
+    var image: String? = null
+
     var path: String? = null
 
     @Embedded

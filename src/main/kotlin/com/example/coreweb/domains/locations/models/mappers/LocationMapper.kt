@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component
 
 @Component
 class LocationMapper @Autowired constructor(
-        private val locationTypeRepository: LocationTypeRepository,
-        private val locationRepository: LocationRepository,
-        private val locationTypeMapper: LocationTypeMapper
+    private val locationTypeRepository: LocationTypeRepository,
+    private val locationRepository: LocationRepository,
+    private val locationTypeMapper: LocationTypeMapper
 ) : BaseMapper<Location, LocationDto> {
 
     override fun map(entity: Location): LocationDto {
@@ -27,6 +27,7 @@ class LocationMapper @Autowired constructor(
         dto.label = entity.label
         dto.code = entity.code
         dto.description = entity.description
+        dto.image = entity.image
 
         dto.latitude = entity.coorodinate.latitude
         dto.longitude = entity.coorodinate.longitude
@@ -49,11 +50,14 @@ class LocationMapper @Autowired constructor(
         entity.label = dto.label
         entity.code = dto.code
         entity.description = dto.description
+        entity.image = dto.image
 
         entity.coorodinate = Coordinate(dto.latitude, dto.longitude, dto.altitude)
 
-        entity.type = this.locationTypeRepository.find(dto.typeId).orElseThrow { ExceptionUtil.notFound("LocationType", dto.typeId) }
-        entity.parent = dto.parentId?.let { this.locationRepository.find(it).orElseThrow { ExceptionUtil.notFound("Parent", it) } }
+        entity.type = this.locationTypeRepository.find(dto.typeId)
+            .orElseThrow { ExceptionUtil.notFound("LocationType", dto.typeId) }
+        entity.parent =
+            dto.parentId?.let { this.locationRepository.find(it).orElseThrow { ExceptionUtil.notFound("Parent", it) } }
 
         return entity
     }
