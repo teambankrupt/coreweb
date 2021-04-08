@@ -69,11 +69,18 @@ public class MailServiceImpl implements MailService {
             } catch (MessagingException e) {
                 System.out.println(e.toString());
             }
-            this.saveLog(to, String.join(",", cc), String.join(",", cc), from, subject, msgBody, attachments == null ? 0 : attachments.size());
+            this.saveLog(to, String.join(",", ccArr), String.join(",", bccArr), from, subject, msgBody, attachments == null ? 0 : attachments.size());
         }).start();
 
         return true;
     }
+
+
+    private void saveLog(String to, String cc, String bcc, String from, String subject, String msg, int noOfAttachments) {
+        EmailLog log = new EmailLog(from == null ? "SystemMail" : from, to, cc, bcc, subject, msg, noOfAttachments);
+        this.emailLogRepository.save(log);
+    }
+
 
     private void validateEmails(String from, String to, String[] cc, String[] bcc) {
 
@@ -96,11 +103,5 @@ public class MailServiceImpl implements MailService {
             });
 
     }
-
-    private void saveLog(String to, String cc, String bcc, String from, String subject, String msg, int noOfAttachments) {
-        EmailLog log = new EmailLog(from == null ? "SystemMail" : from, to, cc, bcc, subject, msg, noOfAttachments);
-        this.emailLogRepository.save(log);
-    }
-
 
 }
