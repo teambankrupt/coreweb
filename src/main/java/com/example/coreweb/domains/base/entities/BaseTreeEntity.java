@@ -1,15 +1,13 @@
 package com.example.coreweb.domains.base.entities;
 
-import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
+import javax.persistence.*;
 import java.util.Optional;
 
 @MappedSuperclass
 public abstract class BaseTreeEntity<T extends BaseTreeEntity<T>> extends BaseEntity {
 
     @ManyToOne
+    @JoinColumn(name = "parent_id")
     private T parent;
 
     private String path;
@@ -47,8 +45,8 @@ public abstract class BaseTreeEntity<T extends BaseTreeEntity<T>> extends BaseEn
 
     public abstract T getImpl();
 
-    public int getLevel() {
-        return getParent().map(pParent -> pParent.getLevel() + 1).orElse(1);
+    public int getNodeLevel() {
+        return getParent().map(pParent -> pParent.getNodeLevel() + 1).orElse(1);
     }
 
     public String getPath() {

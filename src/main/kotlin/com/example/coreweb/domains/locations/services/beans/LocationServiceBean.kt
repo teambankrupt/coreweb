@@ -73,23 +73,23 @@ class LocationServiceBean @Autowired constructor(
         /*
         If Location does not have a parent, then it must have a location type without a parent.
          */
-        if (entity.parent == null && entity.type.parent != null)
+        if (!entity.parent.isPresent && entity.type.parent.isPresent)
             throw ExceptionUtil.invalid("If Location does not have a parent, then it must have a location type without a parent.")
 
         /*
         If Location has a parent, then parent LocationType must match child entity LocationType parent
          */
         val parent = entity.parent
-        if (parent != null) {
-            val parentsLocationTypeId = parent.type.id
-            val locationTypesParentId = entity.type.parent?.id
+        if (parent.isPresent) {
+            val parentsLocationTypeId = parent.get().type.id
+            val locationTypesParentId = entity.type.parentId.orElse(null)
             if (parentsLocationTypeId != locationTypesParentId)
                 throw ExceptionUtil.invalid("If Location has a parent, then parent LocationType must match child entity LocationType parent")
         }
 
         // check if entity is a parent of it's own
         if (!entity.isNew) {
-            if (entity.parent?.id == entity.id)
+            if (entity.parentId.orElse(null) == entity.id)
                 throw ExceptionUtil.forbidden("${entity.label} can not be it's own parent.")
         }
     }

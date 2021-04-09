@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class LocationTypeMapper @Autowired constructor(
-        private val locationTypeRepository: LocationTypeRepository
+    private val locationTypeRepository: LocationTypeRepository
 ) : BaseMapper<LocationType, LocationTypeDto> {
 
     override fun map(entity: LocationType): LocationTypeDto {
@@ -25,11 +25,11 @@ class LocationTypeMapper @Autowired constructor(
             this.code = entity.code
             this.level = entity.level
             this.description = entity.description
-            this.parentId = entity.parent?.id
+            this.parentId = entity.parentId.orElse(null)
 
             this.path = entity.path
             this.absolutePath = entity.getAbsolutePath()
-            this.rootId =entity.getRootId()
+            this.rootId = entity.getRootId()
         }
 
         return dto
@@ -43,7 +43,11 @@ class LocationTypeMapper @Autowired constructor(
             this.code = dto.code
             this.level = dto.level
             this.description = dto.description
-            this.parent = dto.parentId?.let { locationTypeRepository.find(it).orElseThrow { ExceptionUtil.notFound("Parent", it) } }
+            this.setParent(
+                dto.parentId?.let {
+                    locationTypeRepository.find(it).orElseThrow { ExceptionUtil.notFound("Parent", it) }
+                }
+            )
         }
 
         return entity

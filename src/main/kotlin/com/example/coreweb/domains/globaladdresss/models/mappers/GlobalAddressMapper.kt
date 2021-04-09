@@ -58,8 +58,8 @@ class GlobalAddressMapper @Autowired constructor(
         map[location.type.level] = this.locationMapper.map(location)
 
         val parent = location.parent
-        if (parent != null)
-            addLocation(map, parent)
+        if (parent.isPresent)
+            addLocation(map, parent.get())
 
         return map
     }

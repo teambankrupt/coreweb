@@ -34,7 +34,7 @@ class LocationMapper @Autowired constructor(
         dto.altitude = entity.coorodinate.altitude
 
         dto.typeId = entity.type.id
-        dto.parentId = entity.parent?.id
+        dto.parentId = entity.parentId.orElse(null)
 
         dto.typeDto = this.locationTypeMapper.map(entity.type)
         dto.path = entity.path
@@ -56,9 +56,9 @@ class LocationMapper @Autowired constructor(
 
         entity.type = this.locationTypeRepository.find(dto.typeId)
             .orElseThrow { ExceptionUtil.notFound("LocationType", dto.typeId) }
-        entity.parent =
+        entity.setParent(
             dto.parentId?.let { this.locationRepository.find(it).orElseThrow { ExceptionUtil.notFound("Parent", it) } }
-
+        )
         return entity
     }
 }

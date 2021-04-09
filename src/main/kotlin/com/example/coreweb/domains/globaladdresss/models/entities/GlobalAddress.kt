@@ -50,8 +50,8 @@ class GlobalAddress : BaseEntity() {
 
     fun flattenLocation(location: Location, stack: Stack<Location>): Stack<Location> {
         stack.push(location)
-        if (location.parent != null)
-            flattenLocation(location.parent!!, stack)
+        if (location.parent.isPresent)
+            flattenLocation(location.parent.get(), stack)
         return stack
     }
 
