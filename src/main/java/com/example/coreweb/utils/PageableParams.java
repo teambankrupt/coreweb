@@ -3,12 +3,14 @@ package com.example.coreweb.utils;
 import com.example.coreweb.domains.base.models.enums.SortByFields;
 import org.springframework.data.domain.Sort;
 
+import java.util.Locale;
+
 public class PageableParams {
-    private String query;
-    private int page;
+    private final String query;
+    private final int page;
     private int size;
-    private SortByFields sortBy;
-    private Sort.Direction direction;
+    private final SortByFields sortBy;
+    private final Sort.Direction direction;
 
     private PageableParams(String query, int page, int size, SortByFields sortBy, Sort.Direction direction) {
         this.query = query;
@@ -27,7 +29,8 @@ public class PageableParams {
     }
 
     public String getQuery() {
-        return query;
+        if (this.query == null) return null;
+        return this.query.toLowerCase(Locale.getDefault());
     }
 
     public int getPage() {
