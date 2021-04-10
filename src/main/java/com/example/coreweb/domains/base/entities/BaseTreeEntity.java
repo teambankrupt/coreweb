@@ -22,7 +22,10 @@ public abstract class BaseTreeEntity<T extends BaseTreeEntity<T>> extends BaseEn
             if (this.getId().equals(this.parent.getId()))
                 throw new RuntimeException("Entity can't be it's own parent!");
         }
+        this.syncPath();
+    }
 
+    public void syncPath() {
         path = (parent.getPath() == null || parent.getPath().isEmpty())
                 ? parent.getId().toString() : parent.getPath() + ":" + parent.getId();
     }
