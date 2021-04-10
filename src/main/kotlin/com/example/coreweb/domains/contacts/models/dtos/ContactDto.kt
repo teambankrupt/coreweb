@@ -2,6 +2,7 @@ package com.example.coreweb.domains.contacts.models.dtos
 
 import com.example.coreweb.commons.Constants
 import com.example.coreweb.domains.base.models.dtos.BaseDto
+import com.example.coreweb.domains.globaladdresss.models.dtos.GlobalAddressDto
 import com.example.coreweb.domains.globaladdresss.models.entities.GlobalAddress
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.annotations.ApiModel
@@ -28,7 +29,9 @@ class ContactDto : BaseDto() {
     @ApiModelProperty(example = "alom@gmal.com")
     var email: String? = null
 
-    var address: MutableList<Long>? = null
+    @NotNull
+    @JsonProperty("address")
+    lateinit var address: GlobalAddressDto
 
     @JsonProperty("user_id")
     @NotNull

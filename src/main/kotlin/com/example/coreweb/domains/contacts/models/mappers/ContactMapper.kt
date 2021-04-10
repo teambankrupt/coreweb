@@ -6,14 +6,18 @@ import com.example.common.utils.ExceptionUtil
 import com.example.coreweb.domains.contacts.models.dtos.ContactDto
 import com.example.coreweb.domains.contacts.models.entities.Contact
 import com.example.coreweb.domains.base.models.mappers.BaseMapper
+import com.example.coreweb.domains.globaladdresss.models.mappers.GlobalAddressMapper
+import com.example.coreweb.domains.globaladdresss.repositories.GlobalAddressRepository
 import com.example.coreweb.domains.globaladdresss.services.GlobalAddressService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 @Component
-class ContactMapper @Autowired constructor(
-    private val globalAddressService: GlobalAddressService,
-    private val userRepo: UserRepo
+open class ContactMapper @Autowired constructor(
+    private val userRepo: UserRepo,
+    private val addressMapper: GlobalAddressMapper,
+    private val addressRepository: GlobalAddressRepository
 ) : BaseMapper<Contact, ContactDto> {
 
     override fun map(entity: Contact): ContactDto {
@@ -26,22 +30,22 @@ class ContactMapper @Autowired constructor(
             name = entity.name
             phone = entity.phone
             email = entity.email
-            address = entity.address?.map { it.id }?.toMutableList()
+            address = addressMapper.map(entity.address)
             userId = entity.user.id
         }
         return dto
     }
 
+    @Transactional
     override fun map(dto: ContactDto, exEntity: Contact?): Contact {
         val entity = exEntity ?: Contact()
         entity.apply {
             name = dto.name
             phone = dto.phone
             email = dto.email
-            address = dto.address?.map {
-                globalAddressService.find(it).orElseThrow { ExceptionUtil.notFound("Global Address", it) }
-            }?.toMutableList()
-            this.user = userRepo.findById(dto.userId).orElseThrow { ExceptionUtil.notFound(User::class.java,dto.userId) }
+            address = addressRepository.save(addressMapper.map(dto.address, null))
+            this.user = userRepo.findById(dto.userId)
+                .orElseThrow { ExceptionUtil.notFound(User::class.java, dto.userId) }
         }
         return entity
     }

@@ -31,26 +31,11 @@ class ContactServiceBean @Autowired constructor(
         sortBy: SortByFields,
         direction: Sort.Direction
     ): Page<Contact> {
-        val contacts = this.contactRepository.search(
+        return this.contactRepository.search(
             userId,
             query,
             PageAttr.getPageRequest(page, size, sortBy.fieldName, direction)
         )
-        if (contacts.isEmpty) {
-            this.createDefaultContact(userId)
-            return this.search(userId, query, page, size, sortBy, direction)
-        }
-        return contacts
-    }
-
-    private fun createDefaultContact(userId: Long): Contact {
-        val user = userRepository.findById(userId).orElseThrow { ExceptionUtil.notFound(User::class.java, userId) }
-        val contact = Contact()
-        contact.name = user.name
-        contact.phone = user.phone
-        contact.email = user.email
-        contact.user = user
-        return this.save(contact)
     }
 
     override fun search(

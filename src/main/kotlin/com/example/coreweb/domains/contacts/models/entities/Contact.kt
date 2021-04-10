@@ -23,10 +23,14 @@ class Contact : BaseEntity() {
     @Column(name = "is_self", nullable = false)
     var self: Boolean = false
 
-    @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinTable(name = "contact_addresses", schema = "core_web")
-    var address: MutableList<GlobalAddress>? = null
+//    @ManyToMany
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    @JoinTable(name = "contact_addresses", schema = "core_web")
+//    var address: MutableList<GlobalAddress>? = null
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "address_id", nullable = false)
+    lateinit var address: GlobalAddress
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
