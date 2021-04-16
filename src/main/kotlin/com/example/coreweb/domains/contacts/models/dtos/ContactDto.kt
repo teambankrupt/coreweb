@@ -29,10 +29,12 @@ class ContactDto : BaseDto() {
     @ApiModelProperty(example = "alom@gmal.com")
     var email: String? = null
 
+    @ApiModelProperty(required = true)
     @NotNull
     @JsonProperty("address")
     lateinit var address: GlobalAddressDto
 
+    @ApiModelProperty(required = true)
     @JsonProperty("user_id")
     @NotNull
     @Min(1)
