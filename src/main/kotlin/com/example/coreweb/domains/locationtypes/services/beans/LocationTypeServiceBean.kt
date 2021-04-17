@@ -14,11 +14,20 @@ import org.springframework.data.domain.Sort
 
 @Service
 class LocationTypeServiceBean @Autowired constructor(
-        private val locationTypeRepository: LocationTypeRepository
+    private val locationTypeRepository: LocationTypeRepository
 ) : LocationTypeService {
 
-    override fun search(query: String, page: Int, size: Int, sortBy: SortByFields, direction: Sort.Direction): Page<LocationType> {
-        return this.locationTypeRepository.search(query.toLowerCase(), PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
+    override fun search(
+        query: String,
+        page: Int,
+        size: Int,
+        sortBy: SortByFields,
+        direction: Sort.Direction
+    ): Page<LocationType> {
+        return this.locationTypeRepository.search(
+            query.toLowerCase(),
+            PageAttr.getPageRequest(page, size, direction, "level", sortBy.fieldName)
+        )
     }
 
     override fun save(entity: LocationType): LocationType {

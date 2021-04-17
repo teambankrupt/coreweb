@@ -25,6 +25,11 @@ public final class PageAttr {
         return PageRequest.of(page, size, direction, sortBy);
     }
 
+    public static PageRequest getPageRequest(int page, int size, Sort.Direction direction, String... sortBy) {
+        if (size <= 0) size = 10;
+        return PageRequest.of(page, size, direction, sortBy);
+    }
+
     public static PageRequest getPageRequest(PageableParams pageableParams) {
         if (pageableParams.getSize() <= 0) pageableParams.setSize(10);
         return PageRequest.of(
