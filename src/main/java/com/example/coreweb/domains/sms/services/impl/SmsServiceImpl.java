@@ -20,7 +20,7 @@ public class SmsServiceImpl implements SmsService {
     @Override
     public boolean sendSms(String phoneNumber, String message) {
         String phone = phoneNumber.startsWith("88") ? phoneNumber : "88" + phoneNumber;
-        String url = "http://brandsms.mimsms.com/smsapi?api_key=" + this.apiKey + "&type=text&contacts=" + phone +
+        String url = "https://esms.mimsms.com/smsapi?api_key=" + this.apiKey + "&type=text&contacts=" + phone +
                 "&senderid=" + this.senderId + "&msg=" + message;
         try {
             NetworkUtil.postData(url, null, null);
