@@ -4,14 +4,14 @@ package com.example.coreweb.domains.base.entities;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.time.Instant;
 import java.util.Date;
 
 @MappedSuperclass
 public class ValidationToken extends BaseEntity {
     private String token;
     private boolean tokenValid;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date tokenValidUntil;
+    private Instant tokenValidUntil;
 
 
     public String getToken() {
@@ -24,18 +24,18 @@ public class ValidationToken extends BaseEntity {
 
     public boolean isTokenValid() {
         if (tokenValidUntil == null) return false;
-        return tokenValid && !new Date().after(tokenValidUntil);
+        return tokenValid && !Instant.now().isAfter(tokenValidUntil);
     }
 
     public void setTokenValid(boolean tokenValid) {
         this.tokenValid = tokenValid;
     }
 
-    public Date getTokenValidUntil() {
+    public Instant getTokenValidUntil() {
         return tokenValidUntil;
     }
 
-    public void setTokenValidUntil(Date tokenValidUntil) {
+    public void setTokenValidUntil(Instant tokenValidUntil) {
         this.tokenValidUntil = tokenValidUntil;
     }
 
