@@ -1,6 +1,7 @@
 package com.example.coreweb.domains.locationtypes.models.entities
 
 import com.example.coreweb.domains.base.entities.BaseTreeEntity
+import com.fasterxml.jackson.annotation.JsonIgnore
 import javax.persistence.*
 
 @Entity
@@ -19,6 +20,7 @@ class LocationType : BaseTreeEntity<LocationType>() {
     @Column(name = "description", nullable = false)
     lateinit var description: String
 
+    @JsonIgnore
     override fun getImpl(): LocationType {
         return this
     }

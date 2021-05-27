@@ -1,9 +1,8 @@
 package com.example.coreweb.domains.locations.models.entities
 
-import com.example.common.utils.ExceptionUtil
-import com.example.coreweb.domains.base.entities.BaseEntity
 import com.example.coreweb.domains.base.entities.BaseTreeEntity
 import com.example.coreweb.domains.locationtypes.models.entities.LocationType
+import com.fasterxml.jackson.annotation.JsonIgnore
 import javax.persistence.*
 
 @Entity
@@ -29,6 +28,7 @@ class Location : BaseTreeEntity<Location>() {
     @JoinColumn(name = "type_id", nullable = false)
     lateinit var type: LocationType
 
+    @JsonIgnore
     override fun getImpl(): Location {
         return this
     }
