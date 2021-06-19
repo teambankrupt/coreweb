@@ -18,7 +18,7 @@ class GlobalAddressServiceBean @Autowired constructor(
 ) : GlobalAddressService {
 
     override fun search(query: String, page: Int, size: Int, sortBy: SortByFields, direction: Sort.Direction): Page<GlobalAddress> {
-        return this.globalAddressRepository.search(query.toLowerCase(), PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
+        return this.globalAddressRepository.search(query.lowercase(Locale.getDefault()), PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
     }
 
     override fun save(entity: GlobalAddress): GlobalAddress {
