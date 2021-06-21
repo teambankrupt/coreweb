@@ -33,16 +33,27 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public boolean send(String to, String subject, String msgBody, boolean html) {
+        return this.send(new String[]{to}, subject, msgBody, html);
+    }
+
+    @Override
+    public boolean send(String[] to, String subject, String msgBody, boolean html) {
         return this.send(null, to, null, null, subject, msgBody, html, null);
     }
 
     @Override
     public boolean send(String to, String subject, String msgBody, boolean html, List<File> attachments) {
+        return this.send(new String[]{to}, subject, msgBody, html, attachments);
+    }
+
+    @Override
+    public boolean send(String[] to, String subject, String msgBody, boolean html, List<File> attachments) {
         return this.send(null, to, null, null, subject, msgBody, html, attachments);
     }
 
     @Override
-    public boolean send(String from, String to, String[] cc, String[] bcc, String subject, String msgBody, boolean html, List<File> attachments) {
+    public boolean send(String from, String[] to, String[] cc, String[] bcc, String subject, String msgBody, boolean html, List<File> attachments) {
+        String[] toArr = to == null ? ArrayUtils.toArray() : to;
         String[] ccArr = cc == null ? ArrayUtils.toArray() : cc;
         String[] bccArr = bcc == null ? ArrayUtils.toArray() : bcc;
 
@@ -55,7 +66,7 @@ public class MailServiceImpl implements MailService {
                 MimeMessageHelper helper = new MimeMessageHelper(message, true);
                 if (from != null)
                     helper.setFrom(from);
-                helper.setTo(to);
+                helper.setTo(toArr);
                 helper.setCc(ccArr);
                 helper.setBcc(bccArr);
                 helper.setSubject(subject);
@@ -69,7 +80,7 @@ public class MailServiceImpl implements MailService {
             } catch (MessagingException e) {
                 System.out.println(e.toString());
             }
-            this.saveLog(to, String.join(",", ccArr), String.join(",", bccArr), from, subject, msgBody, attachments == null ? 0 : attachments.size());
+            this.saveLog(String.join(",", toArr), String.join(",", ccArr), String.join(",", bccArr), from, subject, msgBody, attachments == null ? 0 : attachments.size());
         }).start();
 
         return true;
@@ -82,15 +93,18 @@ public class MailServiceImpl implements MailService {
     }
 
 
-    private void validateEmails(String from, String to, String[] cc, String[] bcc) {
+    private void validateEmails(String from, String[] to, String[] cc, String[] bcc) {
 
         if (from != null && !from.isEmpty()) {
             boolean valid = Validator.isValidEmail(from);
             if (!valid) throw new RuntimeException("Invalid `from` email: " + from);
         }
 
-        boolean valid = Validator.isValidEmail(to);
-        if (!valid) throw new RuntimeException("Invalid `to` email: " + to);
+        if (to != null)
+            if (cc != null)
+                Arrays.stream(to).forEach(m -> {
+                    if (!Validator.isValidEmail(m)) throw new RuntimeException("Invalid `to` email: " + m);
+                });
 
         if (cc != null)
             Arrays.stream(cc).forEach(m -> {

@@ -27,7 +27,7 @@ public class MailController {
     @PostMapping("/api/v1/test-email")
     private ResponseEntity<String> testEmail(
             @RequestParam(value = "from", required = false) String from,
-            @RequestParam(value = "to") String to,
+            @RequestParam(value = "to") String[] to,
             @RequestParam(value = "cc", required = false) String[] cc,
             @RequestParam(value = "bcc", required = false) String[] bcc,
             @RequestParam(value = "subject", defaultValue = "Test Email") String subject,
@@ -38,7 +38,7 @@ public class MailController {
         this.mailService.send(
                 from, to, cc, bcc,
                 subject, msgBody, html,
-                attachments == null ? null : Arrays.stream(attachments).map(multipartFile -> FileIO.convertToFile(multipartFile)).collect(Collectors.toList())
+                attachments == null ? null : Arrays.stream(attachments).map(FileIO::convertToFile).collect(Collectors.toList())
         );
         return ResponseEntity.ok("Email Sent!!");
     }
