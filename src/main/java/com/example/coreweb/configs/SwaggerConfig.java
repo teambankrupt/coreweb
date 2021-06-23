@@ -40,7 +40,7 @@ public class SwaggerConfig {
     private String applicationName;
 
     @Value("${app.base-url-api}")
-    private String appUrl;
+    private String baseUrlApi;
 
     @Value("${contactEmail}")
     private String contactEmail;
@@ -67,6 +67,7 @@ public class SwaggerConfig {
 //                .responseModel(new ModelRef("string")).build());
 
         return new Docket(DocumentationType.SWAGGER_2)
+                .host(baseUrlApi)
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.ant("/api/**"))
@@ -129,8 +130,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder().title(this.applicationName + " Api").description("")
-                .termsOfServiceUrl(this.appUrl + "/terms")
-                .contact(new Contact(this.applicationName + " Admin", this.appUrl, this.contactEmail))
-                .license("MIT").licenseUrl(this.appUrl + "/license").version("1.0.0").build();
+                .termsOfServiceUrl(this.baseUrlApi + "/terms")
+                .contact(new Contact(this.applicationName + " Admin", this.baseUrlApi, this.contactEmail))
+                .license("MIT").licenseUrl(this.baseUrlApi + "/license").version("1.0.0").build();
     }
 }
