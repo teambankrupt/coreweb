@@ -45,8 +45,11 @@ public class SwaggerConfig {
     @Value("${contactEmail}")
     private String contactEmail;
 
-    @Value("${host.full.dns.auth.link}")
+    @Value("${swagger.auth.link}")
     private String authLink;
+
+    @Value("${swagger.host.domain}")
+    private String host;
 
     @Bean
     public Docket api() {
@@ -67,7 +70,7 @@ public class SwaggerConfig {
 //                .responseModel(new ModelRef("string")).build());
 
         return new Docket(DocumentationType.SWAGGER_2)
-                .host(baseUrlApi)
+                .host(host)
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.ant("/api/**"))
