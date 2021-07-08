@@ -4,6 +4,7 @@ import com.example.coreweb.domains.locations.models.dtos.LocationDto
 import com.example.coreweb.domains.locations.models.mappers.LocationMapper
 import com.example.coreweb.domains.locations.services.LocationService
 import com.example.common.utils.ExceptionUtil
+import com.example.coreweb.commons.Constants
 import com.example.coreweb.domains.base.controllers.CrudControllerV2
 import com.example.coreweb.domains.base.models.enums.SortByFields
 import com.example.coreweb.routing.Route
@@ -16,7 +17,7 @@ import javax.validation.Valid
 import org.springframework.data.domain.Sort
 
 @RestController
-@Api(tags = ["Locations"], description = "Description about Locations")
+@Api(tags = [Constants.Swagger.LOCATION], description = Constants.Swagger.REST_API)
 class LocationController @Autowired constructor(
         private val locationService: LocationService,
         private val locationMapper: LocationMapper
