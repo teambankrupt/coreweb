@@ -27,6 +27,10 @@ class LocationServiceBean @Autowired constructor(
         else this.locationRepository.searchRootLocations(query, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
     }
 
+    override fun searchByZipCode(zipCode: String): Optional<Location> {
+        return this.locationRepository.findByZipCode(zipCode)
+    }
+
     override fun search(query: String, page: Int, size: Int, sortBy: SortByFields, direction: Sort.Direction): Page<Location> {
         return this.locationRepository.search(query, null, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
     }

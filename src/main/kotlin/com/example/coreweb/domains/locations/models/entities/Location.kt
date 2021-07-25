@@ -21,6 +21,9 @@ class Location : BaseTreeEntity<Location>() {
     @Column(name = "image")
     var image: String? = null
 
+    @Column(name = "zip_code")
+    var zipCode: String? = null
+
     @Embedded
     lateinit var coorodinate: Coordinate
 

@@ -33,4 +33,7 @@ interface LocationRepository : JpaRepository<Location, Long> {
 
     @Query("SELECT COUNT(l) FROM Location l WHERE l.parent.id=:locationId")
     fun childCount(@Param("locationId") locationId: Long): Long
+
+    @Query("SELECT l FROM Location l WHERE l.zipCode=:zipCode")
+    fun findByZipCode(@Param("zipCode") zipCode: String): Optional<Location>
 }

@@ -51,6 +51,9 @@ class LocationDto : BaseDto() {
     @JsonProperty("parent_id")
     var parentId: Long? = null
 
+    @JsonProperty("zip_code")
+    var zipCode: String? = null
+
     /*
     READONLY PROPERTIES
      */
