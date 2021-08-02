@@ -26,6 +26,7 @@ class LocationMapper @Autowired constructor(
 
         dto.label = entity.label
         dto.code = entity.code
+        dto.zipCode = entity.zipCode
         dto.description = entity.description
         dto.image = entity.image
 
@@ -38,8 +39,8 @@ class LocationMapper @Autowired constructor(
 
         dto.typeDto = this.locationTypeMapper.map(entity.type)
         dto.path = entity.path
-        dto.absolutePath = entity.getAbsolutePath()
-        dto.rootId = entity.getRootId()
+        dto.absolutePath = entity.absolutePath
+        dto.rootId = entity.rootId
 
         return dto
     }
@@ -51,6 +52,7 @@ class LocationMapper @Autowired constructor(
         entity.code = dto.code
         entity.description = dto.description
         entity.image = dto.image
+        entity.zipCode = dto.zipCode
 
         entity.coorodinate = Coordinate(dto.latitude, dto.longitude, dto.altitude)
 
