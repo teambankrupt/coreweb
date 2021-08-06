@@ -33,9 +33,10 @@ public class SmsServiceImpl implements SmsService {
     @Override
     public boolean sendSms(Providers provider, String phoneNumber, String message) {
         if (provider == Providers.MIM_SMS)
-            this.sendMimSms(phoneNumber, message);
+            return this.sendMimSms(phoneNumber, message);
         else if (provider == Providers.TWILIO)
-            this.sendTwilioSms(phoneNumber, message);
+            return this.sendTwilioSms(phoneNumber, message);
+
         return this.sendTwilioSms(phoneNumber, message);
     }
 
