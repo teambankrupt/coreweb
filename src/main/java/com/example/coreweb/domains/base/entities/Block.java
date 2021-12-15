@@ -1,6 +1,7 @@
 package com.example.coreweb.domains.base.entities;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.Optional;
 
 @MappedSuperclass
@@ -19,14 +20,16 @@ public abstract class Block<T extends Block<T>> extends BaseEntityV2 {
     @PrePersist
     @PreUpdate
     private void onBlockPersist() {
-        if (this.isChained())
+        if (this.isChained()) {
+            long start = Instant.now().toEpochMilli();
+            System.out.println("Mining started.");
             this.hash = this.calculateHash();
-
-        if (!this.isNew())
-            throw new RuntimeException("Block can't be manipulated!");
+            System.out.println("Mining completed. Taken: " + (Instant.now().toEpochMilli() - start) + " millis");
+            this.startMining(this);
+        } else this.hash = "";
     }
 
-    protected String calculateHash() {
+    public String calculateHash() {
         Optional<T> previousBlock = getImpl().getPreviousBlock();
         String objectHash = this.getImpl().generateHash();
 
@@ -41,7 +44,7 @@ public abstract class Block<T extends Block<T>> extends BaseEntityV2 {
         if (block.isGenesisBlock())
             return;
         String previousBlockHash = block.previousBlock.getHash();
-        
+
         if (!block.previousBlock.calculateHash().equals(previousBlockHash))
             throw new RuntimeException("Block Invalid. Hash: " + block.previousBlock.getHash());
 
@@ -56,6 +59,8 @@ public abstract class Block<T extends Block<T>> extends BaseEntityV2 {
 
     public void setChained(boolean chained) {
         this.chained = chained;
+        if (this.hash == null || this.hash.trim().isEmpty())
+            this.hash = this.calculateHash();
     }
 
     public boolean isChained() {
