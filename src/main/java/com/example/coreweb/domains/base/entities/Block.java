@@ -26,21 +26,31 @@ public abstract class Block<T extends Block<T>> extends BaseEntityV2 {
             throw new RuntimeException("Block can't be manipulated!");
     }
 
-    private String calculateHash() {
+    protected String calculateHash() {
         Optional<T> previousBlock = getImpl().getPreviousBlock();
         String objectHash = this.getImpl().generateHash();
-        System.out.println("Current obj Hash: " + objectHash);
 
         if (!previousBlock.isPresent())
             return String.valueOf(objectHash);
 
         String toHash = objectHash + this.previousBlock.getHash();
-        System.out.println("New str to hash: " + toHash);
-        String hashed = String.valueOf(toHash.hashCode());
-        System.out.println("Hashed: " + hashed);
-        return hashed;
+        return String.valueOf(toHash.hashCode());
     }
 
+    public void startMining(Block<T> block) {
+        if (block.isGenesisBlock())
+            return;
+        String previousBlockHash = block.previousBlock.getHash();
+        
+        if (!block.previousBlock.calculateHash().equals(previousBlockHash))
+            throw new RuntimeException("Block Invalid. Hash: " + block.previousBlock.getHash());
+
+        this.startMining(block.previousBlock);
+    }
+
+    public boolean isGenesisBlock() {
+        return this.previousBlock == null;
+    }
 
     public abstract T getImpl();
 
