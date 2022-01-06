@@ -20,7 +20,7 @@ public abstract class BaseEntityV2 implements Serializable {
     private Long id;
 
     @Version
-    @Column(nullable = false)
+    @Column(columnDefinition = "bigint not null default 1")
     private Long version;
 
     @Column(name = "created_at", nullable = false)
