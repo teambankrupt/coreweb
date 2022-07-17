@@ -22,6 +22,9 @@ interface LocationRepository : JpaRepository<Location, Long> {
     @Query("SELECT e FROM Location e WHERE (:q IS NULL OR LOWER(e.label) LIKE %:q%) AND (:typeId IS NULL OR e.type.id=:typeId) AND e.deleted=FALSE AND e.type.deleted=FALSE")
     fun search(@Param("q") query: String, @Param("typeId") typeId: Long?, pageable: Pageable): Page<Location>
 
+    @Query("SELECT e FROM Location e WHERE (:q IS NULL OR LOWER(e.label) LIKE %:q%) AND e.zipCode =:zipCode AND e.deleted=FALSE AND e.type.deleted=FALSE")
+    fun searchByZipCode(@Param("q") query: String, @Param("zipCode") zipCode: String, pageable: Pageable): Page<Location>
+
     @Query("SELECT e FROM Location e WHERE e.id=:id AND e.deleted=FALSE AND e.type.deleted=FALSE")
     fun find(@Param("id") id: Long): Optional<Location>
 
