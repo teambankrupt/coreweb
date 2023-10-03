@@ -6,8 +6,11 @@ import com.example.common.exceptions.notacceptable.NotAcceptableException
 import com.example.common.exceptions.notfound.NotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.env.Environment
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.util.LinkedMultiValueMap
+import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 
@@ -46,7 +49,11 @@ open class BaseExHandler @Autowired constructor(
         return buildResponse(HttpStatus.EXPECTATION_FAILED, ex)
     }
 
-    fun buildResponse(status: HttpStatus, ex: Throwable): ResponseEntity<ErrorResponse> {
+    fun buildResponse(
+        status: HttpStatus,
+        ex: Throwable,
+        customHeaders: Map<String, Set<String>> = emptyMap()
+    ): ResponseEntity<ErrorResponse> {
         val response = if (debug()) ErrorResponse(
             status.value(),
             status.name,
@@ -57,10 +64,20 @@ open class BaseExHandler @Autowired constructor(
             status.name,
             ex.message ?: ""
         )
+        val headers: HttpHeaders = HttpHeaders(
+            mapToMultiValueMap(customHeaders.mapValues { it.value.joinToString(",") })
+        )
 
         return ResponseEntity
             .status(status)
+            .headers(headers)
             .body(response)
     }
-
+    private fun mapToMultiValueMap(map: Map<String, String>): MultiValueMap<String, String> {
+        val multiValueMap = LinkedMultiValueMap<String, String>()
+        map.forEach { (key, value) ->
+            multiValueMap.add(key, value)
+        }
+        return multiValueMap
+    }
 }
