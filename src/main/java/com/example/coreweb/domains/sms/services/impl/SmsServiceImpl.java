@@ -2,7 +2,6 @@ package com.example.coreweb.domains.sms.services.impl;
 
 import com.example.common.models.DuplicateParamEntry;
 import com.example.common.utils.NetworkUtil;
-import com.example.coreweb.commons.Constants;
 import com.example.coreweb.domains.sms.enums.Providers;
 import com.example.coreweb.domains.sms.services.SmsService;
 import org.apache.commons.codec.binary.Base64;
@@ -42,8 +41,9 @@ public class SmsServiceImpl implements SmsService {
 
     public boolean sendMimSms(String phoneNumber, String message) {
         String phone = phoneNumber.startsWith("88") ? phoneNumber : "88" + phoneNumber;
-        String url = "https://esms.mimsms.com/smsapi?api_key=" + this.apiKey + "&type=text&contacts=" + phone +
-                "&senderid=" + this.senderId + "&msg=" + message;
+        String url = "https://bulk.mimsms.com/smsapi?api_key="+this.apiKey+"&type=text&contacts="+ phone +
+                "&senderid="+this.senderId+"&msg="+message;
+
         try {
             NetworkUtil.postData(url, null, null);
             return true;
