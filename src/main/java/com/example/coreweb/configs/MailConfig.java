@@ -13,15 +13,18 @@ import java.util.Properties;
 @Configuration
 @PropertySource("classpath:mail.properties")
 public class MailConfig {
-    @Value("${email.host}")
+    @Value("${zoho.host}")
     private String host;
 
-    @Value("${email.port}")
+    @Value("${zoho.port}")
     private Integer port;
-    @Value("${email.username}")
+    @Value("${zoho.username}")
     private String username;
-    @Value("${email.password}")
+    @Value("${zoho.password}")
     private String password;
+
+    @Value("${auth.verification.provider}")
+    private String emailProvider;
 
     @Bean
     public JavaMailSender javaMailSenderBean() {
@@ -39,10 +42,26 @@ public class MailConfig {
 
     private Properties getMailProperties() {
         Properties properties = new Properties();
-        properties.setProperty("mail.transport.protocol", "smtp");
-        properties.setProperty("mail.smtp.auth", "true");
-        properties.setProperty("mail.smtp.starttls.enable", "true");
-        properties.setProperty("mail.debug", "false");
+
+        /*
+        Gmail
+         */
+        if ("gmail".equals(emailProvider)) {
+            properties.setProperty("mail.transport.protocol", "smtp");
+            properties.setProperty("mail.smtp.auth", "true");
+            properties.setProperty("mail.smtp.starttls.enable", "true");
+            properties.setProperty("mail.debug", "false");
+        }
+        /*
+        Zoho Mail
+         */
+        if ("zoho".equals(emailProvider)) {
+            properties.setProperty("mail.pop3.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            properties.setProperty("mail.smtp.socketFactory.fallback", "false");
+            properties.setProperty("mail.smtp.socketFactory.port", "465");
+            properties.put("mail.smtp.startssl.enable", "true");
+        }
         return properties;
     }
 }
