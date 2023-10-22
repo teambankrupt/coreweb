@@ -13,14 +13,14 @@ import java.util.Properties;
 @Configuration
 @PropertySource("classpath:mail.properties")
 public class MailConfig {
-    @Value("${zoho.host}")
+    @Value("${email.host}")
     private String host;
 
-    @Value("${zoho.port}")
+    @Value("${email.port}")
     private Integer port;
-    @Value("${zoho.username}")
+    @Value("${email.username}")
     private String username;
-    @Value("${zoho.password}")
+    @Value("${email.password}")
     private String password;
 
     @Value("${auth.verification.provider}")
