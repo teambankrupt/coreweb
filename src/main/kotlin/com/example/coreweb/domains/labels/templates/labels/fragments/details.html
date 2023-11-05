@@ -1,0 +1,25 @@
+<html layout:decorate="dashboard" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<div layout:fragment="main_content">
+    <div th:if="${message!=null}" class="alert alert-info" role="alert">
+        <span th:text="${message}"></span>
+    </div>
+    <div class="card">
+        <div class="header">
+            <h2>
+                Label Details <small>Description text here...</small>
+            </h2>
+            <div class="pull-right">
+                <a th:href="@{/labels/create}" class="btn btn-primary">CREATE NEW</a>
+                <a th:href="@{/labels/}+${label?.id}+@{/update}" class="btn btn-primary">EDIT</a>
+                <a th:href="@{/labels}" class="btn btn-primary">All Labels</a>
+            </div>
+        </div>
+
+        <div class="body">
+            Labels(<span th:text="${label?.id}"></span>) details goes here
+        </div>
+
+    </div>
+
+</div>
+</html>

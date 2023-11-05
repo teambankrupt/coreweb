@@ -122,6 +122,22 @@ class Route {
             const val FIND_GLOBALADDRESS = "$API$VERSION/global-addresss/{id}"
             const val UPDATE_GLOBALADDRESS = "$API$VERSION/global-addresss/{id}"
             const val DELETE_GLOBALADDRESS = "$API$VERSION/global-addresss/{id}"
+
+            // Labels (Web)
+            const val WEB_SEARCH_LABELS = "/labels"
+            const val WEB_CREATE_LABEL_PAGE = "/labels/create"
+            const val WEB_CREATE_LABEL = "/labels"
+            const val WEB_FIND_LABEL = "/labels/{id}"
+            const val WEB_UPDATE_LABEL_PAGE = "/labels/{id}/update"
+            const val WEB_UPDATE_LABEL = "/labels/{id}"
+            const val WEB_DELETE_LABEL = "/labels/{id}/delete"
+
+            // Labels
+            const val SEARCH_LABELS = "$API$VERSION/labels"
+            const val CREATE_LABEL = "$API$VERSION/labels"
+            const val FIND_LABEL = "$API$VERSION/labels/{id}"
+            const val UPDATE_LABEL = "$API$VERSION/labels/{id}"
+            const val DELETE_LABEL = "$API$VERSION/labels/{id}"
         }
     }
 }

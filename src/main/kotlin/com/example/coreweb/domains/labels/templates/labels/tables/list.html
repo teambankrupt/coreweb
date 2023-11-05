@@ -1,0 +1,33 @@
+<table class="table table-hover table-condensed table-striped">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>CREATED AT</th>
+        <th>UPDATED AT</th>
+        <th>DETAILS</th>
+        <th>UPDATE</th>
+        <th>DELETE</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="label: ${labels}">
+        <td><a th:href="@{/labels/}+${label?.id}" th:text="${label?.id}"></a></td>
+        <td th:text="${label?.getCreatedAtReadable()}"></td>
+        <td th:text="${label?.getUpdatedAtReadable()}"></td>
+        <td>
+            <a class="btn btn-primary"
+               th:href="@{/labels/}+${label?.id}">DETAILS</a>
+        </td>
+        <td>
+            <a class="btn btn-warning"
+               th:href="@{/labels/}+${label?.id}+@{/update}">UPDATE</a>
+        </td>
+        <td>
+            <form method="post" th:action="@{/labels/}+${label?.id}+@{/delete}"
+                  onclick="return confirm('Are you sure?')">
+                <button type="submit" class="btn btn-danger">DELETE</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
