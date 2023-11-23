@@ -12,7 +12,7 @@ import java.util.*
 @Repository
 interface LabelRepository : JpaRepository<Label, Long> {
 
-    @Query("SELECT e FROM Label e WHERE (:q IS NULL OR LOWER(e.createdBy) LIKE %:q%) AND e.deleted=FALSE")
+    @Query("SELECT e FROM Label e WHERE (:q IS NULL OR LOWER(e.name) LIKE %:q%) AND e.deleted=FALSE")
     fun search(@Param("q") query: String?, pageable: Pageable): Page<Label>
 
     @Query("SELECT e FROM Label e WHERE e.id=:id AND e.deleted=FALSE")
