@@ -15,9 +15,11 @@ import java.util.*
 class LabelServiceBean @Autowired constructor(
     private val labelRepository: LabelRepository
 ) : LabelService {
+    override fun search(parentId: Long?, params: PageableParams): Page<Label> =
+        this.labelRepository.search(parentId, params.query, PageAttr.getPageRequest(params))
 
     override fun search(params: PageableParams): Page<Label> {
-        return this.labelRepository.search(params.query, PageAttr.getPageRequest(params))
+        return this.labelRepository.search(null, params.query, PageAttr.getPageRequest(params))
     }
 
     override fun save(entity: Label): Label {

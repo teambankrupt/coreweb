@@ -134,6 +134,7 @@ class Route {
 
             // Labels
             const val SEARCH_LABELS = "$API$VERSION/labels"
+            const val ADMIN_SEARCH_LABELS = "$API$VERSION/admin/labels"
             const val CREATE_LABEL = "$API$VERSION/labels"
             const val FIND_LABEL = "$API$VERSION/labels/{id}"
             const val UPDATE_LABEL = "$API$VERSION/labels/{id}"
