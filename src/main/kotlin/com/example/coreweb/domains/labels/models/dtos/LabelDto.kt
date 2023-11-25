@@ -5,12 +5,17 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.annotations.ApiModelProperty
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
+import javax.validation.constraints.Size
 
 class LabelDto : BaseDto() {
 
     @NotBlank
     @JsonProperty(required = true)
     lateinit var name: String
+
+    @Size(max = 100)
+    @JsonProperty("code")
+    var code: String? = null
 
     @NotNull
     @JsonProperty(required = true)
@@ -25,14 +30,16 @@ class LabelDto : BaseDto() {
     @JsonProperty("image")
     var image: String? = null
 
+    @Size(max = 10)
     @JsonProperty("color")
     var color: String? = null
 
-    @JsonProperty("ui_height")
-    var uiHeight: Int? = null
-
+    @Size(max = 10)
     @JsonProperty("background_color")
     var backgroundColor: String? = null
+
+    @JsonProperty("ui_height")
+    var uiHeight: Int? = null
 
     /*
     READONLY PROPERTIES

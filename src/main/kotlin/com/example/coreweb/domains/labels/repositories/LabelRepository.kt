@@ -14,10 +14,13 @@ interface LabelRepository : JpaRepository<Label, Long> {
 
     @Query(
         "SELECT l FROM Label l WHERE (:q IS NULL OR LOWER(l.name) LIKE %:q%) " +
-                " AND (:parentId IS NULL OR l.parent.id=:parentId) AND l.deleted=FALSE"
+                " AND (:parentId IS NULL OR l.parent.id=:parentId) " +
+                " AND (:parentCode IS NULL OR l.parent.code=:parentCode) " +
+                " AND l.deleted=FALSE"
     )
     fun search(
         @Param("parentId") parentId: Long?,
+        @Param("parentCode") parentCode: String?,
         @Param("q") query: String?,
         pageable: Pageable
     ): Page<Label>

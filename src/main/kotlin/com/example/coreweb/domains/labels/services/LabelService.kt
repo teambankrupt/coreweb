@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page
 interface LabelService : CrudServiceV4<Label> {
     fun search(
         parentId: Long?,
+        parentCode: String?,
         params: PageableParams
     ): Page<Label>
 }

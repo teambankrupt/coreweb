@@ -11,6 +11,9 @@ class Label : BaseTreeEntityV2<Label>() {
     @Column(nullable = false)
     lateinit var name: String
 
+    @Column(name = "code", nullable = false)
+    lateinit var code: String
+
     @Column(nullable = false, length = 500)
     lateinit var description: String
 

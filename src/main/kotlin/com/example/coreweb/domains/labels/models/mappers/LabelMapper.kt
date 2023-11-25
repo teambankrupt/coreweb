@@ -1,11 +1,14 @@
 package com.example.coreweb.domains.labels.models.mappers
 
+import arrow.core.toOption
 import com.example.common.exceptions.orDuckIt
+import com.example.common.utils.SessionIdentifierGenerator
 import com.example.coreweb.domains.base.models.mappers.BaseMapperV2
 import com.example.coreweb.domains.labels.models.dtos.LabelDto
 import com.example.coreweb.domains.labels.models.entities.Label
 import com.example.coreweb.domains.labels.repositories.LabelRepository
 import org.springframework.stereotype.Component
+import java.util.*
 
 @Component
 class LabelMapper(
@@ -21,6 +24,7 @@ class LabelMapper(
             this.updatedAt = entity.updatedAt
 
             dto.name = entity.name
+            dto.code = entity.code
             dto.description = entity.description
             dto.parentId = entity.parent.map { it.id }.orElse(null)
             dto.icon = entity.icon
@@ -41,6 +45,10 @@ class LabelMapper(
 
         entity.apply {
             this.name = dto.name
+            this.code = (dto.code ?: "${dto.name}${SessionIdentifierGenerator.alphanumeric(6)}")
+                .replace(" ", "_")
+                .uppercase(Locale.getDefault())
+                .take(100)
             this.description = dto.description
             this.setParent(dto.parentId?.let {
                 labelRepository.find(it).orDuckIt(it)
