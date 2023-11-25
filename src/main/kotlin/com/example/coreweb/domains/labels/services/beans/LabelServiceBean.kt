@@ -1,6 +1,7 @@
 package com.example.coreweb.domains.labels.services.beans
 
 import com.example.common.utils.ExceptionUtil
+import com.example.common.utils.Validator
 import com.example.coreweb.domains.labels.models.entities.Label
 import com.example.coreweb.domains.labels.repositories.LabelRepository
 import com.example.coreweb.domains.labels.services.LabelService

@@ -6,22 +6,33 @@ import io.swagger.annotations.ApiModelProperty
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
-class LabelDto: BaseDto() {
+class LabelDto : BaseDto() {
 
     @NotBlank
+    @JsonProperty(required = true)
     lateinit var name: String
 
     @NotNull
+    @JsonProperty(required = true)
     lateinit var description: String
 
     @JsonProperty("parent_id")
     var parentId: Long? = null
 
+    @JsonProperty("icon")
+    var icon: String? = null
+
     @JsonProperty("image")
     var image: String? = null
 
     @JsonProperty("color")
-    var color: String = "0x000000"
+    var color: String? = null
+
+    @JsonProperty("ui_height")
+    var uiHeight: Int? = null
+
+    @JsonProperty("background_color")
+    var backgroundColor: String? = null
 
     /*
     READONLY PROPERTIES

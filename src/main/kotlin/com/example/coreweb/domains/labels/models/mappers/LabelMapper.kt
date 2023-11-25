@@ -23,11 +23,14 @@ class LabelMapper(
             dto.name = entity.name
             dto.description = entity.description
             dto.parentId = entity.parent.map { it.id }.orElse(null)
+            dto.icon = entity.icon
             dto.image = entity.image
             dto.path = entity.path
             dto.absolutePath = entity.absolutePath
             dto.rootId = entity.rootId
             dto.color = entity.color
+            dto.uiHeight = entity.uiHeight
+            dto.backgroundColor = entity.backgroundColor
         }
 
         return dto
@@ -42,8 +45,11 @@ class LabelMapper(
             this.setParent(dto.parentId?.let {
                 labelRepository.find(it).orDuckIt(it)
             })
+            this.icon = dto.icon
             this.image = dto.image
-            this.color = dto.color
+            this.color = dto.color ?: "#000000"
+            this.backgroundColor = dto.backgroundColor ?: "#FFFFFF"
+            this.uiHeight = dto.uiHeight ?: 100
         }
 
         return entity

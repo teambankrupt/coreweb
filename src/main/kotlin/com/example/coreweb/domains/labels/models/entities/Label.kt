@@ -14,9 +14,20 @@ class Label : BaseTreeEntityV2<Label>() {
     @Column(nullable = false, length = 500)
     lateinit var description: String
 
+    @Column(name = "icon")
+    var icon: String? = null
+
+    @Column(name = "image")
     var image: String? = null
 
-    var color: String = "0x000000"
+    @Column(name = "color", nullable = false)
+    var color: String = "0xFFFFFF"
+
+    @Column(name = "background_color", nullable = false)
+    var backgroundColor: String = "0x000000"
+
+    @Column(name = "ui_height", nullable = false)
+    var uiHeight: Int = 100
 
     override fun getImpl(): Label = this
 }
