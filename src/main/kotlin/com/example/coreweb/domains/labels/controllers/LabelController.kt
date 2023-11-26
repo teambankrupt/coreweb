@@ -26,6 +26,9 @@ class LabelController @Autowired constructor(
     private val labelMapper: LabelMapper
 ) {
 
+    /*
+    PUBLIC API'S
+     */
     @GetMapping(Route.V1.SEARCH_LABELS_CHILDREN_PUBLIC)
     fun searchChildren(
         @PathVariable("code") parentCode: String,
@@ -58,6 +61,11 @@ class LabelController @Autowired constructor(
         )
         return ResponseEntity.ok(entities.map { this.labelMapper.map(it) })
     }
+
+
+    /*
+    END PUBLIC API'S
+     */
 
     @GetMapping(Route.V1.FIND_LABEL)
     fun find(@PathVariable("id") id: Long): ResponseEntity<LabelDto> {
