@@ -133,7 +133,7 @@ class Route {
             const val WEB_DELETE_LABEL = "/labels/{id}/delete"
 
             // Labels
-            const val SEARCH_LABELS_CHILDREN = "$API$VERSION/labels/{code}/children"
+            const val SEARCH_LABELS_CHILDREN_PUBLIC = "$API$VERSION/public/labels/{code}/children"
             const val ADMIN_SEARCH_LABELS = "$API$VERSION/admin/labels"
             const val CREATE_LABEL = "$API$VERSION/labels"
             const val FIND_LABEL = "$API$VERSION/labels/{id}"

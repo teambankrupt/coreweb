@@ -26,7 +26,7 @@ class LabelController @Autowired constructor(
     private val labelMapper: LabelMapper
 ) {
 
-    @GetMapping(Route.V1.SEARCH_LABELS_CHILDREN)
+    @GetMapping(Route.V1.SEARCH_LABELS_CHILDREN_PUBLIC)
     fun searchChildren(
         @PathVariable("code") parentCode: String,
         @RequestParam("q", required = false) query: String?,
