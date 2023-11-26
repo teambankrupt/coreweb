@@ -9,6 +9,7 @@ import com.example.coreweb.utils.PageAttr
 import com.example.coreweb.utils.PageableParams
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -16,6 +17,9 @@ import java.util.*
 class LabelServiceBean @Autowired constructor(
     private val labelRepository: LabelRepository
 ) : LabelService {
+    override fun search(parentId: Long?, parentCode: String?, query: String?, pageRequest: PageRequest): Page<Label> =
+        this.labelRepository.search(parentId, parentCode, query, pageRequest)
+
     override fun search(parentId: Long?, parentCode: String?, params: PageableParams): Page<Label> =
         this.labelRepository.search(parentId, parentCode, params.query, PageAttr.getPageRequest(params))
 

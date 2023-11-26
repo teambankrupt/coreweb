@@ -17,6 +17,12 @@ class Label : BaseTreeEntityV2<Label>() {
     @Column(nullable = false, length = 500)
     lateinit var description: String
 
+    @Column(nullable = false)
+    var flagship: Boolean = false
+
+    @Column(nullable = false)
+    var serial: Int = 0
+
     @Column(name = "icon")
     var icon: String? = null
 
