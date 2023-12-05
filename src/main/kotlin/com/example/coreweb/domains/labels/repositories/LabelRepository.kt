@@ -28,4 +28,9 @@ interface LabelRepository : JpaRepository<Label, Long> {
     @Query("SELECT e FROM Label e WHERE e.id=:id AND e.deleted=FALSE")
     fun find(@Param("id") id: Long): Optional<Label>
 
+    @Query("SELECT l FROM Label l WHERE l.code=:code AND l.deleted=FALSE")
+    fun findByCode(@Param("code") code: String): Optional<Label>
+
+    @Query("SELECT l FROM Label l WHERE l.code=:code")
+    fun findByCodeIncludingDeleted(@Param("code") code: String): Optional<Label>
 }

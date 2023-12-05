@@ -2,6 +2,7 @@ package com.example.coreweb.domains.labels.models.mappers
 
 import arrow.core.toOption
 import com.example.common.exceptions.orDuckIt
+import com.example.common.utils.ExceptionUtil
 import com.example.common.utils.SessionIdentifierGenerator
 import com.example.coreweb.domains.base.models.mappers.BaseMapperV2
 import com.example.coreweb.domains.labels.models.dtos.LabelDto
@@ -27,6 +28,7 @@ class LabelMapper(
             this.code = entity.code
             this.description = entity.description
             this.parentId = entity.parent.map { it.id }.orElse(null)
+            this.parentCode = entity.parent.map { it.code }.orElse(null)
             this.icon = entity.icon
             this.image = entity.image
             this.flagship = entity.flagship
@@ -55,6 +57,9 @@ class LabelMapper(
             this.description = dto.description
             this.setParent(dto.parentId?.let {
                 labelRepository.find(it).orDuckIt(it)
+            } ?: dto.parentCode?.let {
+                labelRepository.findByCode(it)
+                    .orElseThrow { ExceptionUtil.notFound("Label doesn't exist with code $it") }
             })
             this.serial = dto.serial
             this.flagship = dto.flagship

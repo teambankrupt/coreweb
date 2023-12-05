@@ -24,6 +24,9 @@ class LabelDto : BaseDto() {
     @JsonProperty("parent_id")
     var parentId: Long? = null
 
+    @JsonProperty("parent_code")
+    var parentCode: String? = null
+
     @JsonProperty("flagship")
     var flagship: Boolean = false
 
