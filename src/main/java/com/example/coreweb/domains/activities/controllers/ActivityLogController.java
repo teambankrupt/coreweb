@@ -41,7 +41,9 @@ public class ActivityLogController {
                         a.getUrl(),
                         a.getUser().getId(),
                         a.getUser().getUsername(),
-                        a.getTotalVisitors()
+                        a.getTotalVisitors(),
+                        a.getCreatedAt(),
+                        a.getUpdatedAt()
                 ))
         );
     }

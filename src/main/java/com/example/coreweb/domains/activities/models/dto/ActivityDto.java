@@ -1,7 +1,8 @@
 package com.example.coreweb.domains.activities.models.dto;
 
-import com.example.auth.entities.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.time.Instant;
 
 public record ActivityDto(
         @JsonProperty("user_agent")
@@ -26,6 +27,12 @@ public record ActivityDto(
         String username,
 
         @JsonProperty("total_visitors")
-        Long totalVisitors
+        Long totalVisitors,
+
+        @JsonProperty("created_at")
+        Instant createdAt,
+
+        @JsonProperty("updated_at")
+        Instant updatedAt
 ) {
 }
