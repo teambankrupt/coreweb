@@ -26,6 +26,9 @@ public record ActivityDto(
         @JsonProperty("username")
         String username,
 
+
+        @JsonProperty("full_name")
+        String fullName,
         @JsonProperty("total_visitors")
         Long totalVisitors,
 

@@ -22,8 +22,9 @@ public class ActivityServiceImpl implements ActivityService {
 
 
     @Override
-    public Page<Activity> search(PageableParams params) {
+    public Page<Activity> search(String username, PageableParams params) {
         return this.activityRepo.search(
+                username,
                 params.getQuery(),
                 PageAttr.getPageRequest(params)
         );

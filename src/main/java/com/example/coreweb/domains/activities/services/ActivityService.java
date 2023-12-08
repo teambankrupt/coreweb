@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface ActivityService {
-    Page<Activity> search(PageableParams params);
+    Page<Activity> search(String username,PageableParams params);
 
     Activity save(Activity activity);
 

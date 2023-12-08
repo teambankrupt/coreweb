@@ -12,8 +12,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ActivityRepository extends JpaRepository<Activity, Long> {
 
-    @Query("SELECT a FROM Activity a WHERE (:query IS NULL OR (a.user.name LIKE %:query% OR a.user.username LIKE %:query%)) AND a.deleted=FALSE")
+    @Query("SELECT a FROM Activity a WHERE (:query IS NULL OR (a.user.name LIKE %:query% OR a.user.username LIKE %:query%)) " +
+            " AND (:username IS NULL OR a.user.username=:username) AND a.deleted=FALSE")
     Page<Activity> search(
+            @Param("username") String username,
             @Param("query") String query,
             Pageable pageable
     );

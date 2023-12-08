@@ -24,13 +24,14 @@ public class ActivityLogController {
     @GetMapping(Route.V1.ADMIN_SEARCH_ACTIVITIES)
     private ResponseEntity<Page<ActivityDto>> search(
             @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "username", required = false) String username,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
             @RequestParam(value = "sort_by", defaultValue = "ID") SortByFields sortByFields,
             @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction direction
     ) {
         var activities = this.activityService.search(
-                PageableParams.of(query, page, size, sortByFields, direction)
+                username, PageableParams.of(query, page, size, sortByFields, direction)
         );
         return ResponseEntity.ok(
                 activities.map(a -> new ActivityDto(
@@ -41,6 +42,7 @@ public class ActivityLogController {
                         a.getUrl(),
                         a.getUser().getId(),
                         a.getUser().getUsername(),
+                        a.getUser().getName(),
                         a.getTotalVisitors(),
                         a.getCreatedAt(),
                         a.getUpdatedAt()
