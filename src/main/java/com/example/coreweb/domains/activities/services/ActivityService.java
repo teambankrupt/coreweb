@@ -2,11 +2,13 @@ package com.example.coreweb.domains.activities.services;
 
 import com.example.coreweb.domains.activities.models.entities.Activity;
 import com.example.auth.entities.User;
+import com.example.coreweb.utils.PageableParams;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface ActivityService {
+    Page<Activity> search(PageableParams params);
 
     Activity save(Activity activity);
 

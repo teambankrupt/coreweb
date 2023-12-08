@@ -4,6 +4,7 @@ import com.example.coreweb.utils.PageAttr;
 import com.example.coreweb.domains.activities.models.entities.Activity;
 import com.example.coreweb.domains.activities.repositories.ActivityRepository;
 import com.example.auth.entities.User;
+import com.example.coreweb.utils.PageableParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,15 @@ public class ActivityServiceImpl implements ActivityService {
     @Autowired
     public ActivityServiceImpl(ActivityRepository activityRepo) {
         this.activityRepo = activityRepo;
+    }
+
+
+    @Override
+    public Page<Activity> search(PageableParams params) {
+        return this.activityRepo.search(
+                params.getQuery(),
+                PageAttr.getPageRequest(params)
+        );
     }
 
     public Activity save(Activity activity) {
@@ -35,7 +45,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     public Page<Activity> findByUser(User user, int page, int size) {
-        return this.activityRepo.findByUser(user, PageAttr.getPageRequest(page,size));
+        return this.activityRepo.findByUser(user, PageAttr.getPageRequest(page, size));
     }
 
     @Override
