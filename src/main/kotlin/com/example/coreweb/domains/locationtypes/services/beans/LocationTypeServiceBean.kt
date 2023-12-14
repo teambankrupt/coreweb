@@ -47,6 +47,7 @@ class LocationTypeServiceBean @Autowired constructor(
             val entity = this.find(id).orElseThrow { ExceptionUtil.notFound("LocationType", id) }
             entity.isDeleted = true
             this.locationTypeRepository.save(entity)
+            return
         }
         this.locationTypeRepository.deleteById(id)
     }

@@ -35,6 +35,7 @@ class GlobalAddressServiceBean @Autowired constructor(
             val entity = this.find(id).orElseThrow { ExceptionUtil.notFound("GlobalAddress", id) }
             entity.isDeleted = true
             this.globalAddressRepository.save(entity)
+            return
         }
         this.globalAddressRepository.deleteById(id)
     }

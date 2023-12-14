@@ -41,6 +41,7 @@ class LabelServiceBean @Autowired constructor(
             val entity = this.find(id).orElseThrow { ExceptionUtil.notFound("Label", id) }
             entity.isDeleted = true
             this.labelRepository.save(entity)
+            return
         }
         this.labelRepository.deleteById(id)
     }

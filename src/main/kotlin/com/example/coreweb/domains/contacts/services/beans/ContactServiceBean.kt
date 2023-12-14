@@ -66,6 +66,7 @@ class ContactServiceBean @Autowired constructor(
             val entity = this.find(id).orElseThrow { ExceptionUtil.notFound(Constants.Swagger.CONTACT, id) }
             entity.isDeleted = true
             this.contactRepository.save(entity)
+            return
         }
         this.contactRepository.deleteById(id)
     }
