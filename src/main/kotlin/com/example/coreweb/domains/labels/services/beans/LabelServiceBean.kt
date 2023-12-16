@@ -47,7 +47,13 @@ class LabelServiceBean @Autowired constructor(
     }
 
     override fun validate(entity: Label) {
-        if (this.labelRepository.findByCodeIncludingDeleted(entity.code).isPresent)
-            throw ExceptionUtil.alreadyExists("Label already exists with code: ${entity.code}")
+        if (entity.isNew) {
+            if (this.labelRepository.findByCodeIncludingDeleted(entity.code).isPresent)
+                throw ExceptionUtil.alreadyExists("Label already exists with code: ${entity.code}")
+        } else {
+            this.labelRepository.findByCodeIncludingDeleted(entity.code).ifPresent {
+                if (it.id != entity.id) throw ExceptionUtil.alreadyExists("Label already exists with code: ${entity.code}")
+            }
+        }
     }
 }
