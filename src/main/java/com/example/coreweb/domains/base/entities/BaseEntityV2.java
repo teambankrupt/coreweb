@@ -67,6 +67,11 @@ public abstract class BaseEntityV2 implements Serializable {
         return this.id == null;
     }
 
+    public boolean isMine() {
+        if (this.createdBy == null) return false;
+        return this.createdBy.equals(this.getLoggedInUsername());
+    }
+
     @JsonIgnore
     public String getLoggedInUsername() {
         return SecurityContext.getLoggedInUsername();
