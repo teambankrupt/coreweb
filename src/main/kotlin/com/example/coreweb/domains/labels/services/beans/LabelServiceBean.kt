@@ -36,6 +36,9 @@ class LabelServiceBean @Autowired constructor(
         return this.labelRepository.find(id)
     }
 
+    override fun findByIds(ids: Set<Long>): Set<Label> =
+        this.labelRepository.findByIds(ids)
+
     override fun delete(id: Long, softDelete: Boolean) {
         if (softDelete) {
             val entity = this.find(id).orElseThrow { ExceptionUtil.notFound("Label", id) }

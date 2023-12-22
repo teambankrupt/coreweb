@@ -19,4 +19,6 @@ interface LabelService : CrudServiceV4<Label> {
         parentCode: String?,
         params: PageableParams
     ): Page<Label>
+
+    fun findByIds(ids: Set<Long>): Set<Label>
 }

@@ -33,4 +33,7 @@ interface LabelRepository : JpaRepository<Label, Long> {
 
     @Query("SELECT l FROM Label l WHERE l.code=:code")
     fun findByCodeIncludingDeleted(@Param("code") code: String): Optional<Label>
+
+    @Query("SELECT l FROM Label l WHERE l.id IN :ids AND l.deleted=FALSE")
+    fun findByIds(ids: Set<Long>): Set<Label>
 }

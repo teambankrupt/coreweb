@@ -1,14 +1,12 @@
 package com.example.coreweb.domains.labels.controllers
 
 import com.example.common.utils.ExceptionUtil
-import com.example.coreweb.domains.base.controllers.CrudControllerV3
 import com.example.coreweb.domains.base.models.enums.LabelSortByFields
 import com.example.coreweb.domains.base.models.enums.SortByFields
 import com.example.coreweb.domains.labels.models.dtos.LabelDto
 import com.example.coreweb.domains.labels.models.mappers.LabelMapper
 import com.example.coreweb.domains.labels.services.LabelService
 import com.example.coreweb.routing.Route
-import com.example.coreweb.utils.PageAttr
 import com.example.coreweb.utils.PageableParams
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
@@ -72,6 +70,16 @@ class LabelController @Autowired constructor(
         val entity = this.labelService.find(id).orElseThrow { ExceptionUtil.notFound("Label", id) }
         return ResponseEntity.ok(this.labelMapper.map(entity))
     }
+
+    @GetMapping(Route.V1.FIND_LABEL_MULTIPLE)
+    fun findMultiple(
+        @RequestParam ids: Set<Long>
+    ): ResponseEntity<Set<LabelDto>> {
+        if (ids.size > 100) throw ExceptionUtil.forbidden("Cannot fetch more than 100 categories at once!")
+        val categories = this.labelService.findByIds(ids)
+        return ResponseEntity.ok(categories.map { this.labelMapper.map(it) }.toSet())
+    }
+
 
     @PostMapping(Route.V1.CREATE_LABEL)
     fun create(@Valid @RequestBody dto: LabelDto): ResponseEntity<LabelDto> {
