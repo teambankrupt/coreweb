@@ -27,7 +27,7 @@ open class BaseDto : Serializable {
         example = "2020-09-13T03:48:36Z",
         notes = "Date when this entity was last updated. ( Format: yyyy-MM-dd'T'HH:mm:ss.SSS'Z' )"
     )
-    lateinit var updatedAt: Instant
+    var updatedAt: Instant? = null
 
     @JsonIgnore
     open fun getLoggedInUsername(): String? {
