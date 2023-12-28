@@ -36,4 +36,13 @@ interface LabelRepository : JpaRepository<Label, Long> {
 
     @Query("SELECT l FROM Label l WHERE l.id IN :ids AND l.deleted=FALSE")
     fun findByIds(ids: Set<Long>): Set<Label>
+
+
+    @Query("SELECT l FROM Label l WHERE l.parent IS NULL AND l.deleted=FALSE")
+    fun findRootCategories(): List<Label>
+
+    @Query("SELECT l FROM Label l WHERE l.parent.id=:parentId AND l.deleted=FALSE")
+    fun findChildren(
+        @Param("parentId") parentId: Long?
+    ): List<Label>
 }

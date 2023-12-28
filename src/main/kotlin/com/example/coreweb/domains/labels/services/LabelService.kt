@@ -21,4 +21,6 @@ interface LabelService : CrudServiceV4<Label> {
     ): Page<Label>
 
     fun findByIds(ids: Set<Long>): Set<Label>
+
+    fun fixPaths(parentId: Long?)
 }

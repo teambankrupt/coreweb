@@ -43,24 +43,6 @@ class LabelController @Autowired constructor(
         return ResponseEntity.ok(entities.map { this.labelMapper.map(it) })
     }
 
-    @GetMapping(Route.V1.ADMIN_SEARCH_LABELS)
-    fun searchForAdmin(
-        @RequestParam("parent_id", required = false) parentId: Long?,
-        @RequestParam("parent_code", required = false) parentCode: String?,
-        @RequestParam("q", required = false) query: String?,
-        @RequestParam("page", defaultValue = "0") page: Int,
-        @RequestParam("size", defaultValue = "10") size: Int,
-        @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
-        @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction
-    ): ResponseEntity<Page<LabelDto>> {
-        val entities = this.labelService.search(
-            parentId, parentCode,
-            PageableParams.of(query, page, size, sortBy, direction)
-        )
-        return ResponseEntity.ok(entities.map { this.labelMapper.map(it) })
-    }
-
-
     /*
     END PUBLIC API'S
      */

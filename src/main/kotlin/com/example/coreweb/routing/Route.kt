@@ -139,6 +139,7 @@ class Route {
         const val FIND_LABEL_MULTIPLE = "$API$VERSION/labels/multiple/by-ids"
         const val UPDATE_LABEL = "$API$VERSION/labels/{id}"
         const val DELETE_LABEL = "$API$VERSION/labels/{id}"
+        const val ADMIN_LABEL_FIX_PATHS = "$API$VERSION$ADMIN/labels/paths/fix-paths"
 
         // Activity Logs
         const val ADMIN_SEARCH_ACTIVITIES = "$API$VERSION$ADMIN/activity-logs"
