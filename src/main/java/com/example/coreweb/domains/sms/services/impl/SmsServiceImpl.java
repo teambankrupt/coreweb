@@ -42,7 +42,7 @@ public class SmsServiceImpl implements SmsService {
     public boolean sendMimSms(String phoneNumber, String message) {
         String phone = phoneNumber.trim().startsWith("88") ? phoneNumber : "88" + phoneNumber;
         String url = "https://bulk.mimsms.com/smsapi?api_key=" + this.apiKey + "&type=text&contacts=" + phone.trim() +
-                "&senderid=" + this.senderId + "&msg=" + message;
+                "&senderid=" + this.senderId + "&msg=" + message+"&label=transactional";
 
         try {
             NetworkUtil.postData(url, null, null, true);
