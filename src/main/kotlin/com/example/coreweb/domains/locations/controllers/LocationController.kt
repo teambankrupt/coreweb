@@ -6,6 +6,9 @@ import com.example.coreweb.domains.locations.services.LocationService
 import com.example.common.utils.ExceptionUtil
 import com.example.coreweb.domains.base.controllers.CrudControllerV2
 import com.example.coreweb.domains.base.models.enums.SortByFields
+import com.example.coreweb.domains.locations.models.dtos.LocationDetailResponse
+import com.example.coreweb.domains.locations.models.dtos.LocationResponse
+import com.example.coreweb.domains.locations.models.dtos.toDetailResponse
 import com.example.coreweb.routing.Route
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,19 +23,7 @@ import org.springframework.data.domain.Sort
 class LocationController @Autowired constructor(
     private val locationService: LocationService,
     private val locationMapper: LocationMapper
-) : CrudControllerV2<LocationDto> {
-
-    //    @GetMapping(Route.V1.SEARCH_LOCATIONS)
-    override fun search(
-        @RequestParam("q", defaultValue = "") query: String,
-        @RequestParam("page", defaultValue = "0") page: Int,
-        @RequestParam("size", defaultValue = "10") size: Int,
-        @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
-        @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction
-    ): ResponseEntity<Page<LocationDto>> {
-        val entities = this.locationService.search(query, page, size, sortBy, direction)
-        return ResponseEntity.ok(entities.map { this.locationMapper.map(it) })
-    }
+) {
 
     @GetMapping(Route.V1.SEARCH_LOCATIONS)
     fun searchForType(
@@ -60,6 +51,11 @@ class LocationController @Autowired constructor(
         return ResponseEntity.ok(entities.map { this.locationMapper.map(it) })
     }
 
+    /*
+    * This is a special case where we need to search for root locations
+    * when filter_param is null, normally we search all the objects in db,
+    * but for tree entity, we need to respond with root locations when parent_id is null
+     */
     @GetMapping(Route.V1.SEARCH_CHILD_LOCATIONS)
     fun searchChildLocations(
         @RequestParam("parent_id", required = false) parentId: Long?,
@@ -74,19 +70,25 @@ class LocationController @Autowired constructor(
     }
 
     @GetMapping(Route.V1.FIND_LOCATION)
-    override fun find(@PathVariable("id") id: Long): ResponseEntity<LocationDto> {
+    fun find(@PathVariable("id") id: Long): ResponseEntity<LocationDto> {
         val entity = this.locationService.find(id).orElseThrow { ExceptionUtil.notFound("Location", id) }
         return ResponseEntity.ok(this.locationMapper.map(entity))
     }
 
+    @GetMapping(Route.V2.Location.GET)
+    fun findV2(@PathVariable("id") id: Long): ResponseEntity<LocationDetailResponse> {
+        val entity = this.locationService.find(id).orElseThrow { ExceptionUtil.notFound("Location", id) }
+        return ResponseEntity.ok(entity.toDetailResponse())
+    }
+
     @PostMapping(Route.V1.CREATE_LOCATION)
-    override fun create(@Valid @RequestBody dto: LocationDto): ResponseEntity<LocationDto> {
+    fun create(@Valid @RequestBody dto: LocationDto): ResponseEntity<LocationDto> {
         val entity = this.locationService.save(this.locationMapper.map(dto, null))
         return ResponseEntity.ok(this.locationMapper.map(entity))
     }
 
     @PatchMapping(Route.V1.UPDATE_LOCATION)
-    override fun update(
+    fun update(
         @PathVariable("id") id: Long,
         @Valid @RequestBody dto: LocationDto
     ): ResponseEntity<LocationDto> {
@@ -96,7 +98,7 @@ class LocationController @Autowired constructor(
     }
 
     @DeleteMapping(Route.V1.DELETE_LOCATION)
-    override fun delete(@PathVariable("id") id: Long): ResponseEntity<Any> {
+    fun delete(@PathVariable("id") id: Long): ResponseEntity<Any> {
         this.locationService.delete(id, true)
         return ResponseEntity.ok().build()
     }

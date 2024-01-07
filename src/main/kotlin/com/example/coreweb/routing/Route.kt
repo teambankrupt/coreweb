@@ -144,4 +144,12 @@ class Route {
         // Activity Logs
         const val ADMIN_SEARCH_ACTIVITIES = "$API$VERSION$ADMIN/activity-logs"
     }
+
+    object V2 {
+        private const val API = "/api/v2"
+
+        object Location {
+            const val GET = "$API/locations/{id}"
+        }
+    }
 }
