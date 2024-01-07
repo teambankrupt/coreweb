@@ -84,6 +84,7 @@ class Route {
         const val SEARCH_LOCATIONTYPES = "$API$VERSION/location-types"
         const val CREATE_LOCATIONTYPE = "$API$VERSION/location-types"
         const val FIND_LOCATIONTYPE = "$API$VERSION/location-types/{id}"
+        const val FIND_LOCATIONTYPE_MULTIPLE = "$API$VERSION/location-types/multiple/by-ids"
         const val UPDATE_LOCATIONTYPE = "$API$VERSION/location-types/{id}"
         const val DELETE_LOCATIONTYPE = "$API$VERSION/location-types/{id}"
 
@@ -150,6 +151,7 @@ class Route {
 
         object Location {
             const val GET = "$API/locations/{id}"
+            const val GET_MULTIPLE = "${API}/locations/multiple/by-ids"
         }
     }
 }

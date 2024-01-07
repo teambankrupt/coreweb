@@ -1,30 +1,55 @@
 package com.example.coreweb.domains.locations.services.beans
 
+import com.example.common.utils.ExceptionUtil
+import com.example.coreweb.domains.base.models.enums.SortByFields
 import com.example.coreweb.domains.locations.models.entities.Location
 import com.example.coreweb.domains.locations.repositories.LocationRepository
 import com.example.coreweb.domains.locations.services.LocationService
-import com.example.common.utils.ExceptionUtil
 import com.example.coreweb.utils.PageAttr
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.util.*
-import com.example.coreweb.domains.base.models.enums.SortByFields
-import org.springframework.data.domain.Sort
 
 @Service
 class LocationServiceBean @Autowired constructor(
-        private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository
 ) : LocationService {
 
-    override fun searchForType(typeId: Long, query: String, page: Int, size: Int, sortBy: SortByFields, direction: Sort.Direction): Page<Location> {
-        return this.locationRepository.search(query.toLowerCase(), typeId, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
+    override fun searchForType(
+        typeId: Long,
+        query: String,
+        page: Int,
+        size: Int,
+        sortBy: SortByFields,
+        direction: Sort.Direction
+    ): Page<Location> {
+        return this.locationRepository.search(
+            query.toLowerCase(),
+            typeId,
+            PageAttr.getPageRequest(page, size, sortBy.fieldName, direction)
+        )
     }
 
-    override fun searchByParent(parentId: Long?, query: String, page: Int, size: Int, sortBy: SortByFields, direction: Sort.Direction): Page<Location> {
+    override fun searchByParent(
+        parentId: Long?,
+        query: String,
+        page: Int,
+        size: Int,
+        sortBy: SortByFields,
+        direction: Sort.Direction
+    ): Page<Location> {
         return if (parentId != null)
-            this.locationRepository.searchByParent(parentId, query, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
-        else this.locationRepository.searchRootLocations(query, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
+            this.locationRepository.searchByParent(
+                parentId,
+                query,
+                PageAttr.getPageRequest(page, size, sortBy.fieldName, direction)
+            )
+        else this.locationRepository.searchRootLocations(
+            query,
+            PageAttr.getPageRequest(page, size, sortBy.fieldName, direction)
+        )
     }
 
     override fun searchByZipCode(
@@ -35,15 +60,29 @@ class LocationServiceBean @Autowired constructor(
         sortBy: SortByFields,
         direction: Sort.Direction
     ): Page<Location> {
-        return this.locationRepository.searchByZipCode(query, zipCode, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
+        return this.locationRepository.searchByZipCode(
+            query,
+            zipCode,
+            PageAttr.getPageRequest(page, size, sortBy.fieldName, direction)
+        )
     }
 
     override fun searchByZipCode(zipCode: String): Optional<Location> {
         return this.locationRepository.findByZipCode(zipCode)
     }
 
-    override fun search(query: String, page: Int, size: Int, sortBy: SortByFields, direction: Sort.Direction): Page<Location> {
-        return this.locationRepository.search(query, null, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
+    override fun search(
+        query: String,
+        page: Int,
+        size: Int,
+        sortBy: SortByFields,
+        direction: Sort.Direction
+    ): Page<Location> {
+        return this.locationRepository.search(
+            query,
+            null,
+            PageAttr.getPageRequest(page, size, sortBy.fieldName, direction)
+        )
     }
 
     override fun save(entity: Location): Location {
@@ -54,6 +93,9 @@ class LocationServiceBean @Autowired constructor(
     override fun find(id: Long): Optional<Location> {
         return this.locationRepository.find(id)
     }
+
+    override fun findByIds(ids: Set<Long>): Set<Location> =
+        this.locationRepository.findByIds(ids)
 
     override fun delete(id: Long, softDelete: Boolean) {
         if (this.locationRepository.childCount(id) > 0)

@@ -26,4 +26,7 @@ interface LocationTypeRepository : JpaRepository<LocationType, Long> {
 
     @Query("SELECT COUNT(l) FROM LocationType l WHERE l.parent.id=:locationTypeId")
     fun childCount(@Param("locationTypeId") locationTypeId: Long): Long
+
+    @Query("SELECT l FROM LocationType l WHERE l.id IN (:ids) AND l.deleted=FALSE")
+    fun findByIds(@Param("ids") ids: Set<Long>): Set<LocationType>
 }

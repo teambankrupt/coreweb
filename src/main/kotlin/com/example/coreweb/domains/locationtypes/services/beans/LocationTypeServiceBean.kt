@@ -39,6 +39,9 @@ class LocationTypeServiceBean @Autowired constructor(
         return this.locationTypeRepository.find(id)
     }
 
+    override fun findByIds(ids: Set<Long>): Set<LocationType> =
+        this.locationTypeRepository.findByIds(ids)
+
     override fun delete(id: Long, softDelete: Boolean) {
         if (this.locationTypeRepository.childCount(id) > 0)
             throw ExceptionUtil.forbidden("LocationType with children can't be deleted!")

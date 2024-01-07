@@ -39,4 +39,7 @@ interface LocationRepository : JpaRepository<Location, Long> {
 
     @Query("SELECT l FROM Location l WHERE l.zipCode=:zipCode")
     fun findByZipCode(@Param("zipCode") zipCode: String): Optional<Location>
+
+    @Query("SELECT l FROM Location l WHERE l.id IN (:ids) AND l.deleted=FALSE AND l.type.deleted=FALSE")
+    fun findByIds(@Param("ids") ids: Set<Long>): Set<Location>
 }

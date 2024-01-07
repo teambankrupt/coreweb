@@ -1,21 +1,18 @@
 package com.example.coreweb.domains.locationtypes.controllers
 
-import com.example.coreweb.domains.locationtypes.models.dtos.LocationTypeDto
+import com.example.common.utils.ExceptionUtil
+import com.example.coreweb.domains.base.models.enums.SortByFields
+import com.example.coreweb.domains.locationtypes.models.dtos.*
 import com.example.coreweb.domains.locationtypes.models.mappers.LocationTypeMapper
 import com.example.coreweb.domains.locationtypes.services.LocationTypeService
-import com.example.common.utils.ExceptionUtil
-import com.example.coreweb.domains.base.controllers.CrudControllerV2
-import com.example.coreweb.domains.base.models.enums.SortByFields
-import com.example.coreweb.domains.locationtypes.models.dtos.LocationTypeDetailResponse
-import com.example.coreweb.domains.locationtypes.models.dtos.toDetailResponse
 import com.example.coreweb.routing.Route
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.Sort
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
-import org.springframework.data.domain.Sort
 
 @RestController
 @Api(tags = ["LocationTypes"], description = "Description about LocationTypes")
@@ -41,6 +38,15 @@ class LocationTypeController @Autowired constructor(
         val entity = this.locationTypeService.find(id)
             .orElseThrow { ExceptionUtil.notFound("LocationType", id) }
         return ResponseEntity.ok(entity.toDetailResponse())
+    }
+
+    @GetMapping(Route.V1.FIND_LOCATIONTYPE_MULTIPLE)
+    fun findMultiple(
+        @RequestParam ids: Set<Long>
+    ): ResponseEntity<Set<LocationTypeResponse>> {
+        if (ids.size > 100) throw ExceptionUtil.forbidden("Cannot fetch more than 100 categories at once!")
+        val locationTypes = this.locationTypeService.findByIds(ids)
+        return ResponseEntity.ok(locationTypes.map { it.toResponse() }.toSet())
     }
 
     @PostMapping(Route.V1.CREATE_LOCATIONTYPE)

@@ -1,22 +1,18 @@
 package com.example.coreweb.domains.locations.controllers
 
-import com.example.coreweb.domains.locations.models.dtos.LocationDto
+import com.example.common.utils.ExceptionUtil
+import com.example.coreweb.domains.base.models.enums.SortByFields
+import com.example.coreweb.domains.locations.models.dtos.*
 import com.example.coreweb.domains.locations.models.mappers.LocationMapper
 import com.example.coreweb.domains.locations.services.LocationService
-import com.example.common.utils.ExceptionUtil
-import com.example.coreweb.domains.base.controllers.CrudControllerV2
-import com.example.coreweb.domains.base.models.enums.SortByFields
-import com.example.coreweb.domains.locations.models.dtos.LocationDetailResponse
-import com.example.coreweb.domains.locations.models.dtos.LocationResponse
-import com.example.coreweb.domains.locations.models.dtos.toDetailResponse
 import com.example.coreweb.routing.Route
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.Sort
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
-import org.springframework.data.domain.Sort
 
 @RestController
 @Api(tags = ["Locations"], description = "Description about Locations")
@@ -79,6 +75,15 @@ class LocationController @Autowired constructor(
     fun findV2(@PathVariable("id") id: Long): ResponseEntity<LocationDetailResponse> {
         val entity = this.locationService.find(id).orElseThrow { ExceptionUtil.notFound("Location", id) }
         return ResponseEntity.ok(entity.toDetailResponse())
+    }
+
+    @GetMapping(Route.V2.Location.GET_MULTIPLE)
+    fun findMultiple(
+        @RequestParam ids: Set<Long>
+    ): ResponseEntity<Set<LocationResponse>> {
+        if (ids.size > 100) throw ExceptionUtil.forbidden("Cannot fetch more than 100 categories at once!")
+        val locations = this.locationService.findByIds(ids)
+        return ResponseEntity.ok(locations.map { it.toResponse() }.toSet())
     }
 
     @PostMapping(Route.V1.CREATE_LOCATION)
