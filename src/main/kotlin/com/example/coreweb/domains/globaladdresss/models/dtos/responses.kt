@@ -52,7 +52,7 @@ fun GlobalAddress.toResponse() = GlobalAddressResponse(
     altitude = this.coordinate.altitude,
     locationId = this.location.id,
     locationsTree = this.flattenLocation(this.location, Stack())
-        .toList()
+        .toList().sortedBy { it.type.level }
         .associate { it.type.code to it.toResponse() },
     fullAddress = this.buildAddress()
 )
