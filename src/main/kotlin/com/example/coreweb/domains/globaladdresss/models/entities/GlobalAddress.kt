@@ -6,6 +6,7 @@ import com.example.coreweb.domains.locations.models.entities.Location
 import java.lang.StringBuilder
 import java.util.*
 import javax.persistence.*
+import kotlin.collections.HashSet
 
 @Entity
 @Table(name = "global_addresss", schema = "core_web")
