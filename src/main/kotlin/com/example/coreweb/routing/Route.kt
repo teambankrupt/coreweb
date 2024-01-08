@@ -153,5 +153,9 @@ class Route {
             const val GET = "$API/locations/{id}"
             const val GET_MULTIPLE = "${API}/locations/multiple/by-ids"
         }
+
+        object GlobalAddress{
+            const val GET = "$API/global-addresses/{id}"
+        }
     }
 }
