@@ -12,7 +12,7 @@ import kotlin.collections.HashMap
 
 class GlobalAddressDto : BaseDto() {
 
-    @NotBlank
+    @NotBlank(message = "Address line one is required")
     @JsonProperty("address_line_one")
     lateinit var addressLineOne: String
 
@@ -24,22 +24,22 @@ class GlobalAddressDto : BaseDto() {
 
     var title: String? = null
 
-    @NotNull
+    @NotNull(message = "Latitude is required")
     @ApiModelProperty(required = true)
     @JsonProperty("latitude")
     var latitude: Double = 0.0
 
-    @NotNull
+    @NotNull(message = "Longitude is required")
     @ApiModelProperty(required = true)
     @JsonProperty("longitude")
     var longitude: Double = 0.0
 
-    @NotNull
+    @NotNull(message = "Altitude is required")
     @ApiModelProperty(required = true)
     @JsonProperty("altitude")
     var altitude: Double = 0.0
 
-    @NotNull
+    @NotNull(message = "location_id is required")
     @Min(1)
     @JsonProperty("location_id")
     var locationId: Long = 0
