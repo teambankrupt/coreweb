@@ -72,7 +72,7 @@ class GlobalAddressMapper @Autowired constructor(
             this.addressLineOne = dto.addressLineOne
             this.addressLineTwo = dto.addressLineTwo
             this.zipCode = dto.zipCode
-            this.title = dto.zipCode ?: "Home"
+            this.title = dto.title ?: "Home"
             this.coordinate = Coordinate(dto.latitude, dto.longitude, dto.altitude)
             this.location = locationRepository.find(dto.locationId)
                 .orElseThrow { ExceptionUtil.notFound("Location", dto.locationId) }
