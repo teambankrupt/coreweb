@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Sort
 import org.springframework.http.ResponseEntity
 
+@Deprecated("Use CrudControllerV4 instead")
 interface CrudControllerV2<T : BaseDto> {
     fun search(query: String, page: Int, size: Int, sortBy: SortByFields, direction: Sort.Direction): ResponseEntity<Page<T>>
     fun find(id: Long): ResponseEntity<T>

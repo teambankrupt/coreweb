@@ -4,7 +4,7 @@ import com.example.common.exceptions.forbidden.ForbiddenException
 import com.example.common.exceptions.invalid.InvalidException
 import com.example.common.exceptions.notacceptable.NotAcceptableException
 import com.example.common.exceptions.notfound.NotFoundException
-import com.example.common.misc.toHeaderMultiValueMap
+import com.example.common.utils.toHeaderMultiValueMap
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.env.Environment
 import org.springframework.http.HttpHeaders
