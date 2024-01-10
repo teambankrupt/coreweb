@@ -4,7 +4,7 @@ import com.example.coreweb.domains.base.models.dtos.BaseDto
 import org.springframework.data.domain.Page
 import org.springframework.http.ResponseEntity
 
-@Deprecated("Use CrudControllerV4 instead")
+@Deprecated("Use CrudControllerV4 instead", ReplaceWith("CrudControllerV4<T>"), DeprecationLevel.WARNING)
 interface CrudController<T : BaseDto> {
     fun search(query: String, page: Int, size: Int): ResponseEntity<Page<T>>
     fun find(id: Long): ResponseEntity<T>
