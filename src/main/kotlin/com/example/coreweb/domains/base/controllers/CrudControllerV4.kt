@@ -28,3 +28,5 @@ interface CrudControllerV4<REQ, BRIEF_RESPONSE, DETAIL_RESPONSE> {
     fun debug(): Boolean = getEnv().activeProfiles.contains("prod").not()
 
 }
+
+fun Environment.isDebug(): Boolean = this.activeProfiles.contains("prod").not()
