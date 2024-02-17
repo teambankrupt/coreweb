@@ -154,8 +154,12 @@ class Route {
             const val GET_MULTIPLE = "${API}/locations/multiple/by-ids"
         }
 
-        object GlobalAddress{
+        object GlobalAddress {
             const val GET = "$API/global-addresses/{id}"
+        }
+
+        object Scheduler {
+            const val SMS_SCHEDULER_TEST = "$API/scheduler/test-sms"
         }
     }
 }
