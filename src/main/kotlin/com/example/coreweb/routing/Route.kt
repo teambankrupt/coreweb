@@ -160,6 +160,7 @@ class Route {
 
         object Scheduler {
             const val SMS_SCHEDULER_TEST = "$API/scheduler/test-sms"
+            const val REMINDER_TEST = "$API/scheduler/test-reminder"
         }
     }
 }
