@@ -53,6 +53,7 @@ class SchedulerController(
         @RequestParam("message") message: String
     ): String {
         this.schedulerService.scheduleReminder(
+            uid = System.currentTimeMillis().toString(),
             schedule = Schedule(
                 Instant.now().plus(15, ChronoUnit.SECONDS), false
             ),

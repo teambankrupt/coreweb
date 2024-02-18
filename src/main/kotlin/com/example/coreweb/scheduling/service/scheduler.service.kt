@@ -3,17 +3,14 @@ package com.example.coreweb.scheduling.service
 import com.example.coreweb.scheduling.jobs.PaymentReminderJob
 import com.example.coreweb.scheduling.jobs.ReminderJob
 import org.quartz.JobBuilder
+import org.quartz.JobKey
 import org.quartz.Scheduler
 import org.quartz.SimpleScheduleBuilder
 import org.quartz.TriggerBuilder
+import org.quartz.TriggerKey
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.util.*
-
-sealed interface ContactId {
-    data class Phone(val phone: String) : ContactId
-    data class Email(val email: String) : ContactId
-}
 
 data class Schedule(
     val time: Instant,
@@ -24,7 +21,8 @@ data class Schedule(
 
 interface SchedulerService {
     fun scheduleReminder(
-        schedule: Schedule, phone: String?, email: String?,
+        uid: String, schedule: Schedule,
+        phone: String?, email: String?,
         subject: String, message: String
     )
 }
@@ -35,19 +33,30 @@ class SchedulerServiceImpl(
 ) : SchedulerService {
 
     override fun scheduleReminder(
-        schedule: Schedule,
+        uid: String, schedule: Schedule,
         phone: String?, email: String?,
         subject: String, message: String
     ) {
+        val jobKey = JobKey("reminder-job-$uid", "generic-reminder-group")
+        val triggerKey = TriggerKey("reminder-trigger-$uid", "generic-reminder-group")
+
+        if (scheduler.checkExists(jobKey)) {
+            scheduler.deleteJob(jobKey)
+        }
+
+        if (scheduler.checkExists(triggerKey)) {
+            scheduler.unscheduleJob(triggerKey)
+        }
+
         val jobDetail = JobBuilder.newJob(ReminderJob::class.java)
-            .withIdentity("reminder-job", "generic-reminder-group")
+            .withIdentity(jobKey)
             .usingJobData("subject", subject)
             .usingJobData("message", message)
             .usingJobData("phone", phone)
             .usingJobData("email", email)
 
         val trigger = TriggerBuilder.newTrigger()
-            .withIdentity("reminder-trigger", "generic-reminder-group")
+            .withIdentity(triggerKey)
             .startAt(Date.from(schedule.time))
 
         if (schedule.repeat) {
