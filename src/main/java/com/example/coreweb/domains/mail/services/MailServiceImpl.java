@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class MailServiceImpl implements MailService {
         new Thread(() -> {
             MimeMessage message = javaMailSender.createMimeMessage();
             try {
-                MimeMessageHelper helper = new MimeMessageHelper(message, true);
+                MimeMessageHelper helper = new MimeMessageHelper(message, true, StandardCharsets.UTF_8.name());
                 if (from != null)
                     helper.setFrom(from);
                 helper.setTo(toArr);

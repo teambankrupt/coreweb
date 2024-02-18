@@ -1,13 +1,7 @@
 package com.example.coreweb.scheduling.service
 
-import com.example.coreweb.scheduling.jobs.PaymentReminderJob
 import com.example.coreweb.scheduling.jobs.ReminderJob
-import org.quartz.JobBuilder
-import org.quartz.JobKey
-import org.quartz.Scheduler
-import org.quartz.SimpleScheduleBuilder
-import org.quartz.TriggerBuilder
-import org.quartz.TriggerKey
+import org.quartz.*
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.util.*
@@ -19,12 +13,16 @@ data class Schedule(
     val repeatCount: Int = 0
 )
 
+const val REMINDER_GROUP_NAME = "generic-reminder-group"
+
 interface SchedulerService {
     fun scheduleReminder(
         uid: String, schedule: Schedule,
         phone: String?, email: String?,
         subject: String, message: String
     )
+
+    fun removeIfExist(uid: String, group: String)
 }
 
 @Service
@@ -37,16 +35,10 @@ class SchedulerServiceImpl(
         phone: String?, email: String?,
         subject: String, message: String
     ) {
-        val jobKey = JobKey("reminder-job-$uid", "generic-reminder-group")
-        val triggerKey = TriggerKey("reminder-trigger-$uid", "generic-reminder-group")
 
-        if (scheduler.checkExists(jobKey)) {
-            scheduler.deleteJob(jobKey)
-        }
+        val (jobKey, triggerKey) = keys(uid, REMINDER_GROUP_NAME)
 
-        if (scheduler.checkExists(triggerKey)) {
-            scheduler.unscheduleJob(triggerKey)
-        }
+        this.removeIfExist(uid, REMINDER_GROUP_NAME)
 
         val jobDetail = JobBuilder.newJob(ReminderJob::class.java)
             .withIdentity(jobKey)
@@ -70,4 +62,19 @@ class SchedulerServiceImpl(
         scheduler.scheduleJob(jobDetail.build(), trigger.build())
 
     }
+
+    override fun removeIfExist(uid: String, group: String) {
+        val (jobKey, triggerKey) = keys(uid, group)
+
+        if (scheduler.checkExists(jobKey)) {
+            scheduler.deleteJob(jobKey)
+        }
+
+        if (scheduler.checkExists(triggerKey)) {
+            scheduler.unscheduleJob(triggerKey)
+        }
+    }
+
+    fun keys(uid: String, group: String): Pair<JobKey, TriggerKey> =
+        Pair(JobKey("job-$uid", group), TriggerKey("trigger-$uid", group))
 }

@@ -11,6 +11,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +41,10 @@ public class SmsServiceImpl implements SmsService {
     }
 
     public boolean sendMimSms(String phoneNumber, String message) {
+        String encodedMessage = URLEncoder.encode(message, StandardCharsets.UTF_8);
         String phone = phoneNumber.trim().startsWith("88") ? phoneNumber : "88" + phoneNumber;
         String url = "https://bulk.mimsms.com/smsapi?api_key=" + this.apiKey + "&type=text&contacts=" + phone.trim() +
-                "&senderid=" + this.senderId + "&msg=" + message+"&label=transactional";
+                "&senderid=" + this.senderId + "&msg=" + encodedMessage + "&label=transactional";
 
         try {
             NetworkUtil.postData(url, null, null, true);
