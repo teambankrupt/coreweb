@@ -19,9 +19,6 @@ class ReminderJob(
     private val mailService: MailService
 ) : Job {
 
-    @Value("\${app.origin.region}")
-    private lateinit var region: String
-
     private val logger: Logger = LoggerFactory.getLogger(ReminderJob::class.java)
 
     override fun execute(jobContext: JobExecutionContext?) {
@@ -31,7 +28,7 @@ class ReminderJob(
         val phone = data.getString("phone")
         val email = data.getString("email")
 
-        if (phone != null && Validator.isValidPhoneNumber(region, phone)) {
+        if (phone != null && Validator.isValidPhoneNumber("BD", phone)) {
             logger.debug("Sending reminder to phone: $phone")
             smsService.sendSms(Providers.MIM_SMS, phone, "$subject: $message")
             logger.debug("Reminder sent to phone: $phone")
