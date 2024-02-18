@@ -8,6 +8,7 @@ import com.example.coreweb.scheduling.templates.reminderTemplate
 import org.quartz.Job
 import org.quartz.JobDataMap
 import org.quartz.JobExecutionContext
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -21,7 +22,7 @@ class ReminderJob(
     @Value("\${app.origin.region}")
     private lateinit var region: String
 
-    val logger = LoggerFactory.getLogger(ReminderJob::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(ReminderJob::class.java)
 
     override fun execute(jobContext: JobExecutionContext?) {
         val data: JobDataMap = jobContext?.mergedJobDataMap ?: return
