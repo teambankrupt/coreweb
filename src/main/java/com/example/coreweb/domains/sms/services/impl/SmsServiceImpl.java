@@ -2,10 +2,12 @@ package com.example.coreweb.domains.sms.services.impl;
 
 import com.example.common.models.DuplicateParamEntry;
 import com.example.common.utils.NetworkUtil;
+import com.example.coreweb.domains.mail.services.MailService;
 import com.example.coreweb.domains.sms.enums.Providers;
 import com.example.coreweb.domains.sms.services.SmsService;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -30,14 +32,37 @@ public class SmsServiceImpl implements SmsService {
     @Value("${twilio.auth.auth-token}")
     String twilioAuthToken;
 
+    @Value("${reportToEmails}")
+    String reportToEmails;
+
+    private final MailService mailService;
+
+    @Autowired
+    public SmsServiceImpl(
+            MailService mailService
+    ) {
+        this.mailService = mailService;
+    }
+
     @Override
     public boolean sendSms(Providers provider, String phoneNumber, String message) {
-        if (provider == Providers.MIM_SMS)
-            return this.sendMimSms(phoneNumber, message);
-        else if (provider == Providers.TWILIO)
-            return this.sendTwilioSms(phoneNumber, message);
+        try {
+            if (provider == Providers.MIM_SMS)
+                return this.sendMimSms(phoneNumber, message);
+            else if (provider == Providers.TWILIO)
+                return this.sendTwilioSms(phoneNumber, message);
 
-        return this.sendTwilioSms(phoneNumber, message);
+            return this.sendTwilioSms(phoneNumber, message);
+        } catch (Exception e) {
+            this.mailService.send(
+                    reportToEmails.split(","),
+                    "Error Sending SMS",
+                    "Phone: " + phoneNumber + "<br/><br/>Message:<br/>" + message
+                            + "<br/><br/>Error: " + e.getMessage(),
+                    true
+            );
+            return false;
+        }
     }
 
     public boolean sendMimSms(String phoneNumber, String message) {

@@ -30,7 +30,11 @@ class ReminderJob(
 
         if (phone != null && Validator.isValidPhoneNumber("BD", phone)) {
             logger.debug("Sending reminder to phone: $phone")
-            smsService.sendSms(Providers.MIM_SMS, phone, "$subject: $message")
+            try {
+                smsService.sendSms(Providers.MIM_SMS, phone, "$subject: $message")
+            } catch (e: Exception) {
+                logger.error("Error sending reminder to phone: $phone", e)
+            }
             logger.debug("Reminder sent to phone: $phone")
         }
 
