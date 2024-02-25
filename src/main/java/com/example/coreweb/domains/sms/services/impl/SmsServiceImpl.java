@@ -7,6 +7,7 @@ import com.example.coreweb.domains.sms.enums.Providers;
 import com.example.coreweb.domains.sms.services.SmsService;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -23,9 +24,15 @@ import java.util.List;
 public class SmsServiceImpl implements SmsService {
 
     @Value("${mimsms.apiKey}")
-    String apiKey;
+    String mimSmsApiKey;
     @Value("${mimsms.senderId}")
     String senderId;
+
+    @Value("${adnsms.apiKey}")
+    String adnSmsApiKey;
+
+    @Value("${adnsms.apiSecret}")
+    String adnSmsApiSecret;
 
     @Value("${twilio.auth.api-key}")
     String twilioApiKey;
@@ -51,6 +58,8 @@ public class SmsServiceImpl implements SmsService {
                 return this.sendMimSms(phoneNumber, message);
             else if (provider == Providers.TWILIO)
                 return this.sendTwilioSms(phoneNumber, message);
+            else if (provider == Providers.ADN_SMS)
+                return this.sendAdnSms(phoneNumber, message);
 
             return this.sendTwilioSms(phoneNumber, message);
         } catch (Exception e) {
@@ -65,10 +74,28 @@ public class SmsServiceImpl implements SmsService {
         }
     }
 
+    private boolean sendAdnSms(String phoneNumber, String message) {
+        String url = "https://portal.adnsms.com/api/v1/secure/send-sms";
+        var params = new ArrayList<DuplicateParamEntry>();
+        params.add(new DuplicateParamEntry("api_key", this.adnSmsApiKey));
+        params.add(new DuplicateParamEntry("api_secret", this.adnSmsApiSecret));
+        params.add(new DuplicateParamEntry("mobile", phoneNumber));
+        params.add(new DuplicateParamEntry("message_body", message));
+        params.add(new DuplicateParamEntry("message_type", "TEXT"));
+        params.add(new DuplicateParamEntry("request_type", "SINGLE_SMS"));
+        try {
+            NetworkUtil.postFormData(url, null, params, ContentType.APPLICATION_FORM_URLENCODED);
+            return true;
+        } catch (IOException e) {
+            System.out.println("Could not send SMS. " + e.getMessage());
+        }
+        return false;
+    }
+
     public boolean sendMimSms(String phoneNumber, String message) {
         String encodedMessage = URLEncoder.encode(message, StandardCharsets.UTF_8);
         String phone = phoneNumber.trim().startsWith("88") ? phoneNumber : "88" + phoneNumber;
-        String url = "https://bulk.mimsms.com/smsapi?api_key=" + this.apiKey + "&type=text&contacts=" + phone.trim() +
+        String url = "https://bulk.mimsms.com/smsapi?api_key=" + this.mimSmsApiKey + "&type=text&contacts=" + phone.trim() +
                 "&senderid=" + this.senderId + "&msg=" + encodedMessage + "&label=transactional";
 
         try {
@@ -96,7 +123,8 @@ public class SmsServiceImpl implements SmsService {
             CloseableHttpResponse response = NetworkUtil.postFormData(
                     url,
                     "Basic " + Base64.encodeBase64String(toEncode.getBytes(StandardCharsets.UTF_8)),
-                    requestBody
+                    requestBody,
+                    ContentType.APPLICATION_FORM_URLENCODED
             );
             int status = response.getStatusLine().getStatusCode();
             return status >= 200 && status < 300;

@@ -22,29 +22,6 @@ class SchedulerController(
     private val schedulerService: SchedulerService
 ) {
 
-    @GetMapping(Route.V2.Scheduler.SMS_SCHEDULER_TEST)
-    fun smsSchedulerTest(
-        @RequestParam("phone") phone: String,
-        @RequestParam("message") message: String
-    ): String {
-        val jobDetail = JobBuilder.newJob(PaymentReminderJob::class.java)
-            .withIdentity("payment-reminder-job", "payment-reminder-group")
-            .usingJobData("phone", phone)
-            .usingJobData("message", message)
-            .build()
-
-        val scheduledTime = Instant.now().plus(1, java.time.temporal.ChronoUnit.MINUTES)
-        val trigger = TriggerBuilder.newTrigger()
-            .withIdentity("payment-reminder-trigger", "payment-reminder-group")
-            .startAt(
-                Date.from(scheduledTime)
-            )
-            .build()
-        scheduler.scheduleJob(jobDetail, trigger)
-        return "Job scheduled successfully and will be executed at $scheduledTime"
-    }
-
-
     @GetMapping(Route.V2.Scheduler.REMINDER_TEST)
     fun reminderTest(
         @RequestParam("phone") phone: String,
