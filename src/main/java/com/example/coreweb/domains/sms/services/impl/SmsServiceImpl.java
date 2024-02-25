@@ -39,9 +39,6 @@ public class SmsServiceImpl implements SmsService {
     @Value("${twilio.auth.auth-token}")
     String twilioAuthToken;
 
-    @Value("${reportToEmails}")
-    String reportToEmails;
-
     private final MailService mailService;
 
     @Autowired
@@ -64,7 +61,7 @@ public class SmsServiceImpl implements SmsService {
             return this.sendTwilioSms(phoneNumber, message);
         } catch (Exception e) {
             this.mailService.send(
-                    reportToEmails.split(","),
+                    new String[]{"admin@servicito.com"},
                     "Error Sending SMS",
                     "Phone: " + phoneNumber + "<br/><br/>Message:<br/>" + message
                             + "<br/><br/>Error: " + e.getMessage(),
