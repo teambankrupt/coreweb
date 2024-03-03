@@ -162,5 +162,16 @@ class Route {
             const val SMS_SCHEDULER_TEST = "$API/scheduler/test-sms"
             const val REMINDER_TEST = "$API/scheduler/test-reminder"
         }
+
+        object Configurations {
+            object AdminApis {
+                const val SEARCH = "$API/admin/configurations"
+                const val CREATE = "$API/admin/configurations"
+                const val FIND = "$API/admin/configurations/{id}"
+                const val UPDATE = "$API/admin/configurations/{id}"
+                const val DELETE = "$API/admin/configurations/{id}"
+            }
+            object UserApis{}
+        }
     }
 }
