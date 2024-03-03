@@ -1,15 +1,24 @@
 package com.example.coreweb.domains.configurations.models.dtos
 
+import arrow.core.getOrElse
+import com.example.common.exceptions.invalid.InvalidException
+import com.example.common.utils.HtmlSanitizer
+import com.example.common.utils.SessionIdentifierGenerator
 import com.example.coreweb.domains.configurations.models.entities.Configuration
 import com.example.coreweb.domains.configurations.models.enums.ConfigurationType
 import com.example.coreweb.domains.configurations.models.enums.ValueType
 import com.fasterxml.jackson.annotation.JsonProperty
+import net.bytebuddy.utility.RandomString
+import java.lang.reflect.Field
+import java.util.*
+import java.util.stream.Collectors
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
 
 
 data class ConfigurationReq(
     @field:JsonProperty("namespace")
+    @field:Size(min = 1, max = 20, message = "Namespace must be between 1 and 20 characters long!")
     val namespace: String,
 
     @field:JsonProperty("type")
@@ -38,4 +47,27 @@ data class ConfigurationReq(
                 this.description = req.description
             }
         }
+}
+
+fun Any.asConfiguration(
+    namespace: String = SessionIdentifierGenerator.alphanumeric(15),
+    type: ConfigurationType,
+    sanitizeValue: Boolean = false
+): Set<Configuration> = this.let { obj ->
+    Arrays.stream(obj.javaClass.declaredFields)
+        .map { f: Field ->
+            val fieldType = f.type.simpleName.uppercase(Locale.getDefault())
+            f.isAccessible = true
+            Configuration().apply {
+                this.namespace = namespace
+                this.type = type
+                this.key = f.name
+                this.valueType = ValueType.fromString(fieldType).getOrElse {
+                    throw InvalidException("Invalid value type for: $fieldType!")
+                }
+                val value = f.get(obj).toString()
+                this.value = if (!sanitizeValue) value else HtmlSanitizer.sanitizeHTML(value)
+                this.description = type.toString() + " config for: " + f.name
+            }
+        }.collect(Collectors.toSet())
 }
