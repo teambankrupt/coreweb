@@ -1,6 +1,7 @@
 package com.example.coreweb.domains.base.services
 
 import arrow.core.*
+import arrow.core.raise.either
 import com.example.auth.config.security.SecurityContext
 import com.example.auth.entities.UserAuth
 import com.example.common.exceptions.Err
@@ -13,16 +14,30 @@ import javax.validation.ConstraintViolationException
 
 interface CrudServiceV5<ENTITY : BaseEntityV2> {
 
+    fun saveAll(entities: List<ENTITY>, asUser: UserAuth): Either<Err.ValidationErr, List<ENTITY>> =
+        entities.map { this.applyValidations(entity = it, asUser = asUser) }
+            .let { l -> either { l.bindAll() } }
+            .map {
+                this.getRepository().saveAll(it.toList())
+            }
+
     fun save(entity: ENTITY, asUser: UserAuth): Either<Err.ValidationErr, ENTITY> =
+        this.applyValidations(entity = entity, asUser = asUser)
+            .map { this.getRepository().save(it) }
+
+    private fun applyValidations(entity: ENTITY, asUser: UserAuth): Either<Err.ValidationErr, ENTITY> =
         this.validations(asUser)
-            .map { it.apply(entity, if (entity.isNew) ValidationScope.Write else ValidationScope.Modify) } // Apply all validations
+            .map {
+                it.apply(
+                    entity,
+                    if (entity.isNew) ValidationScope.Write else ValidationScope.Modify
+                )
+            } // Apply all validations
             .firstOrNone { it.isLeft() } // Get the first error, if any of the validations failed
             .fold(
                 { entity.right() }, // No error
                 { it } // there's error, and of course left since we filtered it above
             )
-            .map { this.getRepository().save(it) }
-
 
     fun validations(asUser: UserAuth): Set<ValidationV2<ENTITY>>
 
