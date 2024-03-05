@@ -101,3 +101,12 @@ interface CrudServiceV5<ENTITY : BaseEntityV2> {
             auth.isAdmin || entity.createdBy == auth.username
         }
 }
+
+fun <T : BaseEntityV2> Option<T>.validateUniqueOperation(entity: T): Boolean =
+    this.fold(
+        { true },
+        { ex ->
+            if (entity.isNew) false
+            else ex.id == entity.id
+        }
+    )
