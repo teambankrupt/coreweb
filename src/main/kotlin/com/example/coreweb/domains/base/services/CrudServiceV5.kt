@@ -9,6 +9,7 @@ import com.example.common.exceptions.toArrow
 import com.example.common.validation.ValidationScope
 import com.example.common.validation.ValidationV2
 import com.example.coreweb.domains.base.entities.BaseEntityV2
+import com.example.coreweb.utils.onSecuredContext
 import org.springframework.data.jpa.repository.JpaRepository
 import javax.validation.ConstraintViolationException
 
@@ -97,7 +98,7 @@ interface CrudServiceV5<ENTITY : BaseEntityV2> {
     fun getRepository(): JpaRepository<ENTITY, Long>
 
     fun canAccess(entity: ENTITY): Boolean =
-        SecurityContext.getCurrentUser().let { auth ->
+        onSecuredContext { auth ->
             auth.isAdmin || entity.createdBy == auth.username
         }
 }

@@ -1,6 +1,8 @@
 package com.example.coreweb.utils
 
 import arrow.core.Either
+import com.example.auth.config.security.SecurityContext
+import com.example.auth.entities.UserAuth
 import com.example.common.exceptions.Err
 import com.example.coreweb.exceptions.ErrMessage
 import com.example.coreweb.exceptions.toMessage
@@ -56,3 +58,14 @@ fun <E, R> Page<E>.toResponse(map: (entity: E) -> R): ResponseEntity<ResponseDat
         body = this.map { map(it) },
         error = null
     ).asResponse()
+
+fun <E, R> Collection<E>.toResponse(map: (entity: E) -> R): ResponseEntity<ResponseData<List<R>>> =
+    ResponseData(
+        type = ResponseType.SUCCESS,
+        status = HttpStatus.OK,
+        body = this.map { map(it) },
+        error = null
+    ).asResponse()
+
+fun <T>onSecuredContext(block: (auth: UserAuth) -> T) =
+    block(SecurityContext.getCurrentUser())
