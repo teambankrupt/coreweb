@@ -12,18 +12,23 @@ import org.springframework.scheduling.annotation.Scheduled
 @EnableCaching
 open class CacheConfig {
     companion object {
-        const val CACHE_NAME = "bankrupt-cache"
-        const val CACHE_NAME_DAILY = "bankrupt-cache-daily"
     }
 
     @Bean
     open fun cacheManager(): CacheManager {
-        return ConcurrentMapCacheManager(CACHE_NAME, CACHE_NAME_DAILY)
+        return ConcurrentMapCacheManager(
+            CacheNames.ORDERS
+        )
     }
 
     @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Dhaka")
     fun evictDailyCache() {
-        cacheManager().getCache(CACHE_NAME_DAILY)?.clear()
+        cacheManager().getCache(CacheNames.ORDERS)?.clear()
         println("Evicting daily cache..")
     }
+
+}
+
+object CacheNames {
+    const val ORDERS = "orders"
 }
