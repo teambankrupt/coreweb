@@ -9,7 +9,7 @@ import javax.persistence.Table
 @Table(name = "allowed_domains", schema = "core_web")
 class AllowedDomain : BaseEntityV2() {
 
-    @Column(name = "title", nullable = false, unique = true)
+    @Column(name = "domain", nullable = false, unique = true)
     var domain: String = ""
 
     @Column(name = "active", nullable = false)
