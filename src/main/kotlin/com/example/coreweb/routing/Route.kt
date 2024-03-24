@@ -173,5 +173,16 @@ class Route {
             }
             object UserApis{}
         }
+
+        object AllowedDomains {
+            object AdminApis {
+                const val SEARCH = "$API/admin/alloweddomains"
+                const val CREATE = "$API/admin/alloweddomains"
+                const val FIND = "$API/admin/alloweddomains/{id}"
+                const val UPDATE = "$API/admin/alloweddomains/{id}"
+                const val DELETE = "$API/admin/alloweddomains/{id}"
+            }
+            object UserApis{}
+        }
     }
 }
