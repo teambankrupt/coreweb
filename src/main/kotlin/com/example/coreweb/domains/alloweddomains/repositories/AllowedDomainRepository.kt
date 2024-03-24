@@ -35,4 +35,6 @@ interface AllowedDomainRepository : JpaRepository<AllowedDomain, Long> {
     @Query("SELECT e FROM AllowedDomain e WHERE e.domain=:domain AND e.deleted=FALSE")
     fun findByDomain(@Param("domain") domain: String): Optional<AllowedDomain>
 
+    @Query("SELECT e.domain FROM AllowedDomain e WHERE e.active=TRUE AND e.deleted=FALSE")
+    fun allowedDomains(): List<String>
 }

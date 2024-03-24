@@ -8,8 +8,8 @@ import com.example.common.validation.genericValidation
 import com.example.coreweb.domains.base.services.validateUniqueOperation
 
 val domainNameValidation = genericValidation<AllowedDomain>(
-    message = "Domain must be at least 3 characters long!",
-    instruction = "Please provide a domain with at least 3 characters!",
+    message = "Invalid domain name!",
+    instruction = "Please provide a valid domain!",
     scopes = setOf(ValidationScope.Write, ValidationScope.Modify)
 ) {
     Validator.isValidDomain(it.domain)

@@ -17,7 +17,8 @@ open class CacheConfig {
     @Bean
     open fun cacheManager(): CacheManager {
         return ConcurrentMapCacheManager(
-            CacheNames.ORDERS
+            CacheNames.ORDERS,
+            CacheNames.ALLOWED_DOMAINS
         )
     }
 
@@ -31,4 +32,5 @@ open class CacheConfig {
 
 object CacheNames {
     const val ORDERS = "orders"
+    const val ALLOWED_DOMAINS = "allowedDomains"
 }
