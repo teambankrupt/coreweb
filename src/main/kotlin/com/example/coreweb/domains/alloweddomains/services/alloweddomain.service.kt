@@ -1,21 +1,15 @@
 package com.example.coreweb.domains.alloweddomains.services
 
-import arrow.core.Either
 import arrow.core.Option
 import com.example.auth.entities.UserAuth
-import com.example.common.exceptions.Err
 import com.example.common.exceptions.toArrow
 import com.example.common.validation.ValidationV2
-import com.example.coreweb.configs.CacheNames
 import com.example.coreweb.domains.alloweddomains.models.entities.AllowedDomain
 import com.example.coreweb.domains.alloweddomains.repositories.AllowedDomainRepository
 import com.example.coreweb.domains.base.services.CrudServiceV5
 import com.example.coreweb.utils.PageAttr
 import com.example.coreweb.utils.PageableParams
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.CachePut
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Service
@@ -48,12 +42,6 @@ open class AllowedDomainServiceBean @Autowired constructor(
         pageable = PageAttr.getPageRequest(params)
     )
 
-    @CacheEvict(CacheNames.ALLOWED_DOMAINS, key = "'active'")
-    override fun save(entity: AllowedDomain, asUser: UserAuth): Either<Err.ValidationErr, AllowedDomain> {
-        return super.save(entity, asUser)
-    }
-
-    @Cacheable(CacheNames.ALLOWED_DOMAINS, key = "'active'")
     override fun allowedDomains(): List<String> =
         this.allowedDomainRepository.allowedDomains()
 
