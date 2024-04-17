@@ -32,7 +32,7 @@ class SchedulerController(
         this.schedulerService.scheduleReminder(
             uid = System.currentTimeMillis().toString(),
             schedule = Schedule(
-                Instant.now().plus(15, ChronoUnit.SECONDS), false
+                startAt = Instant.now().plus(15, ChronoUnit.SECONDS), repeat = false
             ),
             phone = phone,
             email = email,

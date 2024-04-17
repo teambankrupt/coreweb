@@ -7,7 +7,8 @@ import java.time.Instant
 import java.util.*
 
 data class Schedule(
-    val time: Instant,
+    val startAt: Instant,
+    val endAt: Instant? = null,
     val repeat: Boolean = false,
     val repeatInterval: Long = 0,
     val repeatCount: Int = 0
@@ -49,14 +50,19 @@ class SchedulerServiceImpl(
 
         val trigger = TriggerBuilder.newTrigger()
             .withIdentity(triggerKey)
-            .startAt(Date.from(schedule.time))
+            .startAt(Date.from(schedule.startAt))
+
+        schedule.endAt?.let { trigger.endAt(Date.from(it)) }
 
         if (schedule.repeat) {
-            trigger.withSchedule(
-                SimpleScheduleBuilder.simpleSchedule()
-                    .withIntervalInMilliseconds(schedule.repeatInterval)
-                    .withRepeatCount(schedule.repeatCount)
-            )
+            var builder = SimpleScheduleBuilder.simpleSchedule()
+                .withIntervalInMilliseconds(schedule.repeatInterval)
+            if (schedule.endAt != null) {
+                builder = builder.repeatForever()
+            } else {
+                builder = builder.withRepeatCount(schedule.repeatCount)
+            }
+            trigger.withSchedule(builder)
         }
 
         scheduler.scheduleJob(jobDetail.build(), trigger.build())

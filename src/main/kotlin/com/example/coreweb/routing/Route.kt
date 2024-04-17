@@ -184,5 +184,16 @@ class Route {
             }
             object UserApis{}
         }
+
+        object Events {
+            object AdminApis {
+                const val SEARCH = "$API/admin/events"
+                const val CREATE = "$API/admin/events"
+                const val FIND = "$API/admin/events/{id}"
+                const val UPDATE = "$API/admin/events/{id}"
+                const val DELETE = "$API/admin/events/{id}"
+            }
+            object UserApis{}
+        }
     }
 }
