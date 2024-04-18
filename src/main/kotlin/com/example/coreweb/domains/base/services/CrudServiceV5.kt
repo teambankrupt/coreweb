@@ -76,7 +76,7 @@ interface CrudServiceV5<ENTITY : BaseEntityV2> {
     fun delete(id: Long, softDelete: Boolean, asUser: UserAuth): Either<Err.OperationErr, Boolean> =
         this.getAsEither(id = id, asUser = asUser)
             .flatMap {
-                if (canAccess(it).not())
+                if (canAccess(entity = it, auth = asUser).not())
                     Err.OperationErr.ForbiddenErr.left()
                 else it.right()
             }
@@ -97,10 +97,8 @@ interface CrudServiceV5<ENTITY : BaseEntityV2> {
 
     fun getRepository(): JpaRepository<ENTITY, Long>
 
-    fun canAccess(entity: ENTITY): Boolean =
-        onSecuredContext { auth ->
-            auth.isAdmin || entity.createdBy == auth.username
-        }
+    fun canAccess(entity: ENTITY, auth: UserAuth): Boolean =
+        auth.isAdmin || entity.createdBy == auth.username
 }
 
 fun <T : BaseEntityV2> Option<T>.validateUniqueOperation(entity: T): Boolean =

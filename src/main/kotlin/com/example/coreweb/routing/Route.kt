@@ -171,7 +171,8 @@ class Route {
                 const val UPDATE = "$API/admin/configurations/{id}"
                 const val DELETE = "$API/admin/configurations/{id}"
             }
-            object UserApis{}
+
+            object UserApis {}
         }
 
         object AllowedDomains {
@@ -182,7 +183,8 @@ class Route {
                 const val UPDATE = "$API/admin/allowed-domains/{id}"
                 const val DELETE = "$API/admin/allowed-domains/{id}"
             }
-            object UserApis{}
+
+            object UserApis {}
         }
 
         object Events {
@@ -193,7 +195,9 @@ class Route {
                 const val UPDATE = "$API/admin/events/{id}"
                 const val DELETE = "$API/admin/events/{id}"
             }
-            object UserApis{}
+
+            object UserApis {}
         }
+
     }
 }
