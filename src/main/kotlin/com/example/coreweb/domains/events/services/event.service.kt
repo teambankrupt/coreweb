@@ -9,7 +9,9 @@ import com.example.common.exceptions.toArrow
 import com.example.common.utils.ExceptionUtil
 import com.example.common.validation.ValidationV2
 import com.example.coreweb.domains.base.services.CrudServiceV5
+import com.example.coreweb.domains.events.jobs.EventNotifierJob
 import com.example.coreweb.domains.events.models.entities.Event
+import com.example.coreweb.scheduling.service.Action
 import com.example.coreweb.scheduling.service.Schedule
 import com.example.coreweb.scheduling.service.SchedulerService
 import com.example.coreweb.utils.PageAttr
@@ -57,8 +59,9 @@ open class EventServiceBean @Autowired constructor(
                         group = it.schedulerGroup
                     )
                 } else {
-                    schedulerService.scheduleReminder(
+                    schedulerService.schedule(
                         uid = it.schedulerUID,
+                        group = it.schedulerGroup,
                         schedule = Schedule(
                             startAt = it.startAt,
                             endAt = it.endAt,
@@ -66,10 +69,17 @@ open class EventServiceBean @Autowired constructor(
                             repeatInterval = it.repeatInterval,
                             repeatCount = it.repeatCount
                         ),
-                        email = it.user.email,
-                        phone = it.user.phone,
-                        subject = it.title,
-                        message = it.description
+                        action = Action(
+                            jobClass = EventNotifierJob::class.java,
+                            data = mapOf(
+                                "event_id" to it.id,
+                                "subject" to it.title,
+                                "message" to it.description,
+                                "username" to it.user.username,
+                                "phone" to it.user.phone,
+                                "email" to it.user.email
+                            )
+                        )
                     )
                 }
             }

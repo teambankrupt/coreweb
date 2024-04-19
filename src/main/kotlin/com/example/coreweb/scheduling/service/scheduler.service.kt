@@ -14,16 +14,29 @@ data class Schedule(
     val repeatCount: Int = 0
 )
 
+data class Action(
+    val jobClass: Class<out Job>,
+    val data: Map<String, Any?>
+)
+
 const val REMINDER_GROUP_NAME = "generic-reminder-group"
 
 interface SchedulerService {
     fun scheduleReminder(
-        uid: String, schedule: Schedule,
+        uid: String, group: String = REMINDER_GROUP_NAME,
+        schedule: Schedule,
         phone: String?, email: String?,
         subject: String, message: String
     )
 
-    fun removeIfExist(uid: String, group: String)
+    fun schedule(
+        uid: String,
+        group: String = REMINDER_GROUP_NAME,
+        schedule: Schedule,
+        action: Action
+    )
+
+    fun removeIfExist(uid: String, group: String = REMINDER_GROUP_NAME)
 }
 
 @Service
@@ -32,21 +45,38 @@ class SchedulerServiceImpl(
 ) : SchedulerService {
 
     override fun scheduleReminder(
-        uid: String, schedule: Schedule,
+        uid: String, group: String,
+        schedule: Schedule,
         phone: String?, email: String?,
         subject: String, message: String
-    ) {
+    ) = this.schedule(
+        uid = uid,
+        group = group,
+        schedule = schedule,
+        action = Action(
+            jobClass = ReminderJob::class.java,
+            data = mapOf(
+                "subject" to subject,
+                "message" to message,
+                "phone" to phone,
+                "email" to email
+            )
+        )
+    )
 
-        val (jobKey, triggerKey) = keys(uid, REMINDER_GROUP_NAME)
 
-        this.removeIfExist(uid, REMINDER_GROUP_NAME)
+    override fun schedule(uid: String, group: String, schedule: Schedule, action: Action) {
 
-        val jobDetail = JobBuilder.newJob(ReminderJob::class.java)
+        val (jobKey, triggerKey) = keys(uid, group)
+
+        this.removeIfExist(uid, group)
+
+        val data = JobDataMap()
+        data.putAll(action.data)
+
+        val jobBuilder = JobBuilder.newJob(action.jobClass)
             .withIdentity(jobKey)
-            .usingJobData("subject", subject)
-            .usingJobData("message", message)
-            .usingJobData("phone", phone)
-            .usingJobData("email", email)
+            .usingJobData(data)
 
         val trigger = TriggerBuilder.newTrigger()
             .withIdentity(triggerKey)
@@ -57,16 +87,15 @@ class SchedulerServiceImpl(
         if (schedule.repeat) {
             var builder = SimpleScheduleBuilder.simpleSchedule()
                 .withIntervalInMilliseconds(schedule.repeatInterval)
-            if (schedule.endAt != null) {
-                builder = builder.repeatForever()
+            builder = if (schedule.endAt != null) {
+                builder.repeatForever()
             } else {
-                builder = builder.withRepeatCount(schedule.repeatCount)
+                builder.withRepeatCount(schedule.repeatCount)
             }
             trigger.withSchedule(builder)
         }
 
-        scheduler.scheduleJob(jobDetail.build(), trigger.build())
-
+        scheduler.scheduleJob(jobBuilder.build(), trigger.build())
     }
 
     override fun removeIfExist(uid: String, group: String) {

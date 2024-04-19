@@ -1,24 +1,18 @@
 package com.example.coreweb.scheduling
 
 import com.example.coreweb.routing.Route
-import com.example.coreweb.scheduling.jobs.PaymentReminderJob
 import com.example.coreweb.scheduling.service.Schedule
 import com.example.coreweb.scheduling.service.SchedulerService
 import io.swagger.annotations.Api
-import org.quartz.JobBuilder
-import org.quartz.Scheduler
-import org.quartz.TriggerBuilder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import java.util.*
 
 @RestController
 @Api(tags = ["Scheduler"])
 class SchedulerController(
-    private val scheduler: Scheduler,
     private val schedulerService: SchedulerService
 ) {
 
