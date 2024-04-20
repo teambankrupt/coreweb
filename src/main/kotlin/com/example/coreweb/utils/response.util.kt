@@ -1,9 +1,12 @@
 package com.example.coreweb.utils
 
 import arrow.core.Either
+import arrow.core.Option
+import arrow.core.toOption
 import com.example.auth.config.security.SecurityContext
 import com.example.auth.entities.UserAuth
 import com.example.common.exceptions.Err
+import com.example.common.exceptions.forbidden.ForbiddenException
 import com.example.coreweb.exceptions.ErrMessage
 import com.example.coreweb.exceptions.toMessage
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -67,5 +70,10 @@ fun <E, R> Collection<E>.toResponse(map: (entity: E) -> R): ResponseEntity<Respo
         error = null
     ).asResponse()
 
-fun <T>onSecuredContext(block: (auth: UserAuth) -> T) =
-    block(SecurityContext.getCurrentUser())
+fun <T> onSecuredContext(block: (auth: UserAuth) -> T) =
+    SecurityContext.getCurrentUser()?.let { block(it) }
+        ?: throw ForbiddenException("Authentication Required!")
+
+fun <T> onFlexibleSecuredContext(block: (auth: Option<UserAuth>) -> T) =
+    block(SecurityContext.getCurrentUser().toOption())
+
