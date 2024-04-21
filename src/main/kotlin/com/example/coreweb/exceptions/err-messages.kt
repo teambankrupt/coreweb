@@ -77,6 +77,14 @@ fun Err.toMessage(debug: Boolean): ErrMessage = when (this) {
             exception = if (debug) this.throwable else null
         )
 
+        is Err.OperationErr.NonExistentErrWithMsg -> ErrMessage(
+            actions = HashSet(),
+            type = this::class.simpleName ?: "",
+            message = this.throwable.message ?: "",
+            status = HttpStatus.NOT_FOUND,
+            exception = if (debug) this.throwable else null
+        )
+
         is Err.OperationErr.NotAllowedErr -> ErrMessage(
             actions = HashSet(),
             type = this::class.simpleName ?: "",
