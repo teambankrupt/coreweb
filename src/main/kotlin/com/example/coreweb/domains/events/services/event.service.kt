@@ -2,7 +2,6 @@ package com.example.coreweb.domains.events.services
 
 import arrow.core.Either
 import arrow.core.Option
-import com.example.coreweb.domains.events.repositories.EventRepository
 import com.example.auth.entities.UserAuth
 import com.example.common.exceptions.Err
 import com.example.common.exceptions.toArrow
@@ -11,6 +10,7 @@ import com.example.common.validation.ValidationV2
 import com.example.coreweb.domains.base.services.CrudServiceV5
 import com.example.coreweb.domains.events.jobs.EventNotifierJob
 import com.example.coreweb.domains.events.models.entities.Event
+import com.example.coreweb.domains.events.repositories.EventRepository
 import com.example.coreweb.scheduling.service.Action
 import com.example.coreweb.scheduling.service.Schedule
 import com.example.coreweb.scheduling.service.SchedulerService
@@ -77,7 +77,8 @@ open class EventServiceBean @Autowired constructor(
                                 "message" to it.description,
                                 "username" to it.user.username,
                                 "phone" to it.user.phone,
-                                "email" to it.user.email
+                                "email" to it.user.email,
+                                "reference_id" to if (it.refId == null) -1 else it.refId
                             )
                         )
                     )

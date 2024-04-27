@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component
 data class PushNotifierEvent(
     val s: Any,
     val eventId: Long,
+    val referenceId: Long,
     val username: String,
     val subject: String,
     val message: String
@@ -39,6 +40,7 @@ class EventNotifierJob(
         val username = data.getString("username")
         val phone = data.getString("phone")
         val email = data.getString("email")
+        val referenceId: Long = data.getLong("reference_id")
 
         this.applicationEventPublisher.publishEvent(
             PushNotifierEvent(
@@ -46,7 +48,8 @@ class EventNotifierJob(
                 eventId = eventId,
                 username = username,
                 subject = "Reminder: $subject",
-                message = message
+                message = message,
+                referenceId = referenceId
             )
         )
 
