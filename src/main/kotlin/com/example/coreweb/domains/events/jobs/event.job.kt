@@ -17,7 +17,8 @@ import org.springframework.stereotype.Component
 data class PushNotifierEvent(
     val s: Any,
     val eventId: Long,
-    val referenceId: Long,
+    val referenceId: Long?,
+    val image: String?,
     val username: String,
     val subject: String,
     val message: String
@@ -37,9 +38,10 @@ class EventNotifierJob(
         val eventId = data.getLong("event_id")
         val subject = data.getString("subject")
         val message = data.getString("message")
+        val image: String? = data.getString("image")
         val username = data.getString("username")
-        val phone = data.getString("phone")
-        val email = data.getString("email")
+        val phone: String? = data.getString("phone")
+        val email: String? = data.getString("email")
         val referenceId: Long = data.getLong("reference_id")
 
         this.applicationEventPublisher.publishEvent(
@@ -47,28 +49,33 @@ class EventNotifierJob(
                 s = this,
                 eventId = eventId,
                 username = username,
+                image = image,
                 subject = "Reminder: $subject",
                 message = message,
                 referenceId = referenceId
             )
         )
 
-        if (phone != null && Validator.isValidPhoneNumber("BD", phone)) {
-            logger.debug("Sending reminder to phone: $phone")
-            try {
-                smsService.sendSms(Providers.ADN_SMS, phone, "$subject: $message")
-            } catch (e: Exception) {
-                logger.error("Error sending reminder to phone: $phone", e)
+        phone?.let {
+            if (Validator.isValidPhoneNumber("BD", it)) {
+                logger.debug("Sending reminder to phone: $it")
+                try {
+                    smsService.sendSms(Providers.ADN_SMS, it, "$subject: $message")
+                } catch (e: Exception) {
+                    logger.error("Error sending reminder to phone: $it", e)
+                }
+                logger.debug("Reminder sent to phone: $it")
             }
-            logger.debug("Reminder sent to phone: $phone")
         }
 
-        if (email != null && Validator.isValidEmail(email)) {
-            logger.debug("Sending reminder to email: $email")
-            mailService.send(
-                email, subject, reminderTemplate(subject, message), true
-            )
-            logger.debug("Reminder sent to email: $email")
+        email?.let {
+            if (Validator.isValidEmail(it)) {
+                logger.debug("Sending reminder to email: $it")
+                mailService.send(
+                    it, subject, reminderTemplate(subject, it), true
+                )
+                logger.debug("Reminder sent to email: $it")
+            }
         }
 
     }

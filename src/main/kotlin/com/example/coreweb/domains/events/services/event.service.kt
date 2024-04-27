@@ -76,6 +76,7 @@ open class EventServiceBean @Autowired constructor(
                                 "subject" to it.title,
                                 "message" to it.description,
                                 "username" to it.user.username,
+                                "image" to it.image,
                                 "phone" to it.user.phone,
                                 "email" to it.user.email,
                                 "reference_id" to if (it.refId == null) -1 else it.refId
