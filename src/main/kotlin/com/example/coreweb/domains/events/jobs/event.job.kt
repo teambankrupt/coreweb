@@ -51,7 +51,7 @@ class EventNotifierJob(
                 username = username,
                 image = image,
                 subject = "Reminder: $subject",
-                message = message,
+                message = message.take(50),
                 referenceId = referenceId
             )
         )
@@ -72,7 +72,7 @@ class EventNotifierJob(
             if (Validator.isValidEmail(it)) {
                 logger.debug("Sending reminder to email: $it")
                 mailService.send(
-                    it, subject, reminderTemplate(subject, it), true
+                    it, subject, reminderTemplate(subject, message), true
                 )
                 logger.debug("Reminder sent to email: $it")
             }
