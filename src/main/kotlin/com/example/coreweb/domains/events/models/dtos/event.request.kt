@@ -7,6 +7,7 @@ import com.example.common.utils.ExceptionUtil
 import com.example.coreweb.domains.events.models.entities.EVENT_SCHEDULER_GROUP
 import com.example.coreweb.domains.events.models.entities.Event
 import com.example.coreweb.domains.events.models.entities.EventTypes
+import com.example.coreweb.domains.events.models.entities.NotificationStrategy
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.Instant
 import java.util.*
@@ -46,6 +47,9 @@ data class EventReq(
     @field:JsonProperty("repeat_count")
     val repeatCount: Int,
 
+    @field:JsonProperty("notification_strategy")
+    val notificationStrategy: NotificationStrategyReq,
+
     @field:JsonProperty("user_id")
     val userId: Long
 ) {
@@ -68,9 +72,29 @@ data class EventReq(
                 this.repeatCount = req.repeatCount
                 this.schedulerUID = UUID.randomUUID().toString()
                 this.schedulerGroup = EVENT_SCHEDULER_GROUP
+                this.notificationStrategy = req.notificationStrategy.asStrategy()
                 this.user = getUser(req.userId).getOrElse {
                     throw ExceptionUtil.notFound(User::class.java, req.userId)
                 }
             }
         }
+}
+
+data class NotificationStrategyReq(
+    @field:JsonProperty("by_email")
+    val byEmail: Boolean,
+
+    @field:JsonProperty("by_phone")
+    val byPhone: Boolean,
+
+    @field:JsonProperty("by_push_notification")
+    val byPushNotification: Boolean
+) {
+    fun asStrategy() = this.let { req ->
+        NotificationStrategy().apply {
+            this.byEmail = req.byEmail
+            this.byPushNotification = req.byPushNotification
+            this.byPhone = req.byPhone
+        }
+    }
 }

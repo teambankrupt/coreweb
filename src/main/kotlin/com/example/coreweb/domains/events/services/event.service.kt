@@ -12,6 +12,7 @@ import com.example.coreweb.domains.events.jobs.EventNotifierJob
 import com.example.coreweb.domains.events.models.entities.Event
 import com.example.coreweb.domains.events.repositories.EventRepository
 import com.example.coreweb.scheduling.service.Action
+import com.example.coreweb.scheduling.service.Notifier
 import com.example.coreweb.scheduling.service.Schedule
 import com.example.coreweb.scheduling.service.SchedulerService
 import com.example.coreweb.utils.PageAttr
@@ -71,6 +72,11 @@ open class EventServiceBean @Autowired constructor(
                         ),
                         action = Action(
                             jobClass = EventNotifierJob::class.java,
+                            notifier = Notifier(
+                                email = entity.notificationStrategy.byEmail,
+                                phone = entity.notificationStrategy.byPhone,
+                                push = entity.notificationStrategy.byPushNotification
+                            ),
                             data = mapOf(
                                 "event_id" to it.id,
                                 "subject" to it.title,

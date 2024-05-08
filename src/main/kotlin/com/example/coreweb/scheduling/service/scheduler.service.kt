@@ -16,9 +16,19 @@ data class Schedule(
 
 data class Action(
     val jobClass: Class<out Job>,
+    val notifier: Notifier,
     val data: Map<String, Any?>
 )
 
+data class Notifier(
+    val email: Boolean,
+    val phone: Boolean,
+    val push: Boolean
+)
+
+const val DATA_KEY_BY_PHONE = "by_phone"
+const val DATA_KEY_BY_EMAIL = "by_email"
+const val DATA_KEY_BY_PUSH = "by_push"
 const val REMINDER_GROUP_NAME = "generic-reminder-group"
 
 interface SchedulerService {
@@ -55,6 +65,11 @@ class SchedulerServiceImpl(
         schedule = schedule,
         action = Action(
             jobClass = ReminderJob::class.java,
+            notifier = Notifier(
+                email = true,
+                phone = true,
+                push = true
+            ),
             data = mapOf(
                 "subject" to subject,
                 "message" to message,
@@ -72,6 +87,9 @@ class SchedulerServiceImpl(
         this.removeIfExist(uid, group)
 
         val data = JobDataMap()
+        data[DATA_KEY_BY_PHONE] = action.notifier.phone
+        data[DATA_KEY_BY_EMAIL] = action.notifier.email
+        data[DATA_KEY_BY_PUSH] = action.notifier.push
         data.putAll(action.data)
 
         val jobBuilder = JobBuilder.newJob(action.jobClass)

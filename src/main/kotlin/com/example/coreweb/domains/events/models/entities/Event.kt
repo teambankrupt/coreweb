@@ -54,7 +54,22 @@ class Event : BaseEntityV2() {
     @Column(name = "scheduler_group", nullable = false)
     lateinit var schedulerGroup: String
 
+    @Embedded
+    lateinit var notificationStrategy: NotificationStrategy
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     lateinit var user: User
+}
+
+@Embeddable
+class NotificationStrategy {
+    @Column(name = "by_email", nullable = false)
+    var byEmail: Boolean = false
+
+    @Column(name = "by_phone", nullable = false)
+    var byPhone: Boolean = false
+
+    @Column(name = "by_push_notification", nullable = false)
+    var byPushNotification: Boolean = false
 }
