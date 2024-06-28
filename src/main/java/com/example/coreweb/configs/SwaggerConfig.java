@@ -45,9 +45,6 @@ public class SwaggerConfig {
     @Value("${contactEmail}")
     private String contactEmail;
 
-    @Value("${swagger.auth.link}")
-    private String authLink;
-
     @Value("${swagger.host.domain}")
     private String host;
 
@@ -93,7 +90,10 @@ public class SwaggerConfig {
         authorizationScopeList.add(new AuthorizationScope("write", "access all"));
 
         List<GrantType> grantTypes = newArrayList();
-        GrantType creGrant = new ResourceOwnerPasswordCredentialsGrant(authLink + "/oauth/token?client_id=" + this.clientId + "&client_secret=" + this.clientSecret);
+        var authLink = host.startsWith("localhost") ? "http://" + host : "https://" + host;
+        GrantType creGrant = new ResourceOwnerPasswordCredentialsGrant(
+                authLink + "/oauth/token?client_id=" + this.clientId + "&client_secret=" + this.clientSecret
+        );
 
         grantTypes.add(creGrant);
 
