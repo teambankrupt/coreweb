@@ -2,6 +2,8 @@ package com.example.coreweb.configs
 
 import com.example.common.utils.ExceptionUtil
 import com.example.coreweb.domains.alloweddomains.services.AllowedDomainService
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -27,20 +29,21 @@ open class CustomCorsConfiguration {
 
 @Component
 class DomainFilter(
-    private val allowedDomainService: AllowedDomainService
+    private val allowedDomainService: AllowedDomainService,
 ) : Filter {
+    private val logger: Logger = LoggerFactory.getLogger(DomainFilter::class.java)
+
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
         val httpRequest = request as HttpServletRequest
         val domain = httpRequest.serverName
         val hostAddress = InetAddress.getLocalHost().hostAddress
         val allowedDomains = allowedDomainService.allowedDomains()
             .plus(hostAddress)
-        println("---------------\nHOST ADDR: $hostAddress\n--------------")
 
         if (allowedDomains.contains(domain)) {
             chain.doFilter(request, response)
         } else {
-            throw ExceptionUtil.forbidden("Domain $domain is not allowed!")
+            throw ExceptionUtil.forbidden("Domain $domain is not allowed and also differed from host address $hostAddress!")
         }
     }
 }
