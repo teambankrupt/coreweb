@@ -6,6 +6,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
+import java.net.InetAddress
 import javax.servlet.Filter
 import javax.servlet.FilterChain
 import javax.servlet.ServletRequest
@@ -31,8 +32,12 @@ class DomainFilter(
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
         val httpRequest = request as HttpServletRequest
         val domain = httpRequest.serverName
+        val hostAddress = InetAddress.getLocalHost().hostAddress
+        val allowedDomains = allowedDomainService.allowedDomains()
+            .plus(hostAddress)
+        println("---------------\nHOST ADDR: $hostAddress\n--------------")
 
-        if (allowedDomainService.allowedDomains().contains(domain)) {
+        if (allowedDomains.contains(domain)) {
             chain.doFilter(request, response)
         } else {
             throw ExceptionUtil.forbidden("Domain $domain is not allowed!")
