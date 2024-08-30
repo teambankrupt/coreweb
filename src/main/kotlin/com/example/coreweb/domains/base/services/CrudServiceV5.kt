@@ -2,14 +2,12 @@ package com.example.coreweb.domains.base.services
 
 import arrow.core.*
 import arrow.core.raise.either
-import com.example.auth.config.security.SecurityContext
 import com.example.auth.entities.UserAuth
 import com.example.common.exceptions.Err
 import com.example.common.exceptions.toArrow
 import com.example.common.validation.ValidationScope
 import com.example.common.validation.ValidationV2
 import com.example.coreweb.domains.base.entities.BaseEntityV2
-import com.example.coreweb.utils.onSecuredContext
 import org.springframework.data.jpa.repository.JpaRepository
 import javax.validation.ConstraintViolationException
 
@@ -26,8 +24,12 @@ interface CrudServiceV5<ENTITY : BaseEntityV2> {
         this.applyValidations(entity = entity, asUser = asUser)
             .map { this.getRepository().save(it) }
 
-    fun applyValidations(entity: ENTITY, asUser: UserAuth): Either<Err.ValidationErr, ENTITY> =
-        this.validations(asUser)
+    fun applyValidations(
+        entity: ENTITY,
+        asUser: UserAuth,
+        additional: Set<ValidationV2<ENTITY>> = setOf()
+    ): Either<Err.ValidationErr, ENTITY> =
+        (this.validations(asUser) + additional)
             .map {
                 it.apply(
                     entity,
