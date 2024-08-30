@@ -26,7 +26,7 @@ interface CrudServiceV5<ENTITY : BaseEntityV2> {
         this.applyValidations(entity = entity, asUser = asUser)
             .map { this.getRepository().save(it) }
 
-    private fun applyValidations(entity: ENTITY, asUser: UserAuth): Either<Err.ValidationErr, ENTITY> =
+    fun applyValidations(entity: ENTITY, asUser: UserAuth): Either<Err.ValidationErr, ENTITY> =
         this.validations(asUser)
             .map {
                 it.apply(
