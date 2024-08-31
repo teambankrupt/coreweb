@@ -6,12 +6,13 @@ import org.springframework.data.domain.Sort
 import kotlin.reflect.full.memberProperties
 
 data class PageableParamsV2(
-    val query: String?,
+    private val query: String?,
     val page: Int,
     val size: Int,
     val sortBy: String,
     val sortDirection: Sort.Direction,
 ) {
+    fun query() = query?.trim()?.lowercase()
     inline fun <reified T : BaseEntityV2> toPageRequest(): PageRequest {
         val sort = T::class.memberProperties.firstOrNull { it.name == sortBy }?.name ?: "id"
         return PageRequest.of(
