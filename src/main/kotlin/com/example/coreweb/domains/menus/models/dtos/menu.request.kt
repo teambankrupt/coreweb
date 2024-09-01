@@ -10,20 +10,20 @@ import javax.validation.constraints.Size
 
 
 data class MenuReq(
-    @NotBlank
-    @Size(min = 3, max = 255)
+    @field:NotBlank
+    @field:Size(min = 3, max = 255)
     val title: String,
 
     @NotBlank
-    @Size(min = 3, max = 255)
+    @field:Size(min = 3, max = 255)
     val description: String,
 
     val image: String?,
 
-    @Size(min = 3, max = 255)
+    @field:Size(min = 3, max = 255)
     val link: String?,
 
-    @NotNull
+    @field:NotNull
     val type: MenuTypes,
 
     @field:JsonProperty("parent_id")
@@ -39,7 +39,7 @@ data class MenuReq(
                 this.description = req.description
                 this.image = req.image
                 this.link = req.link
-                this.type = type
+                this.type = req.type
                 this.setParent(
                     req.parentId?.let {
                         getMenu(it).getOrNull()
