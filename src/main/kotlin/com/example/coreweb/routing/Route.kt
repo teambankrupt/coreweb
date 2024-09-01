@@ -199,5 +199,23 @@ class Route {
             object UserApis {}
         }
 
+        object Menus {
+            object AdminApis {
+                const val SEARCH = "$API/admin/menus"
+                const val CREATE = "$API/admin/menus"
+                const val FIND = "$API/admin/menus/{id}"
+                const val UPDATE = "$API/admin/menus/{id}"
+                const val DELETE = "$API/admin/menus/{id}"
+            }
+
+            object UserApis {
+                const val SEARCH = "$API/menus"
+                const val CREATE = "$API/menus"
+                const val FIND = "$API/menus/{id}"
+                const val UPDATE = "$API/menus/{id}"
+                const val DELETE = "$API/menus/{id}"
+            }
+        }
+
     }
 }
