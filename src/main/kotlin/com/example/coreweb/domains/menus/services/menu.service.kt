@@ -1,12 +1,12 @@
 package com.example.coreweb.domains.menus.services
 
 import arrow.core.Option
-import com.example.coreweb.domains.menus.repositories.MenuRepository
 import com.example.auth.entities.UserAuth
 import com.example.common.exceptions.toArrow
 import com.example.common.validation.ValidationV2
 import com.example.coreweb.domains.base.services.CrudServiceV5
 import com.example.coreweb.domains.menus.models.entities.Menu
+import com.example.coreweb.domains.menus.repositories.MenuRepository
 import com.example.coreweb.utils.PageableParamsV2
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -40,7 +40,8 @@ class MenuServiceBean @Autowired constructor(
     )
 
     override fun validations(asUser: UserAuth): Set<ValidationV2<Menu>> = setOf(
-        titleValidation
+        titleValidation,
+        menuCanNotBeOwnParent
     )
 
     override fun find(id: Long, asUser: UserAuth): Option<Menu> =
