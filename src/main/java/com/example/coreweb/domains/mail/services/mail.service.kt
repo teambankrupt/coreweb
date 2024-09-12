@@ -1,8 +1,10 @@
 package com.example.coreweb.domains.mail.services
 
 import com.example.common.utils.Validator
+import com.example.coreweb.domains.base.controllers.isDebug
 import com.example.coreweb.domains.mail.models.entities.EmailLog
 import com.example.coreweb.domains.mail.repositories.EmailLogRepository
+import org.springframework.core.env.Environment
 import org.springframework.core.io.FileSystemResource
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
@@ -26,7 +28,8 @@ interface MailServiceV2 {
 @Service
 class MailServiceBean(
     private val mailSender: JavaMailSender,
-    private val emailLogRepository: EmailLogRepository
+    private val emailLogRepository: EmailLogRepository,
+    private val env: Environment
 ) : MailServiceV2 {
     override fun send(
         from: String?,
@@ -38,6 +41,8 @@ class MailServiceBean(
         isHtml: Boolean,
         attachments: List<File>
     ) = Thread {
+        val env = if (env.isDebug()) env.activeProfiles.joinToString(",") else null
+
         (to + cc + bcc).any { !Validator.isValidEmail(it) }.let {
             if (it) throw IllegalArgumentException("Invalid email address found")
         }
@@ -47,7 +52,7 @@ class MailServiceBean(
         helper.setTo(to)
         helper.setCc(cc)
         helper.setBcc(bcc)
-        helper.setSubject(subject)
+        helper.setSubject(env?.let { "($it) $subject" } ?: subject)
         helper.setText(body, isHtml)
         attachments.forEach { helper.addAttachment(it.name, FileSystemResource(it)) }
         mailSender.send(message).also {

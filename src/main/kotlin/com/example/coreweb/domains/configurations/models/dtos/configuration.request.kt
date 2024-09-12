@@ -8,7 +8,6 @@ import com.example.coreweb.domains.configurations.models.entities.Configuration
 import com.example.coreweb.domains.configurations.models.enums.ConfigurationType
 import com.example.coreweb.domains.configurations.models.enums.ValueType
 import com.fasterxml.jackson.annotation.JsonProperty
-import net.bytebuddy.utility.RandomString
 import java.lang.reflect.Field
 import java.util.*
 import java.util.stream.Collectors
