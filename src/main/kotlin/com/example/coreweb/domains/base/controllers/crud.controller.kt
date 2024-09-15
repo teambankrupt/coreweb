@@ -30,6 +30,7 @@ interface CrudControllerV4<REQ, BRIEF_RESPONSE, DETAIL_RESPONSE> {
 
 }
 
+@Deprecated("Use CrudControllerV6", ReplaceWith("CrudControllerV6<REQ, BRIEF_RESPONSE, DETAIL_RESPONSE>"))
 interface CrudControllerV5<REQ, BRIEF_RESPONSE, DETAIL_RESPONSE> {
     fun search(
         username: String?,
