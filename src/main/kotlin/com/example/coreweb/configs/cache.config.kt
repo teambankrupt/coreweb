@@ -32,5 +32,6 @@ open class CacheConfig {
 
 object CacheNames {
     const val ORDERS = "orders"
+    const val WEBPAGES = "webpages"
     const val ALLOWED_DOMAINS = "allowedDomains"
 }
