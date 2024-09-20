@@ -11,27 +11,30 @@ import org.springframework.scheduling.annotation.Scheduled
 @Configuration
 @EnableCaching
 open class CacheConfig {
-    companion object {
-    }
+	companion object {
+	}
 
-    @Bean
-    open fun cacheManager(): CacheManager {
-        return ConcurrentMapCacheManager(
-            CacheNames.ORDERS,
-            CacheNames.ALLOWED_DOMAINS
-        )
-    }
+	@Bean
+	open fun cacheManager(): CacheManager {
+		return ConcurrentMapCacheManager(
+			CacheNames.ALLOWED_DOMAINS,
+			CacheNames.ORDERS,
+			CacheNames.ARTICLES,
+			CacheNames.WEBPAGES
+		)
+	}
 
-    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Dhaka")
-    fun evictDailyCache() {
-        cacheManager().getCache(CacheNames.ORDERS)?.clear()
-        println("Evicting daily cache..")
-    }
+	@Scheduled(cron = "0 0 0 * * *", zone = "Asia/Dhaka")
+	fun evictDailyCache() {
+		cacheManager().getCache(CacheNames.ORDERS)?.clear()
+		println("Evicting daily cache..")
+	}
 
 }
 
 object CacheNames {
-    const val ORDERS = "orders"
-    const val WEBPAGES = "webpages"
-    const val ALLOWED_DOMAINS = "allowedDomains"
+	const val ALLOWED_DOMAINS = "allowedDomains"
+	const val ORDERS = "orders"
+	const val WEBPAGES = "webpages"
+	const val ARTICLES = "articles"
 }
