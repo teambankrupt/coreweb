@@ -14,28 +14,29 @@ import java.util.*
 @Repository
 interface ConfigurationRepository : JpaRepository<Configuration, Long> {
 
-    @Query(
-        """
+	@Query(
+		"""
         SELECT e FROM Configuration e WHERE (:q IS NULL OR LOWER(e.key) LIKE %:q%)
         AND (:username IS NULL OR e.createdBy=:username)
         AND (e.createdAt BETWEEN :fromDate AND :toDate) AND e.deleted=FALSE
     """
-    )
-    fun search(
-        @Param("q") query: String?,
-        @Param("username") username: String?,
-        @Param("fromDate") fromDate: Instant,
-        @Param("toDate") toDate: Instant,
-        pageable: Pageable
-    ): Page<Configuration>
+	)
+	fun search(
+		@Param("q") query: String?,
+		@Param("username") username: String?,
+		@Param("fromDate") fromDate: Instant,
+		@Param("toDate") toDate: Instant,
+		pageable: Pageable
+	): Page<Configuration>
 
-    @Query("SELECT e FROM Configuration e WHERE e.id=:id AND e.deleted=FALSE")
-    fun find(@Param("id") id: Long): Optional<Configuration>
+	@Query("SELECT e FROM Configuration e WHERE e.id=:id AND e.deleted=FALSE")
+	fun find(@Param("id") id: Long): Optional<Configuration>
 
-    @Query("SELECT e FROM Configuration e WHERE e.namespace=:namespace AND e.type=:type AND e.key=:key AND e.deleted=FALSE")
-    fun findByNamespaceAndTypeAndKey(
-        @Param("namespace") namespace: String,
-        @Param("type") type: ConfigurationType,
-        @Param("key") key: String
-    ): Optional<Configuration>
+	@Query("SELECT e FROM Configuration e WHERE e.namespace=:namespace AND e.type=:type AND e.key=:key AND e.deleted=FALSE")
+	fun findByNamespaceAndTypeAndKey(
+		@Param("namespace") namespace: String,
+		@Param("type") type: ConfigurationType,
+		@Param("key") key: String
+	): Optional<Configuration>
+
 }
