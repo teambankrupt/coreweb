@@ -6,7 +6,7 @@ import java.time.Instant
 import javax.persistence.*
 
 enum class EventTypes {
-    TASK
+    TASK, PUBLISH_ARTICLE
 }
 
 const val EVENT_SCHEDULER_GROUP = "EVENT_SCHEDULER_GROUP"

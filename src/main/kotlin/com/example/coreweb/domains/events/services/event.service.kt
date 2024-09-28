@@ -25,83 +25,85 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 
 interface EventService : CrudServiceV5<Event> {
-    fun search(
-        username: String?,
-        fromDate: Instant, toDate: Instant,
-        params: PageableParams
-    ): Page<Event>
+	fun search(
+		username: String?,
+		fromDate: Instant, toDate: Instant,
+		params: PageableParams
+	): Page<Event>
 }
 
 @Service
 open class EventServiceBean @Autowired constructor(
-    private val eventRepository: EventRepository,
-    private val schedulerService: SchedulerService
+	private val eventRepository: EventRepository,
+	private val schedulerService: SchedulerService
 ) : EventService {
-    override fun search(
-        username: String?,
-        fromDate: Instant,
-        toDate: Instant,
-        params: PageableParams
-    ): Page<Event> = this.eventRepository.search(
-        query = params.query,
-        username = username,
-        fromDate = fromDate,
-        toDate = toDate,
-        pageable = PageAttr.getPageRequest(params)
-    )
+	override fun search(
+		username: String?,
+		fromDate: Instant,
+		toDate: Instant,
+		params: PageableParams
+	): Page<Event> = this.eventRepository.search(
+		query = params.query,
+		username = username,
+		fromDate = fromDate,
+		toDate = toDate,
+		pageable = PageAttr.getPageRequest(params)
+	)
 
-    @Transactional
-    override fun save(entity: Event, asUser: UserAuth): Either<Err.ValidationErr, Event> {
-        return super.save(entity, asUser)
-            .onRight {
-                if (!it.active) {
-                    schedulerService.removeIfExist(
-                        uid = it.schedulerUID,
-                        group = it.schedulerGroup
-                    )
-                } else {
-                    schedulerService.schedule(
-                        uid = it.schedulerUID,
-                        group = it.schedulerGroup,
-                        schedule = Schedule(
-                            startAt = it.startAt,
-                            endAt = it.endAt,
-                            repeat = it.repetitive,
-                            repeatInterval = it.repeatInterval,
-                            repeatCount = it.repeatCount
-                        ),
-                        action = Action(
-                            jobClass = EventNotifierJob::class.java,
-                            notifier = Notifier(
-                                email = entity.notificationStrategy.byEmail,
-                                phone = entity.notificationStrategy.byPhone,
-                                push = entity.notificationStrategy.byPushNotification
-                            ),
-                            data = mapOf(
-                                "event_id" to it.id,
-                                "subject" to it.title,
-                                "message" to it.description,
-                                "username" to it.user.username,
-                                "image" to it.image,
-                                "phone" to it.user.phone,
-                                "email" to it.user.email,
-                                "reference_id" to if (it.refId == null) -1 else it.refId
-                            )
-                        )
-                    )
-                }
-            }
-            .onLeft { throw ExceptionUtil.invalid(it.throwable.message ?: "") }
-    }
+	@Transactional
+	override fun save(entity: Event, asUser: UserAuth): Either<Err.ValidationErr, Event> {
+		return super.save(entity, asUser)
+			.onRight { this.scheduleEvent(it) }
+			.onLeft { throw ExceptionUtil.invalid(it.throwable.message ?: "") }
+	}
 
-    override fun validations(asUser: UserAuth): Set<ValidationV2<Event>> = setOf(
-        titleValidation,
+	private fun scheduleEvent(event: Event, action: () -> Unit = {}) {
+		if (!event.active) {
+			schedulerService.removeIfExist(
+				uid = event.schedulerUID,
+				group = event.schedulerGroup
+			)
+		} else {
+			schedulerService.schedule(
+				uid = event.schedulerUID,
+				group = event.schedulerGroup,
+				schedule = Schedule(
+					startAt = event.startAt,
+					endAt = event.endAt,
+					repeat = event.repetitive,
+					repeatInterval = event.repeatInterval,
+					repeatCount = event.repeatCount
+				),
+				action = Action(
+					jobClass = EventNotifierJob::class.java,
+					notifier = Notifier(
+						email = event.notificationStrategy.byEmail,
+						phone = event.notificationStrategy.byPhone,
+						push = event.notificationStrategy.byPushNotification
+					),
+					data = mapOf(
+						"event_id" to event.id,
+						"subject" to event.title,
+						"message" to event.description,
+						"username" to event.user.username,
+						"image" to event.image,
+						"phone" to event.user.phone,
+						"email" to event.user.email,
+						"reference_id" to if (event.refId == null) -1 else event.refId,
+					)
+				)
+			)
+		}
+	}
 
-        )
+	override fun validations(asUser: UserAuth): Set<ValidationV2<Event>> = setOf(
+		titleValidation,
 
-    override fun find(id: Long, asUser: UserAuth): Option<Event> =
-        this.eventRepository.find(id).toArrow()
+		)
 
-    override fun getRepository(): JpaRepository<Event, Long> = this.eventRepository
+	override fun find(id: Long, asUser: UserAuth): Option<Event> =
+		this.eventRepository.find(id).toArrow()
+
+	override fun getRepository(): JpaRepository<Event, Long> = this.eventRepository
 
 }
